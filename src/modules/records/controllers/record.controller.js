@@ -1,4 +1,5 @@
 const recordService = require('../services/record.service');
+const webhookService = require('../../webhooks/services/webhook.service');
 
 function handleError(res, error, fallbackMessage) {
   const msg = error.message || fallbackMessage;
@@ -11,7 +12,12 @@ function handleError(res, error, fallbackMessage) {
     return res.status(404).json({ message: msg });
   }
 
-  if (msg.includes('required') || msg.includes('must be') || msg.includes('unique')) {
+  if (
+    msg.includes('required') ||
+    msg.includes('must be') ||
+    msg.includes('unique') ||
+    msg.includes('Unknown field')
+  ) {
     return res.status(400).json({ message: msg });
   }
 
@@ -24,6 +30,13 @@ exports.create = async (req, res) => {
       collectionKey: req.params.collectionKey,
       inputData: req.body.data || {},
       user: req.user
+    });
+
+    await webhookService.trigger('record.created', {
+      collectionKey: req.params.collectionKey,
+      recordId: record.id,
+      record: record.toJSON ? record.toJSON() : record,
+      actor: req.user || null
     });
 
     return res.status(201).json(record);
@@ -61,11 +74,25 @@ exports.findOne = async (req, res) => {
 
 exports.update = async (req, res) => {
   try {
+    const beforeRecord = await recordService.getRecord({
+      collectionKey: req.params.collectionKey,
+      recordId: req.params.recordId,
+      includeDeleted: true
+    });
+
     const record = await recordService.updateRecord({
       collectionKey: req.params.collectionKey,
       recordId: req.params.recordId,
       inputData: req.body.data || {},
       user: req.user
+    });
+
+    await webhookService.trigger('record.updated', {
+      collectionKey: req.params.collectionKey,
+      recordId: record.id,
+      before: beforeRecord.toJSON ? beforeRecord.toJSON() : beforeRecord,
+      after: record.toJSON ? record.toJSON() : record,
+      actor: req.user || null
     });
 
     return res.json(record);
@@ -76,10 +103,24 @@ exports.update = async (req, res) => {
 
 exports.remove = async (req, res) => {
   try {
+    const beforeRecord = await recordService.getRecord({
+      collectionKey: req.params.collectionKey,
+      recordId: req.params.recordId,
+      includeDeleted: true
+    });
+
     const record = await recordService.deleteRecord({
       collectionKey: req.params.collectionKey,
       recordId: req.params.recordId,
       user: req.user
+    });
+
+    await webhookService.trigger('record.deleted', {
+      collectionKey: req.params.collectionKey,
+      recordId: req.params.recordId,
+      before: beforeRecord.toJSON ? beforeRecord.toJSON() : beforeRecord,
+      after: record.toJSON ? record.toJSON() : record,
+      actor: req.user || null
     });
 
     return res.json({
@@ -93,10 +134,24 @@ exports.remove = async (req, res) => {
 
 exports.restore = async (req, res) => {
   try {
+    const beforeRecord = await recordService.getRecord({
+      collectionKey: req.params.collectionKey,
+      recordId: req.params.recordId,
+      includeDeleted: true
+    });
+
     const record = await recordService.restoreRecord({
       collectionKey: req.params.collectionKey,
       recordId: req.params.recordId,
       user: req.user
+    });
+
+    await webhookService.trigger('record.restored', {
+      collectionKey: req.params.collectionKey,
+      recordId: req.params.recordId,
+      before: beforeRecord.toJSON ? beforeRecord.toJSON() : beforeRecord,
+      after: record.toJSON ? record.toJSON() : record,
+      actor: req.user || null
     });
 
     return res.json({
@@ -110,9 +165,22 @@ exports.restore = async (req, res) => {
 
 exports.hardDelete = async (req, res) => {
   try {
+    const beforeRecord = await recordService.getRecord({
+      collectionKey: req.params.collectionKey,
+      recordId: req.params.recordId,
+      includeDeleted: true
+    });
+
     await recordService.hardDeleteRecord({
       collectionKey: req.params.collectionKey,
       recordId: req.params.recordId
+    });
+
+    await webhookService.trigger('record.hard_deleted', {
+      collectionKey: req.params.collectionKey,
+      recordId: req.params.recordId,
+      before: beforeRecord.toJSON ? beforeRecord.toJSON() : beforeRecord,
+      actor: req.user || null
     });
 
     return res.json({ message: 'Record permanently deleted' });
