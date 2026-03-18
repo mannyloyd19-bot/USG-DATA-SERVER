@@ -1,6 +1,7 @@
 <!doctype html>
 <html>
 <head>
+<link rel="manifest" href="/manifest.json">
   <title>Dashboard</title>
   <link rel="stylesheet" href="/css/ui.css">
 </head>
@@ -25,3 +26,9 @@ document.getElementById('app').innerHTML = renderLayout(
 
 </body>
 </html>
+
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js');
+}
+</script>
