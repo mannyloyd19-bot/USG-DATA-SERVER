@@ -51,7 +51,8 @@ formEl.addEventListener('submit', async (e) => {
 
   const payload = {
     name: document.getElementById('collection-name').value.trim(),
-    description: document.getElementById('collection-description').value.trim()
+    description: document.getElementById('collection-description').value.trim(),
+    schemaMode: document.getElementById('collection-schema-mode').value
   };
 
   try {

@@ -12,6 +12,13 @@ function normalizeDate(value) {
   return Number.isNaN(d.getTime()) ? null : d.toISOString();
 }
 
+function getValueByPath(obj, path) {
+  if (!path) return undefined;
+  return String(path)
+    .split('.')
+    .reduce((acc, key) => (acc !== undefined && acc !== null ? acc[key] : undefined), obj);
+}
+
 function normalizeValueByType(type, value, field) {
   if (value === undefined) return undefined;
   if (value === null) return null;
@@ -96,7 +103,7 @@ async function validateUniqueFields(collectionId, fields, payload, excludeRecord
 
     const conflict = records.find((r) => {
       if (excludeRecordId && r.id === excludeRecordId) return false;
-      return r.data && r.data[field.key] === value;
+      return getValueByPath(r.data, field.key) === value;
     });
 
     if (conflict) {
@@ -105,8 +112,12 @@ async function validateUniqueFields(collectionId, fields, payload, excludeRecord
   }
 }
 
-function buildValidatedPayload(fields, inputData, existingData = {}) {
-  const result = { ...existingData };
+function buildValidatedPayload(fields, inputData, existingData = {}, schemaMode = 'strict') {
+  const result = schemaMode === 'flexible'
+    ? { ...existingData, ...(inputData || {}) }
+    : { ...existingData };
+
+  const knownKeys = new Set(fields.map(f => f.key));
 
   for (const field of fields) {
     const incoming = inputData[field.key];
@@ -132,6 +143,14 @@ function buildValidatedPayload(fields, inputData, existingData = {}) {
     }
   }
 
+  if (schemaMode === 'strict') {
+    for (const key of Object.keys(inputData || {})) {
+      if (!knownKeys.has(key)) {
+        throw new Error(`Unknown field "${key}" is not allowed in strict mode`);
+      }
+    }
+  }
+
   return result;
 }
 
@@ -151,7 +170,7 @@ function applyFilters(records, filters) {
     const data = record.data || {};
 
     return Object.entries(filters).every(([field, condition]) => {
-      const value = data[field];
+      const value = getValueByPath(data, field);
 
       if (condition && typeof condition === 'object' && !Array.isArray(condition)) {
         if (Object.prototype.hasOwnProperty.call(condition, 'eq') && value !== condition.eq) return false;
@@ -160,13 +179,44 @@ function applyFilters(records, filters) {
         if (Object.prototype.hasOwnProperty.call(condition, 'gte') && !(value >= condition.gte)) return false;
         if (Object.prototype.hasOwnProperty.call(condition, 'lt') && !(value < condition.lt)) return false;
         if (Object.prototype.hasOwnProperty.call(condition, 'lte') && !(value <= condition.lte)) return false;
+
+        if (Object.prototype.hasOwnProperty.call(condition, 'between')) {
+          const range = condition.between;
+          if (!Array.isArray(range) || range.length !== 2) return false;
+          if (!(value >= range[0] && value <= range[1])) return false;
+        }
+
         if (Object.prototype.hasOwnProperty.call(condition, 'contains')) {
           const target = String(condition.contains).toLowerCase();
           if (!String(value || '').toLowerCase().includes(target)) return false;
         }
+
+        if (Object.prototype.hasOwnProperty.call(condition, 'startsWith')) {
+          const target = String(condition.startsWith).toLowerCase();
+          if (!String(value || '').toLowerCase().startsWith(target)) return false;
+        }
+
+        if (Object.prototype.hasOwnProperty.call(condition, 'endsWith')) {
+          const target = String(condition.endsWith).toLowerCase();
+          if (!String(value || '').toLowerCase().endsWith(target)) return false;
+        }
+
         if (Object.prototype.hasOwnProperty.call(condition, 'in')) {
           if (!Array.isArray(condition.in) || !condition.in.includes(value)) return false;
         }
+
+        if (Object.prototype.hasOwnProperty.call(condition, 'exists')) {
+          const shouldExist = Boolean(condition.exists);
+          const exists = value !== undefined;
+          if (shouldExist !== exists) return false;
+        }
+
+        if (Object.prototype.hasOwnProperty.call(condition, 'not_exists')) {
+          const shouldNotExist = Boolean(condition.not_exists);
+          const exists = value !== undefined;
+          if (shouldNotExist === exists) return false;
+        }
+
         return true;
       }
 
@@ -175,13 +225,30 @@ function applyFilters(records, filters) {
   });
 }
 
+function flattenValues(obj) {
+  const out = [];
+  function walk(value) {
+    if (Array.isArray(value)) {
+      for (const item of value) walk(item);
+      return;
+    }
+    if (value && typeof value === 'object') {
+      for (const item of Object.values(value)) walk(item);
+      return;
+    }
+    out.push(value);
+  }
+  walk(obj);
+  return out;
+}
+
 function applySearch(records, search) {
   if (!search) return records;
   const needle = String(search).toLowerCase();
 
   return records.filter((record) => {
     const data = record.data || {};
-    return Object.values(data).some((value) => {
+    return flattenValues(data).some((value) => {
       if (value === null || value === undefined) return false;
       return String(value).toLowerCase().includes(needle);
     });
@@ -194,8 +261,8 @@ function applySort(records, sortBy, sortOrder = 'asc') {
   const direction = String(sortOrder).toLowerCase() === 'desc' ? -1 : 1;
 
   return [...records].sort((a, b) => {
-    const av = a.data ? a.data[sortBy] : undefined;
-    const bv = b.data ? b.data[sortBy] : undefined;
+    const av = getValueByPath(a.data || {}, sortBy);
+    const bv = getValueByPath(b.data || {}, sortBy);
 
     if (av === bv) return 0;
     if (av === undefined || av === null) return 1;
@@ -212,9 +279,7 @@ function applySelect(records, select) {
   return records.map((record) => {
     const picked = {};
     for (const key of select) {
-      if (record.data && Object.prototype.hasOwnProperty.call(record.data, key)) {
-        picked[key] = record.data[key];
-      }
+      picked[key] = getValueByPath(record.data || {}, key);
     }
 
     return {
@@ -233,7 +298,13 @@ function applySelect(records, select) {
 exports.createRecord = async ({ collectionKey, inputData, user }) => {
   const collection = await getCollectionByKey(collectionKey);
   const fields = await getFieldsByCollectionId(collection.id);
-  const payload = buildValidatedPayload(fields, inputData || {}, {});
+  const payload = buildValidatedPayload(
+    fields,
+    inputData || {},
+    {},
+    collection.schemaMode || 'strict'
+  );
+
   await validateUniqueFields(collection.id, fields, payload);
 
   const record = await Record.create({
@@ -272,6 +343,7 @@ exports.listRecords = async ({ collectionKey, query }) => {
   records = applyFilters(records, filters);
   records = applySearch(records, query.search);
   records = applySort(records, query.sortBy, query.sortOrder);
+
   const total = records.length;
   const paged = records.slice(offset, offset + limit);
   const selected = applySelect(paged, select);
@@ -281,7 +353,8 @@ exports.listRecords = async ({ collectionKey, query }) => {
     limit,
     total,
     totalPages: Math.max(Math.ceil(total / limit), 1),
-    items: selected
+    items: selected,
+    schemaMode: collection.schemaMode || 'strict'
   };
 };
 
@@ -313,7 +386,13 @@ exports.updateRecord = async ({ collectionKey, recordId, inputData, user }) => {
   if (!record) throw new Error('Record not found');
 
   const fields = await getFieldsByCollectionId(collection.id);
-  const payload = buildValidatedPayload(fields, inputData || {}, record.data || {});
+  const payload = buildValidatedPayload(
+    fields,
+    inputData || {},
+    record.data || {},
+    collection.schemaMode || 'strict'
+  );
+
   await validateUniqueFields(collection.id, fields, payload, record.id);
 
   record.data = payload;

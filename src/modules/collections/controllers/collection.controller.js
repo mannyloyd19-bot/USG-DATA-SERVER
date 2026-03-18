@@ -10,7 +10,7 @@ function normalizeKey(value) {
 
 exports.create = async (req, res) => {
   try {
-    const { name, key, description } = req.body;
+    const { name, key, description, schemaMode } = req.body;
 
     if (!name) {
       return res.status(400).json({ message: 'name is required' });
@@ -31,7 +31,10 @@ exports.create = async (req, res) => {
     const collection = await Collection.create({
       name,
       key: finalKey,
-      description: description || null
+      description: description || null,
+      schemaMode: ['strict', 'flexible'].includes(String(schemaMode || '').toLowerCase())
+        ? String(schemaMode).toLowerCase()
+        : 'strict'
     });
 
     return res.status(201).json(collection);
@@ -87,11 +90,14 @@ exports.update = async (req, res) => {
       return res.status(404).json({ message: 'Collection not found' });
     }
 
-    const { name, description, isActive } = req.body;
+    const { name, description, isActive, schemaMode } = req.body;
 
     if (name !== undefined) collection.name = name;
     if (description !== undefined) collection.description = description;
     if (isActive !== undefined) collection.isActive = isActive;
+    if (schemaMode !== undefined && ['strict', 'flexible'].includes(String(schemaMode).toLowerCase())) {
+      collection.schemaMode = String(schemaMode).toLowerCase();
+    }
 
     await collection.save();
 

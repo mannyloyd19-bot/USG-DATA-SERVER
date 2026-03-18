@@ -21,6 +21,11 @@ const Collection = sequelize.define('Collection', {
     type: DataTypes.TEXT,
     allowNull: true
   },
+  schemaMode: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    defaultValue: 'strict'
+  },
   isActive: {
     type: DataTypes.BOOLEAN,
     defaultValue: true

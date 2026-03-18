@@ -56,6 +56,10 @@
         <form id="collection-form">
           <input id="collection-name" placeholder="Collection name" required>
           <textarea id="collection-description" placeholder="Description"></textarea>
+          <select id="collection-schema-mode">
+            <option value="strict">strict</option>
+            <option value="flexible">flexible</option>
+          </select>
           <button class="primary" type="submit">Create Collection</button>
         </form>
         <hr style="border:none;border-top:1px solid var(--line);margin:22px 0">
@@ -79,7 +83,7 @@
           </select>
           <input id="query-limit" placeholder="Limit" value="10">
         </div>
-        <textarea id="query-filters" placeholder='Filters JSON, example: {"price":{"gte":500}}'></textarea>
+        <textarea id="query-filters" placeholder='Filters JSON, example: {"price":{"gte":500},"customer.name":{"startsWith":"jo"}}'></textarea>
         <input id="query-select" placeholder="Select fields, example: name,price,status">
         <button class="primary" type="button" id="run-query">Run Query</button>
         <p class="muted" id="query-info"></p>
