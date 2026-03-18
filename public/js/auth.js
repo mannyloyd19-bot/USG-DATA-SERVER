@@ -27,23 +27,17 @@ function authHeaders(extra = {}) {
   const token = getToken();
   return {
     ...extra,
-    Authorization: token ? `Bearer ${token}` : ''
+    ...(token ? { Authorization: `Bearer ${token}` } : {})
   };
 }
 
 async function apiFetch(url, options = {}) {
-  const headers = {
-    ...(options.headers || {}),
-    ...authHeaders(options.headers || {})
-  };
-
+  const headers = authHeaders(options.headers || {});
   const res = await fetch(url, { ...options, headers });
 
   if (res.status === 401) {
     clearToken();
-    if (!location.pathname.endsWith('/login.html')) {
-      location.href = '/login.html';
-    }
+    location.href = '/login.html';
     throw new Error('Unauthorized');
   }
 
@@ -62,4 +56,12 @@ function logout() {
   location.href = '/login.html';
 }
 
+window.getToken = getToken;
+window.setToken = setToken;
+window.clearToken = clearToken;
+window.setUser = setUser;
+window.getUser = getUser;
+window.authHeaders = authHeaders;
+window.apiFetch = apiFetch;
+window.requireAuth = requireAuth;
 window.logout = logout;

@@ -6,12 +6,14 @@ async function loadDashboard() {
   const collectionsEl = document.getElementById('stat-collections');
   const recordsEl = document.getElementById('stat-records');
   const filesEl = document.getElementById('stat-files');
+  const tablesEl = document.getElementById('stat-tables');
+  const relationsEl = document.getElementById('stat-relations');
   const healthBox = document.getElementById('health-box');
   const userLabel = document.getElementById('current-user');
   const chartBox = document.getElementById('chart-box');
 
   const currentUser = getUser();
-  if (currentUser) {
+  if (currentUser && userLabel) {
     userLabel.textContent = `${currentUser.username} · ${currentUser.role}`;
   }
 
@@ -21,45 +23,65 @@ async function loadDashboard() {
       apiFetch('/api/dashboard/stats')
     ]);
 
-    const health = await healthRes.json();
-    const stats = await statsRes.json();
+    let health = {};
+    let stats = {};
 
-    modeEl.textContent = (stats.data && stats.data.mode ? stats.data.mode : 'sqlite').toUpperCase();
-    usersEl.textContent = stats.data ? stats.data.users : '0';
-    collectionsEl.textContent = stats.data ? stats.data.collections : '0';
-    recordsEl.textContent = stats.data ? stats.data.records : '0';
-    filesEl.textContent = stats.data ? stats.data.files : '0';
+    try { health = await healthRes.json(); } catch {}
+    try { stats = await statsRes.json(); } catch {}
 
-    const bars = [
-      ['Users', stats.data?.users || 0],
-      ['Collections', stats.data?.collections || 0],
-      ['Records', stats.data?.records || 0],
-      ['Files', stats.data?.files || 0],
-      ['Tables', stats.data?.tables || 0],
-      ['Relations', stats.data?.relationships || 0]
-    ];
+    if (!stats || !stats.data) {
+      if (healthBox) {
+        healthBox.textContent = JSON.stringify({
+          success: false,
+          message: 'Dashboard stats not available'
+        }, null, 2);
+      }
+      return;
+    }
 
-    const max = Math.max(...bars.map(x => x[1]), 1);
+    const data = stats.data || {};
 
-    chartBox.innerHTML = bars.map(([label, value]) => `
-      <div class="bar-row">
-        <div class="bar-label">${label}</div>
-        <div class="bar-track">
-          <div class="bar-fill" style="width:${(value / max) * 100}%"></div>
+    if (modeEl) modeEl.textContent = String(data.mode || 'sqlite').toUpperCase();
+    if (usersEl) usersEl.textContent = data.users ?? 0;
+    if (collectionsEl) collectionsEl.textContent = data.collections ?? 0;
+    if (recordsEl) recordsEl.textContent = data.records ?? 0;
+    if (filesEl) filesEl.textContent = data.files ?? 0;
+    if (tablesEl) tablesEl.textContent = data.tables ?? 0;
+    if (relationsEl) relationsEl.textContent = data.relationships ?? 0;
+
+    if (chartBox) {
+      const bars = [
+        ['Users', data.users || 0],
+        ['Collections', data.collections || 0],
+        ['Records', data.records || 0],
+        ['Files', data.files || 0],
+        ['Tables', data.tables || 0],
+        ['Relations', data.relationships || 0]
+      ];
+
+      const max = Math.max(...bars.map(x => x[1]), 1);
+
+      chartBox.innerHTML = bars.map(([label, value]) => `
+        <div class="bar-row">
+          <div class="bar-label">${label}</div>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:${(value / max) * 100}%"></div>
+          </div>
+          <div class="bar-value">${value}</div>
         </div>
-        <div class="bar-value">${value}</div>
-      </div>
-    `).join('');
+      `).join('');
+    }
 
-    healthBox.textContent = JSON.stringify({
-      health,
-      info: stats
-    }, null, 2);
+    if (healthBox) {
+      healthBox.textContent = JSON.stringify({ health, info: stats }, null, 2);
+    }
   } catch (error) {
-    healthBox.textContent = JSON.stringify({
-      success: false,
-      message: error.message
-    }, null, 2);
+    if (healthBox) {
+      healthBox.textContent = JSON.stringify({
+        success: false,
+        message: error.message
+      }, null, 2);
+    }
   }
 }
 
