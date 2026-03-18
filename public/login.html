@@ -28,7 +28,7 @@
       color:var(--text);
     }
     .card{
-      width:min(100%,430px);
+      width:min(100%,470px);
       background:var(--panel);
       border:1px solid var(--line);
       border-radius:32px;
@@ -45,7 +45,26 @@
       color:#fff;font-size:34px;font-weight:800;
       margin-bottom:14px;
     }
-    input{
+    .tabs{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:8px;
+      margin-bottom:18px;
+    }
+    .tab-btn{
+      padding:12px 14px;
+      border-radius:16px;
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--text);
+      font-weight:700;
+      cursor:pointer;
+    }
+    .tab-btn.active{
+      background:var(--blue-soft);
+      color:var(--blue);
+    }
+    input,select{
       width:100%;
       padding:15px 16px;
       border-radius:18px;
@@ -54,7 +73,7 @@
       margin-bottom:14px;
       font-size:16px;
     }
-    button{
+    button.primary{
       width:100%;
       padding:15px 18px;
       border:none;
@@ -75,20 +94,54 @@
       margin-top:14px;
       color:var(--muted);
       font-size:14px;
+      line-height:1.5;
     }
   </style>
 </head>
 <body>
-  <form class="card" id="login-form">
+  <div class="card">
     <div class="logo">U</div>
     <div class="small">PRIVATE DATA PLATFORM</div>
-    <h1>Sign in</h1>
-    <input id="username" placeholder="Username" value="admin" required>
-    <input id="password" type="password" placeholder="Password" value="admin123" required>
+    <h1>USG DATA SERVER</h1>
+
+    <div class="tabs">
+      <button class="tab-btn" data-open="login" type="button">Login</button>
+      <button class="tab-btn" data-open="create" type="button">Create User</button>
+      <button class="tab-btn" data-open="forgot" type="button">Forgot</button>
+    </div>
+
     <div class="error" id="error-box"></div>
-    <button type="submit">Login to USG DATA SERVER</button>
-    <div class="hint">Default login: admin / admin123</div>
-  </form>
+
+    <form id="login-form" data-tab="login">
+      <input id="login-username" placeholder="Username" value="admin">
+      <input id="login-password" type="password" placeholder="Password" value="admin123">
+      <button class="primary" type="submit">Login</button>
+    </form>
+
+    <form id="create-form" data-tab="create" style="display:none">
+      <input id="create-masterkey" placeholder="Master Key" value="USG123456">
+      <input id="create-username" placeholder="New Username" required>
+      <input id="create-password" type="password" placeholder="New Password" required>
+      <select id="create-role">
+        <option value="admin">admin</option>
+        <option value="super_admin">super_admin</option>
+      </select>
+      <button class="primary" type="submit">Create User</button>
+    </form>
+
+    <form id="forgot-form" data-tab="forgot" style="display:none">
+      <input id="forgot-masterkey" placeholder="Master Key" value="USG123456">
+      <input id="forgot-username" placeholder="Username" required>
+      <input id="forgot-password" type="password" placeholder="New Password" required>
+      <button class="primary" type="submit">Reset Password</button>
+    </form>
+
+    <div class="hint">
+      Create User at Forgot Password ay kailangan ng master key.<br>
+      Current master key: <strong>USG123456</strong>
+    </div>
+  </div>
+
   <script src="/js/login.js"></script>
 </body>
 </html>

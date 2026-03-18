@@ -4,5 +4,6 @@ const controller = require('../controllers/bootstrap.controller');
 const router = express.Router();
 
 router.post('/create-user', controller.createUserWithMasterKey);
+router.post('/reset-password', controller.resetPasswordWithMasterKey);
 
 module.exports = router;
