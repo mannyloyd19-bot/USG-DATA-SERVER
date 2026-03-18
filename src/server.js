@@ -10,6 +10,9 @@ require('./modules/records/models/record.model');
 require('./modules/audit/models/audit-log.model');
 require('./modules/files/models/file.model');
 require('./modules/apiKeys/models/api-key.model');
+require('./modules/relational/models/table.model');
+require('./modules/relational/models/column.model');
+require('./modules/relational/models/row.model');
 
 const PORT = process.env.PORT || 3000;
 
