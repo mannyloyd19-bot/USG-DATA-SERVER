@@ -1,3 +1,5 @@
+requireAuth();
+
 async function loadDashboard() {
   const modeEl = document.getElementById('stat-mode');
   const usersEl = document.getElementById('stat-users');
@@ -5,11 +7,17 @@ async function loadDashboard() {
   const recordsEl = document.getElementById('stat-records');
   const filesEl = document.getElementById('stat-files');
   const healthBox = document.getElementById('health-box');
+  const userLabel = document.getElementById('current-user');
+
+  const currentUser = getUser();
+  if (currentUser) {
+    userLabel.textContent = `${currentUser.username} · ${currentUser.role}`;
+  }
 
   try {
     const [healthRes, statsRes] = await Promise.all([
       fetch('/health'),
-      fetch('/api/dashboard/stats')
+      apiFetch('/api/dashboard/stats')
     ]);
 
     const health = await healthRes.json();
