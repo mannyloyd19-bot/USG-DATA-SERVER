@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>USG DATA SERVER</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: Arial, sans-serif; background:#0f172a; color:#e2e8f0; margin:0; padding:32px; }
+    .card { max-width:900px; margin:0 auto; background:#111827; border:1px solid #334155; border-radius:16px; padding:24px; }
+    h1 { margin-top:0; }
+    code { background:#1e293b; padding:2px 6px; border-radius:6px; }
+    a { color:#93c5fd; text-decoration:none; }
+    ul { line-height:1.8; }
+    .ok { color:#4ade80; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>USG DATA SERVER</h1>
+    <p class="ok">Server UI is running.</p>
+    <p>This is your live development landing page.</p>
+
+    <h2>Quick Endpoints</h2>
+    <ul>
+      <li><a href="/health" target="_blank">/health</a></li>
+      <li><code>POST /api/auth/login</code></li>
+      <li><code>GET /api/collections</code></li>
+      <li><code>GET /api/files</code></li>
+      <li><code>GET /api/audit-logs</code></li>
+    </ul>
+
+    <h2>Dev Notes</h2>
+    <ul>
+      <li>Use <code>npm run dev</code> to start in development mode.</li>
+      <li>Files upload endpoint: <code>POST /api/files/upload</code></li>
+      <li>Repo saves are committed every coding step.</li>
+    </ul>
+  </div>
+</body>
+</html>

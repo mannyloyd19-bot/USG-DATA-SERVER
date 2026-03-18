@@ -8,6 +8,7 @@ require('./modules/collections/models/collection.model');
 require('./modules/fields/models/field.model');
 require('./modules/records/models/record.model');
 require('./modules/audit/models/audit-log.model');
+require('./modules/files/models/file.model');
 
 const PORT = process.env.PORT || 3000;
 
@@ -43,7 +44,10 @@ async function seedDefaultPermissions() {
     ['admin', 'records', 'update'],
     ['admin', 'records', 'delete'],
     ['admin', 'records', 'restore'],
-    ['admin', 'records', 'hard_delete']
+    ['admin', 'records', 'hard_delete'],
+    ['admin', 'files', 'create'],
+    ['admin', 'files', 'read'],
+    ['admin', 'files', 'delete']
   ];
 
   for (const [role, module, action] of defaults) {
