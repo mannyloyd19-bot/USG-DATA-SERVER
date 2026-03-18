@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const sequelize = require('../../../src/core/database');
+const sequelize = require('../../../core/database');
 const backupService = require('../services/backup.service');
 
 exports.create = async (req, res) => {
