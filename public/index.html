@@ -66,6 +66,7 @@
         <a href="/pages/relational.html">Relational</a>
         <a href="/pages/settings.html">Settings</a>
         <a href="/pages/audit-logs.html">Audit Logs</a>
+        <a href="/pages/backups.html">Backups</a>
         <button onclick="logout()">Logout</button>
       </nav>
     </aside>
@@ -86,6 +87,12 @@
         <div class="stat"><div class="label">Collections</div><div class="value" id="stat-collections">-</div></div>
         <div class="stat"><div class="label">Records</div><div class="value" id="stat-records">-</div></div>
         <div class="stat"><div class="label">Files</div><div class="value" id="stat-files">-</div></div>
+      </section>
+
+      <section class="panel">
+        <h3>Usage Overview</h3>
+        <p>Live visual summary of the current private data platform.</p>
+        <div id="chart-box"></div>
       </section>
 
       <section class="panel">

@@ -16,12 +16,18 @@ const dashboardRoutes = require('./modules/dashboard.routes');
 const apiKeyRoutes = require('./modules/apiKeys/routes/api-key.routes');
 const relationalRoutes = require('./modules/relational/routes/relational.routes');
 const settingRoutes = require('./modules/settings/routes/setting.routes');
+const backupRoutes = require('./modules/backups/routes/backup.routes');
 const bootstrapRoutes = require('./modules/bootstrap/routes/bootstrap.routes');
 
 const app = express();
 
-app.use(cors());
-app.use(helmet({ crossOriginResourcePolicy: false }));
+if (String(process.env.CORS_ENABLED || 'true') === 'true') {
+  app.use(cors());
+}
+
+if (String(process.env.HELMET_ENABLED || 'true') === 'true') {
+  app.use(helmet({ crossOriginResourcePolicy: false }));
+}
 app.use(morgan('dev'));
 app.use(express.json({ limit: '10mb' }));
 app.use('/uploads', express.static(path.join(process.cwd(), 'storage', 'uploads')));
@@ -48,6 +54,7 @@ app.use('/api/files', fileRoutes);
 app.use('/api/api-keys', apiKeyRoutes);
 app.use('/api/relational', relationalRoutes);
 app.use('/api/settings', settingRoutes);
+app.use('/api/backups', backupRoutes);
 app.use('/api/bootstrap', bootstrapRoutes);
 
 app.use((req, res) => {
