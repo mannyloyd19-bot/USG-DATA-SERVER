@@ -11,6 +11,8 @@ const recordRoutes = require('./modules/records/routes/record.routes');
 const permissionRoutes = require('./modules/permissions/routes/permission.routes');
 const auditRoutes = require('./modules/audit/routes/audit.routes');
 const fileRoutes = require('./modules/files/routes/file.routes');
+const userRoutes = require('./modules/users/routes/user.routes');
+const dashboardRoutes = require('./modules/dashboard.routes');
 
 const app = express();
 
@@ -22,10 +24,17 @@ app.use('/uploads', express.static(path.join(process.cwd(), 'storage', 'uploads'
 app.use(express.static(path.join(process.cwd(), 'public')));
 
 app.get('/health', (req, res) => {
-  res.json({ status: 'OK', message: 'USG DATA SERVER running' });
+  res.json({
+    success: true,
+    system: 'USG DATA SERVER',
+    mode: process.env.DB_DIALECT || 'sqlite',
+    time: new Date().toISOString()
+  });
 });
 
 app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/collections', collectionRoutes);
 app.use('/api/collections/:collectionKey/fields', fieldRoutes);
 app.use('/api/collections/:collectionKey/records', recordRoutes);
