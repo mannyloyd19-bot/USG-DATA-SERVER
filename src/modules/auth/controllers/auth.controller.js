@@ -4,22 +4,26 @@ const User = require('../../users/models/user.model');
 
 exports.login = async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const { username, password } = req.body || {};
 
     if (!username || !password) {
-      return res.status(400).json({ message: 'username and password are required' });
+      return res.status(400).json({ message: 'Username and password are required.' });
     }
 
     const user = await User.findOne({ where: { username } });
 
     if (!user) {
-      return res.status(401).json({ message: 'Invalid credentials' });
+      return res.status(401).json({ message: 'Invalid username or password.' });
     }
 
-    const ok = await bcrypt.compare(password, user.password);
+    const validPassword = await bcrypt.compare(password, user.password);
 
-    if (!ok) {
-      return res.status(401).json({ message: 'Invalid credentials' });
+    if (!validPassword) {
+      return res.status(401).json({ message: 'Invalid username or password.' });
+    }
+
+    if (!process.env.JWT_SECRET) {
+      return res.status(500).json({ message: 'JWT configuration is missing.' });
     }
 
     const token = jwt.sign(
@@ -33,7 +37,7 @@ exports.login = async (req, res) => {
     );
 
     return res.json({
-      message: 'Login successful',
+      message: 'Login successful.',
       token,
       user: {
         id: user.id,
@@ -42,7 +46,10 @@ exports.login = async (req, res) => {
       }
     });
   } catch (error) {
-    return res.status(500).json({ message: 'Login failed', error: error.message });
+    return res.status(500).json({
+      message: 'Login failed.',
+      error: error.message
+    });
   }
 };
 
@@ -53,11 +60,14 @@ exports.me = async (req, res) => {
     });
 
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: 'User not found.' });
     }
 
     return res.json(user);
   } catch (error) {
-    return res.status(500).json({ message: 'Failed to fetch current user', error: error.message });
+    return res.status(500).json({
+      message: 'Failed to load user profile.',
+      error: error.message
+    });
   }
 };

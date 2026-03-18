@@ -6,11 +6,11 @@ function validateMasterKey(req) {
   const systemKey = process.env.MASTER_SETUP_KEY;
 
   if (!systemKey) {
-    return { ok: false, status: 500, message: 'MASTER_SETUP_KEY is not configured' };
+    return { ok: false, status: 500, message: 'Master setup key is not configured.' };
   }
 
   if (!providedKey || providedKey !== systemKey) {
-    return { ok: false, status: 403, message: 'Invalid master key' };
+    return { ok: false, status: 403, message: 'Invalid master key.' };
   }
 
   return { ok: true };
@@ -23,15 +23,15 @@ exports.createUserWithMasterKey = async (req, res) => {
       return res.status(keyCheck.status).json({ message: keyCheck.message });
     }
 
-    const { username, password, role } = req.body;
+    const { username, password, role } = req.body || {};
 
     if (!username || !password) {
-      return res.status(400).json({ message: 'username and password are required' });
+      return res.status(400).json({ message: 'Username and password are required.' });
     }
 
     const existing = await User.findOne({ where: { username } });
     if (existing) {
-      return res.status(409).json({ message: 'username already exists' });
+      return res.status(409).json({ message: 'Username already exists.' });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -43,7 +43,7 @@ exports.createUserWithMasterKey = async (req, res) => {
     });
 
     return res.status(201).json({
-      message: 'User created successfully',
+      message: 'User created successfully.',
       user: {
         id: user.id,
         username: user.username,
@@ -52,7 +52,7 @@ exports.createUserWithMasterKey = async (req, res) => {
     });
   } catch (error) {
     return res.status(500).json({
-      message: 'Failed to create user',
+      message: 'Failed to create user.',
       error: error.message
     });
   }
@@ -65,22 +65,22 @@ exports.resetPasswordWithMasterKey = async (req, res) => {
       return res.status(keyCheck.status).json({ message: keyCheck.message });
     }
 
-    const { username, newPassword } = req.body;
+    const { username, newPassword } = req.body || {};
 
     if (!username || !newPassword) {
-      return res.status(400).json({ message: 'username and newPassword are required' });
+      return res.status(400).json({ message: 'Username and new password are required.' });
     }
 
     const user = await User.findOne({ where: { username } });
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: 'User not found.' });
     }
 
     user.password = await bcrypt.hash(newPassword, 10);
     await user.save();
 
     return res.json({
-      message: 'Password reset successfully',
+      message: 'Password reset successful.',
       user: {
         id: user.id,
         username: user.username,
@@ -89,7 +89,7 @@ exports.resetPasswordWithMasterKey = async (req, res) => {
     });
   } catch (error) {
     return res.status(500).json({
-      message: 'Failed to reset password',
+      message: 'Failed to reset password.',
       error: error.message
     });
   }

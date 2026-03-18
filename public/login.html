@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Login · USG DATA SERVER</title>
+  <title>Sign In · USG DATA SERVER</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     :root{
@@ -13,6 +13,8 @@
       --line:#d6dbe6;
       --blue:#2f6fda;
       --blue-soft:#e7eefc;
+      --danger:#c0392b;
+      --success:#1f7a3d;
       --shadow:0 12px 30px rgba(31,42,68,.08);
       --radius:28px;
     }
@@ -28,7 +30,7 @@
       color:var(--text);
     }
     .card{
-      width:min(100%,470px);
+      width:min(100%,480px);
       background:var(--panel);
       border:1px solid var(--line);
       border-radius:32px;
@@ -36,13 +38,26 @@
       box-shadow:var(--shadow);
       backdrop-filter:blur(16px);
     }
-    .small{font-size:12px;letter-spacing:.18em;color:var(--muted);font-weight:700}
-    h1{margin:8px 0 20px;font-size:34px}
+    .small{
+      font-size:12px;
+      letter-spacing:.18em;
+      color:var(--muted);
+      font-weight:700;
+    }
+    h1{
+      margin:8px 0 20px;
+      font-size:34px;
+    }
     .logo{
-      width:62px;height:62px;border-radius:20px;
-      display:grid;place-items:center;
+      width:62px;
+      height:62px;
+      border-radius:20px;
+      display:grid;
+      place-items:center;
       background:linear-gradient(180deg,#3d82ee,#2f6fda);
-      color:#fff;font-size:34px;font-weight:800;
+      color:#fff;
+      font-size:34px;
+      font-weight:800;
       margin-bottom:14px;
     }
     .tabs{
@@ -84,11 +99,16 @@
       font-weight:700;
       cursor:pointer;
     }
-    .error{
+    .message{
       min-height:20px;
-      color:#c0392b;
       margin:4px 0 12px;
       font-size:14px;
+    }
+    .message[data-state="error"]{
+      color:var(--danger);
+    }
+    .message[data-state="success"]{
+      color:var(--success);
     }
     .hint{
       margin-top:14px;
@@ -105,40 +125,39 @@
     <h1>USG DATA SERVER</h1>
 
     <div class="tabs">
-      <button class="tab-btn" data-open="login" type="button">Login</button>
-      <button class="tab-btn" data-open="create" type="button">Create User</button>
-      <button class="tab-btn" data-open="forgot" type="button">Forgot</button>
+      <button class="tab-btn" data-open="login" type="button">Sign In</button>
+      <button class="tab-btn" data-open="create" type="button">Create Account</button>
+      <button class="tab-btn" data-open="forgot" type="button">Reset Password</button>
     </div>
 
-    <div class="error" id="error-box"></div>
+    <div class="message" id="error-box" data-state="error"></div>
 
     <form id="login-form" data-tab="login">
-      <input id="login-username" placeholder="Username" value="admin">
-      <input id="login-password" type="password" placeholder="Password" value="admin123">
-      <button class="primary" type="submit">Login</button>
+      <input id="login-username" placeholder="Username" autocomplete="username">
+      <input id="login-password" type="password" placeholder="Password" autocomplete="current-password">
+      <button class="primary" type="submit">Sign In</button>
     </form>
 
     <form id="create-form" data-tab="create" style="display:none">
-      <input id="create-masterkey" placeholder="Master Key" value="USG123456">
+      <input id="create-masterkey" type="password" placeholder="Master Setup Key" autocomplete="off">
       <input id="create-username" placeholder="New Username" required>
       <input id="create-password" type="password" placeholder="New Password" required>
       <select id="create-role">
         <option value="admin">admin</option>
         <option value="super_admin">super_admin</option>
       </select>
-      <button class="primary" type="submit">Create User</button>
+      <button class="primary" type="submit">Create Account</button>
     </form>
 
     <form id="forgot-form" data-tab="forgot" style="display:none">
-      <input id="forgot-masterkey" placeholder="Master Key" value="USG123456">
+      <input id="forgot-masterkey" type="password" placeholder="Master Setup Key" autocomplete="off">
       <input id="forgot-username" placeholder="Username" required>
       <input id="forgot-password" type="password" placeholder="New Password" required>
       <button class="primary" type="submit">Reset Password</button>
     </form>
 
     <div class="hint">
-      Create User at Forgot Password ay kailangan ng master key.<br>
-      Current master key: <strong>USG123456</strong>
+      Administrative actions require the configured master setup key.
     </div>
   </div>
 

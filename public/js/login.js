@@ -1,14 +1,15 @@
 function showTab(tabName) {
-  document.querySelectorAll('[data-tab]').forEach(el => {
+  document.querySelectorAll('[data-tab]').forEach((el) => {
     el.style.display = el.getAttribute('data-tab') === tabName ? 'block' : 'none';
   });
 
-  document.querySelectorAll('.tab-btn').forEach(btn => {
+  document.querySelectorAll('.tab-btn').forEach((btn) => {
     btn.classList.toggle('active', btn.getAttribute('data-open') === tabName);
   });
 
   const errorBox = document.getElementById('error-box');
   errorBox.textContent = '';
+  errorBox.dataset.state = 'error';
 }
 
 const loginForm = document.getElementById('login-form');
@@ -16,7 +17,12 @@ const createForm = document.getElementById('create-form');
 const forgotForm = document.getElementById('forgot-form');
 const errorBox = document.getElementById('error-box');
 
-document.querySelectorAll('.tab-btn').forEach(btn => {
+function setMessage(message, type = 'error') {
+  errorBox.textContent = message || '';
+  errorBox.dataset.state = type;
+}
+
+document.querySelectorAll('.tab-btn').forEach((btn) => {
   btn.addEventListener('click', () => showTab(btn.getAttribute('data-open')));
 });
 
@@ -26,7 +32,7 @@ if (localStorage.getItem('usg_token')) {
 
 loginForm.addEventListener('submit', async (e) => {
   e.preventDefault();
-  errorBox.textContent = '';
+  setMessage('');
 
   const username = document.getElementById('login-username').value.trim();
   const password = document.getElementById('login-password').value;
@@ -41,20 +47,20 @@ loginForm.addEventListener('submit', async (e) => {
     const data = await res.json();
 
     if (!res.ok) {
-      throw new Error(data.message || 'Login failed');
+      throw new Error(data.message || 'Login failed.');
     }
 
     localStorage.setItem('usg_token', data.token);
     localStorage.setItem('usg_user', JSON.stringify(data.user || null));
     location.href = '/';
   } catch (error) {
-    errorBox.textContent = error.message;
+    setMessage(error.message || 'Login failed.', 'error');
   }
 });
 
 createForm.addEventListener('submit', async (e) => {
   e.preventDefault();
-  errorBox.textContent = '';
+  setMessage('');
 
   const masterKey = document.getElementById('create-masterkey').value.trim();
   const username = document.getElementById('create-username').value.trim();
@@ -74,22 +80,21 @@ createForm.addEventListener('submit', async (e) => {
     const data = await res.json();
 
     if (!res.ok) {
-      throw new Error(data.message || 'Create user failed');
+      throw new Error(data.message || 'User creation failed.');
     }
 
-    errorBox.style.color = '#1f7a3d';
-    errorBox.textContent = 'User created successfully. You can now log in.';
     createForm.reset();
+    setMessage('Account created successfully. You can now sign in.', 'success');
     showTab('login');
+    document.getElementById('login-username').value = username;
   } catch (error) {
-    errorBox.style.color = '#c0392b';
-    errorBox.textContent = error.message;
+    setMessage(error.message || 'User creation failed.', 'error');
   }
 });
 
 forgotForm.addEventListener('submit', async (e) => {
   e.preventDefault();
-  errorBox.textContent = '';
+  setMessage('');
 
   const masterKey = document.getElementById('forgot-masterkey').value.trim();
   const username = document.getElementById('forgot-username').value.trim();
@@ -108,16 +113,15 @@ forgotForm.addEventListener('submit', async (e) => {
     const data = await res.json();
 
     if (!res.ok) {
-      throw new Error(data.message || 'Reset password failed');
+      throw new Error(data.message || 'Password reset failed.');
     }
 
-    errorBox.style.color = '#1f7a3d';
-    errorBox.textContent = 'Password reset successfully. You can now log in.';
     forgotForm.reset();
+    setMessage('Password reset successful. You can now sign in.', 'success');
     showTab('login');
+    document.getElementById('login-username').value = username;
   } catch (error) {
-    errorBox.style.color = '#c0392b';
-    errorBox.textContent = error.message;
+    setMessage(error.message || 'Password reset failed.', 'error');
   }
 });
 
