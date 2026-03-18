@@ -1,18 +1,25 @@
 const express = require('express');
 const router = express.Router();
 
+function isTrue(value, fallback = false) {
+  if (value === undefined || value === null || value === '') return fallback;
+  return String(value).toLowerCase() === 'true';
+}
+
 router.get('/release', async (req, res) => {
   return res.json({
     success: true,
     data: {
       product: 'USG DATA SERVER',
-      version: '0.9.0',
-      stage: 'final-polish',
+      version: '1.0.0',
+      stage: 'release-lockdown',
       environment: process.env.NODE_ENV || 'development',
       database: process.env.DB_DIALECT || 'sqlite',
-      installerEnabled: String(process.env.INSTALLER_ENABLED || 'true') === 'true',
-      helmetEnabled: String(process.env.HELMET_ENABLED || 'true') === 'true',
-      corsEnabled: String(process.env.CORS_ENABLED || 'true') === 'true',
+      installerEnabled: isTrue(process.env.ALLOW_INSTALLER, true) && !isTrue(process.env.RELEASE_LOCKDOWN, false),
+      bootstrapEnabled: isTrue(process.env.ALLOW_BOOTSTRAP, true) && !isTrue(process.env.RELEASE_LOCKDOWN, false),
+      releaseLockdown: isTrue(process.env.RELEASE_LOCKDOWN, false),
+      helmetEnabled: isTrue(process.env.HELMET_ENABLED, true),
+      corsEnabled: isTrue(process.env.CORS_ENABLED, true),
       timestamp: new Date().toISOString()
     }
   });

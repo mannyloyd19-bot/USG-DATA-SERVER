@@ -17,9 +17,11 @@
     .brand h1{margin:4px 0 0;font-size:28px;line-height:1}
     .nav a,.nav button{display:block;width:100%;text-align:left;padding:16px 18px;margin-bottom:12px;border-radius:20px;text-decoration:none;color:var(--text);font-weight:600;border:1px solid var(--line);background:#ffffff80;cursor:pointer}
     .nav a.active{background:var(--blue-soft);color:var(--blue)}
+    .main{display:grid;grid-template-columns:360px 1fr;gap:24px}
     .card{padding:24px}
+    .flag-row{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--line)}
     pre{margin:0;background:#050814;color:#f3f6ff;padding:18px;border-radius:18px;overflow:auto;font-size:13px;line-height:1.5}
-    @media (max-width:1100px){.wrap{grid-template-columns:1fr}}
+    @media (max-width:1100px){.wrap{grid-template-columns:1fr}.main{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
@@ -50,10 +52,18 @@
       </nav>
     </aside>
 
-    <main class="card">
-      <div class="small">RELEASE STATE</div>
-      <h2>Release Information</h2>
-      <pre id="release-box">Loading...</pre>
+    <main class="main">
+      <section class="card">
+        <div class="small">RELEASE LOCKDOWN</div>
+        <h2>Runtime Flags</h2>
+        <div id="release-actions"></div>
+      </section>
+
+      <section class="card">
+        <div class="small">RELEASE STATE</div>
+        <h2>Release Information</h2>
+        <pre id="release-box">Loading...</pre>
+      </section>
     </main>
   </div>
 

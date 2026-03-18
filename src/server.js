@@ -1,4 +1,19 @@
 require('dotenv').config();
+
+const fs = require('fs');
+const path = require('path');
+
+function applyPendingRestore() {
+  const restoreFile = path.join(process.cwd(), 'database.sqlite.restore_pending');
+  const dbFile = path.join(process.cwd(), 'database.sqlite');
+
+  if (fs.existsSync(restoreFile)) {
+    fs.copyFileSync(restoreFile, dbFile);
+    fs.unlinkSync(restoreFile);
+    console.log('Pending database restore applied.');
+  }
+}
+
 const bcrypt = require('bcrypt');
 const app = require('./app');
 const sequelize = require('./core/database');
@@ -71,6 +86,8 @@ async function seedDefaultPermissions() {
     });
   }
 }
+
+applyPendingRestore();
 
 async function start() {
   try {
