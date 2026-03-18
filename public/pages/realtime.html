@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Backups · USG DATA SERVER</title>
+  <title>Realtime · USG DATA SERVER</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     :root{--panel:#ffffffcc;--text:#1f2a44;--muted:#7b8498;--line:#d6dbe6;--blue:#2f6fda;--blue-soft:#e7eefc;--shadow:0 12px 30px rgba(31,42,68,.08);--radius:28px}
@@ -18,9 +18,10 @@
     .nav a,.nav button{display:block;width:100%;text-align:left;padding:16px 18px;margin-bottom:12px;border-radius:20px;text-decoration:none;color:var(--text);font-weight:600;border:1px solid var(--line);background:#ffffff80;cursor:pointer}
     .nav a.active{background:var(--blue-soft);color:var(--blue)}
     .card{padding:24px}
-    .item-card{padding:16px;border:1px solid var(--line);border-radius:18px;background:#fff;margin-bottom:12px}
-    button.primary{padding:14px 18px;border:none;border-radius:18px;background:var(--blue);color:#fff;font-weight:700;cursor:pointer}
     .muted{color:var(--muted)}
+    .status{display:inline-block;padding:10px 14px;border-radius:999px;background:var(--blue-soft);color:var(--blue);font-weight:700;margin-bottom:16px}
+    .feed-item{padding:16px;border:1px solid var(--line);border-radius:18px;background:#fff;margin-bottom:12px}
+    pre{margin-top:10px;background:#050814;color:#f3f6ff;padding:14px;border-radius:16px;overflow:auto;font-size:12px}
     @media (max-width:1100px){.wrap{grid-template-columns:1fr}}
   </style>
 </head>
@@ -41,24 +42,23 @@
         <a href="/pages/relational.html">Relational</a>
         <a href="/pages/relationships.html">Relationships</a>
         <a href="/pages/webhooks.html">Webhooks</a>
-        <a href="/pages/realtime.html">Realtime</a>
+        <a class="active" href="/pages/realtime.html">Realtime</a>
         <a href="/pages/settings.html">Settings</a>
         <a href="/pages/audit-logs.html">Audit Logs</a>
-        <a class="active" href="/pages/backups.html">Backups</a>
+        <a href="/pages/backups.html">Backups</a>
         <button onclick="logout()">Logout</button>
       </nav>
     </aside>
 
     <main class="card">
-      <div class="small">BACKUP ENGINE</div>
-      <h2>Database Backups</h2>
-      <button class="primary" id="create-backup">Create Backup</button>
-      <hr style="border:none;border-top:1px solid var(--line);margin:22px 0">
-      <div id="backup-list"></div>
+      <div class="small">LIVE ACTIVITY</div>
+      <h2>Realtime Event Feed</h2>
+      <div class="status" id="realtime-status">Initializing...</div>
+      <div id="realtime-feed"></div>
     </main>
   </div>
 
   <script src="/js/auth.js"></script>
-  <script src="/js/backups.js"></script>
+  <script src="/js/realtime.js"></script>
 </body>
 </html>

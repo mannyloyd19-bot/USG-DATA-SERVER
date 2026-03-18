@@ -2,7 +2,9 @@ const jwt = require('jsonwebtoken');
 
 module.exports = (req, res, next) => {
   const authHeader = req.headers.authorization || '';
-  const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
+  const bearerToken = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
+  const queryToken = req.query && req.query.token ? req.query.token : null;
+  const token = bearerToken || queryToken;
 
   if (!token) {
     return res.status(401).json({ message: 'Unauthorized: no token provided' });
