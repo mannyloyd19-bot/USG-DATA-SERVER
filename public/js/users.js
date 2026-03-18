@@ -3,6 +3,32 @@ requireAuth();
 const userListEl = document.getElementById('user-list');
 const userFormEl = document.getElementById('user-form');
 
+async function removeUser(userId, username) {
+  const me = getUser();
+
+  if (!confirm(`Delete user "${username}"?`)) return;
+
+  if (me && me.id === userId) {
+    alert('You cannot delete the currently logged-in user.');
+    return;
+  }
+
+  try {
+    const res = await apiFetch(`/api/users/${userId}`, {
+      method: 'DELETE'
+    });
+
+    let data = {};
+    try { data = await res.json(); } catch {}
+
+    if (!res.ok) throw new Error(data.message || 'Failed to delete user');
+
+    loadUsers();
+  } catch (error) {
+    alert(error.message);
+  }
+}
+
 async function loadUsers() {
   userListEl.innerHTML = '<div class="muted">Loading users...</div>';
 
@@ -20,8 +46,20 @@ async function loadUsers() {
         <div><strong>${user.username}</strong></div>
         <div class="muted">role: ${user.role}</div>
         <div class="muted">created: ${new Date(user.createdAt).toLocaleString()}</div>
+        <div style="margin-top:10px">
+          <button class="danger-btn" data-remove-id="${user.id}" data-remove-name="${user.username}">Remove User</button>
+        </div>
       </div>
     `).join('');
+
+    document.querySelectorAll('[data-remove-id]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        removeUser(
+          btn.getAttribute('data-remove-id'),
+          btn.getAttribute('data-remove-name')
+        );
+      });
+    });
   } catch (error) {
     userListEl.innerHTML = `<div class="muted">${error.message}</div>`;
   }
@@ -43,7 +81,9 @@ userFormEl.addEventListener('submit', async (e) => {
       body: JSON.stringify(payload)
     });
 
-    const data = await res.json();
+    let data = {};
+    try { data = await res.json(); } catch {}
+
     if (!res.ok) throw new Error(data.message || 'Failed to create user');
 
     userFormEl.reset();
