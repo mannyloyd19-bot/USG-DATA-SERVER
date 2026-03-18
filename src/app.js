@@ -23,6 +23,7 @@ const functionRoutes = require('./modules/functions/routes/function.routes');
 const permissionMatrixRoutes = require('./modules/permissionMatrix/routes/permission-matrix.routes');
 const installerRoutes = require('./modules/installer/routes/installer.routes');
 const sdkRoutes = require('./modules/sdk/routes/sdk.routes');
+const systemRoutes = require('./modules/system/routes/system.routes');
 const webhookRoutes = require('./modules/webhooks/routes/webhook.routes');
 const bootstrapRoutes = require('./modules/bootstrap/routes/bootstrap.routes');
 
@@ -68,6 +69,7 @@ app.use('/api/functions', functionRoutes);
 app.use('/api/permission-matrix', permissionMatrixRoutes);
 app.use('/api/installer', installerRoutes);
 app.use('/sdk', sdkRoutes);
+app.use('/api/system', systemRoutes);
 app.use('/api/webhooks', webhookRoutes);
 app.use('/api/bootstrap', bootstrapRoutes);
 

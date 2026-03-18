@@ -3,6 +3,14 @@ const path = require('path');
 const FileEntry = require('../models/file.model');
 const auditService = require('../../audit/services/audit.service');
 
+function isPreviewable(mimeType = '') {
+  return (
+    mimeType.startsWith('image/') ||
+    mimeType === 'application/pdf' ||
+    mimeType.startsWith('text/')
+  );
+}
+
 exports.uploadSingle = async (req, res) => {
   try {
     if (!req.file) {
@@ -19,7 +27,8 @@ exports.uploadSingle = async (req, res) => {
       recordId: req.body.recordId || null,
       uploadedBy: req.user ? req.user.id : null,
       metadata: {
-        destination: req.file.destination
+        destination: req.file.destination,
+        previewable: isPreviewable(req.file.mimetype)
       }
     });
 
@@ -88,6 +97,33 @@ exports.findOne = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       message: 'Failed to fetch file',
+      error: error.message
+    });
+  }
+};
+
+exports.preview = async (req, res) => {
+  try {
+    const file = await FileEntry.findByPk(req.params.fileId);
+
+    if (!file) {
+      return res.status(404).json({ message: 'File not found' });
+    }
+
+    const absPath = path.resolve(file.storagePath);
+
+    if (!fs.existsSync(absPath)) {
+      return res.status(404).json({ message: 'Stored file missing' });
+    }
+
+    if (!isPreviewable(file.mimeType || '')) {
+      return res.status(400).json({ message: 'File type is not previewable' });
+    }
+
+    return res.sendFile(absPath);
+  } catch (error) {
+    return res.status(500).json({
+      message: 'Failed to preview file',
       error: error.message
     });
   }

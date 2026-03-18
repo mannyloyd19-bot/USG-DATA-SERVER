@@ -28,6 +28,12 @@ router.get(
 );
 
 router.get(
+  '/:fileId/preview',
+  requirePermission('files', 'read'),
+  controller.preview
+);
+
+router.get(
   '/:fileId/download',
   requirePermission('files', 'read'),
   controller.download

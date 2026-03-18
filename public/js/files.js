@@ -3,6 +3,20 @@ requireAuth();
 const fileListEl = document.getElementById('file-list');
 const fileFormEl = document.getElementById('file-form');
 
+function previewMarkup(file) {
+  if (!file.mimeType) return '';
+  if (file.mimeType.startsWith('image/')) {
+    return `<div style="margin-top:10px"><img src="/api/files/${file.id}/preview" alt="${file.originalName}" style="max-width:220px;border-radius:16px;border:1px solid #d6dbe6"></div>`;
+  }
+  if (file.mimeType === 'application/pdf') {
+    return `<div style="margin-top:10px"><a class="mini-btn" target="_blank" href="/api/files/${file.id}/preview">Open Preview</a></div>`;
+  }
+  if (file.mimeType.startsWith('text/')) {
+    return `<div style="margin-top:10px"><a class="mini-btn" target="_blank" href="/api/files/${file.id}/preview">Preview Text</a></div>`;
+  }
+  return '';
+}
+
 async function loadFiles() {
   fileListEl.innerHTML = '<div class="muted">Loading files...</div>';
 
@@ -20,6 +34,7 @@ async function loadFiles() {
         <div><strong>${file.originalName}</strong></div>
         <div class="muted">${file.mimeType || 'unknown'} · ${file.size || 0} bytes</div>
         <div class="muted">${file.collectionKey || 'no collection'}</div>
+        ${previewMarkup(file)}
         <div style="margin-top:10px">
           <a class="mini-btn" href="/api/files/${file.id}/download">Download</a>
         </div>

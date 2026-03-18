@@ -10,5 +10,6 @@ router.use(adminMiddleware);
 
 router.post('/', controller.create);
 router.get('/', controller.findAll);
+router.post('/restore/:filename', controller.restore);
 
 module.exports = router;
