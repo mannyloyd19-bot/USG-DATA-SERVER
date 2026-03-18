@@ -1,5 +1,6 @@
 const Webhook = require('../models/webhook.model');
 const realtimeService = require('../../realtime/services/realtime.service');
+const functionService = require('../../functions/services/function.service');
 
 async function sendWebhook(url, payload) {
   try {
@@ -22,6 +23,8 @@ exports.trigger = async (event, data) => {
 
   realtimeService.broadcast('activity', payload);
   realtimeService.broadcast(event, payload);
+
+  await functionService.runFunctions(event, payload);
 
   const hooks = await Webhook.findAll({
     where: { event, isActive: true }

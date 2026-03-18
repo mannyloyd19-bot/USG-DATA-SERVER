@@ -19,6 +19,7 @@ const settingRoutes = require('./modules/settings/routes/setting.routes');
 const backupRoutes = require('./modules/backups/routes/backup.routes');
 const relationshipRoutes = require('./modules/relationships/routes/relationship.routes');
 const realtimeRoutes = require('./modules/realtime/routes/realtime.routes');
+const functionRoutes = require('./modules/functions/routes/function.routes');
 const webhookRoutes = require('./modules/webhooks/routes/webhook.routes');
 const bootstrapRoutes = require('./modules/bootstrap/routes/bootstrap.routes');
 
@@ -60,6 +61,7 @@ app.use('/api/settings', settingRoutes);
 app.use('/api/backups', backupRoutes);
 app.use('/api/relationships', relationshipRoutes);
 app.use('/api/realtime', realtimeRoutes);
+app.use('/api/functions', functionRoutes);
 app.use('/api/webhooks', webhookRoutes);
 app.use('/api/bootstrap', bootstrapRoutes);
 
