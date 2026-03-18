@@ -14,6 +14,7 @@ const fileRoutes = require('./modules/files/routes/file.routes');
 const userRoutes = require('./modules/users/routes/user.routes');
 const dashboardRoutes = require('./modules/dashboard.routes');
 const apiKeyRoutes = require('./modules/apiKeys/routes/api-key.routes');
+const bootstrapRoutes = require('./modules/bootstrap/routes/bootstrap.routes');
 
 const app = express();
 
@@ -43,6 +44,7 @@ app.use('/api/permissions', permissionRoutes);
 app.use('/api/audit-logs', auditRoutes);
 app.use('/api/files', fileRoutes);
 app.use('/api/api-keys', apiKeyRoutes);
+app.use('/api/bootstrap', bootstrapRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ message: 'Route not found' });
