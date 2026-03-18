@@ -16,6 +16,7 @@ require('./modules/relational/models/row.model');
 const settingController = require('./modules/settings/controllers/setting.controller');
 require('./modules/settings/models/setting.model');
 require('./modules/relationships/models/relationship.model');
+require('./modules/webhooks/models/webhook.model');
 
 const PORT = process.env.PORT || 3000;
 
