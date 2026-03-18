@@ -11,6 +11,7 @@ const sequelize = require('./core/database');
 const User = require('./modules/users/models/user.model');
 const Permission = require('./modules/permissions/models/permission.model');
 const settingController = require('./modules/settings/controllers/setting.controller');
+const { startAutoBackup } = require('./modules/backups/services/auto-backup.service');
 
 require('./modules/collections/models/collection.model');
 require('./modules/fields/models/field.model');
@@ -102,6 +103,7 @@ async function start() {
 
     server = app.listen(env.PORT, () => {
       console.log(`USG DATA SERVER running on port ${env.PORT}`);
+      startAutoBackup();
     });
   } catch (error) {
     console.error('Server startup failed:', error);
