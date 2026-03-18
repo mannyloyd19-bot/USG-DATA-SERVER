@@ -7,19 +7,17 @@ function showTab(tabName) {
     btn.classList.toggle('active', btn.getAttribute('data-open') === tabName);
   });
 
-  const errorBox = document.getElementById('error-box');
-  errorBox.textContent = '';
-  errorBox.dataset.state = 'error';
+  setMessage('', 'error');
 }
 
 const loginForm = document.getElementById('login-form');
 const createForm = document.getElementById('create-form');
 const forgotForm = document.getElementById('forgot-form');
-const errorBox = document.getElementById('error-box');
+const messageBox = document.getElementById('message-box');
 
 function setMessage(message, type = 'error') {
-  errorBox.textContent = message || '';
-  errorBox.dataset.state = type;
+  messageBox.textContent = message || '';
+  messageBox.dataset.state = type;
 }
 
 document.querySelectorAll('.tab-btn').forEach((btn) => {
@@ -27,7 +25,7 @@ document.querySelectorAll('.tab-btn').forEach((btn) => {
 });
 
 if (localStorage.getItem('usg_token')) {
-  location.href = '/';
+  location.href = '/index.html';
 }
 
 loginForm.addEventListener('submit', async (e) => {
@@ -44,17 +42,18 @@ loginForm.addEventListener('submit', async (e) => {
       body: JSON.stringify({ username, password })
     });
 
-    const data = await res.json();
+    let data = {};
+    try { data = await res.json(); } catch {}
 
     if (!res.ok) {
-      throw new Error(data.message || 'Login failed.');
+      throw new Error(data.message || 'Sign in failed.');
     }
 
     localStorage.setItem('usg_token', data.token);
     localStorage.setItem('usg_user', JSON.stringify(data.user || null));
-    location.href = '/';
+    window.location.replace('/index.html');
   } catch (error) {
-    setMessage(error.message || 'Login failed.', 'error');
+    setMessage(error.message || 'Sign in failed.', 'error');
   }
 });
 
@@ -77,18 +76,19 @@ createForm.addEventListener('submit', async (e) => {
       body: JSON.stringify({ username, password, role, masterKey })
     });
 
-    const data = await res.json();
+    let data = {};
+    try { data = await res.json(); } catch {}
 
     if (!res.ok) {
-      throw new Error(data.message || 'User creation failed.');
+      throw new Error(data.message || 'Account creation failed.');
     }
 
     createForm.reset();
+    document.getElementById('login-username').value = username;
     setMessage('Account created successfully. You can now sign in.', 'success');
     showTab('login');
-    document.getElementById('login-username').value = username;
   } catch (error) {
-    setMessage(error.message || 'User creation failed.', 'error');
+    setMessage(error.message || 'Account creation failed.', 'error');
   }
 });
 
@@ -110,16 +110,17 @@ forgotForm.addEventListener('submit', async (e) => {
       body: JSON.stringify({ username, newPassword, masterKey })
     });
 
-    const data = await res.json();
+    let data = {};
+    try { data = await res.json(); } catch {}
 
     if (!res.ok) {
       throw new Error(data.message || 'Password reset failed.');
     }
 
     forgotForm.reset();
+    document.getElementById('login-username').value = username;
     setMessage('Password reset successful. You can now sign in.', 'success');
     showTab('login');
-    document.getElementById('login-username').value = username;
   } catch (error) {
     setMessage(error.message || 'Password reset failed.', 'error');
   }
