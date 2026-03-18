@@ -1,112 +1,27 @@
 <!doctype html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>USG DATA SERVER</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    :root{
-      --bg:#eceff5;
-      --panel:#f7f8fb;
-      --panel-2:#ffffffcc;
-      --text:#1f2a44;
-      --muted:#7b8498;
-      --line:#d6dbe6;
-      --blue:#2f6fda;
-      --blue-soft:#e7eefc;
-      --shadow:0 12px 30px rgba(31,42,68,.08);
-      --radius:28px;
-    }
-    *{box-sizing:border-box}
-    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Arial,sans-serif;background:linear-gradient(180deg,#eef1f7 0%,#e8ecf4 100%);color:var(--text)}
-    .wrap{display:grid;grid-template-columns:300px 1fr;gap:24px;min-height:100vh;padding:28px}
-    .sidebar,.panel,.stat{background:var(--panel-2);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);backdrop-filter:blur(16px)}
-    .sidebar{padding:24px}
-    .brand{display:flex;align-items:center;gap:14px;margin-bottom:28px}
-    .logo{width:60px;height:60px;border-radius:20px;display:grid;place-items:center;background:linear-gradient(180deg,#3d82ee,#2f6fda);color:#fff;font-size:34px;font-weight:700}
-    .small{font-size:12px;letter-spacing:.18em;color:var(--muted);font-weight:700}
-    .brand h1{margin:4px 0 0;font-size:28px;line-height:1}
-    .nav a,.nav button{display:block;width:100%;text-align:left;padding:16px 18px;margin-bottom:12px;border-radius:20px;text-decoration:none;color:var(--text);font-weight:600;border:1px solid var(--line);background:#ffffff80;cursor:pointer}
-    .nav a.active{background:var(--blue-soft);color:var(--blue)}
-    .main{display:flex;flex-direction:column;gap:24px}
-    .hero{padding:26px 28px;display:flex;justify-content:space-between;align-items:center}
-    .hero h2{margin:6px 0 0;font-size:32px}
-    .pill{padding:14px 22px;border-radius:999px;background:var(--blue-soft);color:var(--blue);font-weight:700}
-    .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:18px}
-    .stat{padding:18px 20px;min-height:110px}
-    .stat .label{font-size:12px;letter-spacing:.18em;color:var(--muted);font-weight:700;text-transform:uppercase;margin-bottom:10px}
-    .stat .value{font-size:34px;font-weight:800}
-    .panel{padding:28px}
-    .panel h3{margin:0 0 8px;font-size:24px}
-    .panel p{margin:0 0 18px;color:var(--muted);font-size:15px}
-    pre{margin:0;background:#050814;color:#f3f6ff;padding:22px;border-radius:24px;overflow:auto;font-size:14px;line-height:1.5}
-    .top-user{margin-top:10px;color:var(--muted);font-size:14px}
-    @media (max-width:1100px){.wrap{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}}
-    @media (max-width:640px){.stats{grid-template-columns:1fr}.hero{flex-direction:column;align-items:flex-start;gap:16px}}
-  </style>
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="/css/ui.css">
 </head>
 <body>
-  <div class="wrap">
-    <aside class="sidebar">
-      <div class="brand">
-        <div class="logo">U</div>
-        <div>
-          <div class="small">PRIVATE DATA PLATFORM</div>
-          <h1>USG DATA<br>SERVER</h1>
-        </div>
-      </div>
 
-      <nav class="nav">
-        <a class="active" href="/">Dashboard</a>
-        <a href="/pages/users.html">Users</a>
-        <a href="/pages/collections.html">Collections</a>
-        <a href="/pages/fields.html">Fields</a>
-        <a href="/pages/files.html">Files</a>
-        <a href="/pages/api-keys.html">API Keys</a>
-        <a href="/pages/relational.html">Relational</a>
-        <a href="/pages/relationships.html">Relationships</a>
-        <a href="/pages/webhooks.html">Webhooks</a>
-        <a href="/pages/realtime.html">Realtime</a>
-        <a href="/pages/settings.html">Settings</a>
-        <a href="/pages/audit-logs.html">Audit Logs</a>
-        <a href="/pages/backups.html">Backups</a>
-        <button onclick="logout()">Logout</button>
-      </nav>
-    </aside>
+<div id="app"></div>
 
-    <main class="main">
-      <section class="hero panel">
-        <div>
-          <div class="small">SYSTEM OVERVIEW</div>
-          <h2>USG DATA SERVER</h2>
-          <div class="top-user" id="current-user">-</div>
-        </div>
-        <div class="pill">PRIVATE DATA ENGINE</div>
-      </section>
+<script src="/components/layout.js"></script>
+<script>
+document.getElementById('app').innerHTML = renderLayout(
+  "Dashboard",
+  `
+    <p>Welcome to USG DATA SERVER</p>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+      <div class="card">Users</div>
+      <div class="card">Collections</div>
+      <div class="card">Records</div>
+    </div>
+  `
+);
+</script>
 
-      <section class="stats">
-        <div class="stat"><div class="label">Mode</div><div class="value" id="stat-mode">-</div></div>
-        <div class="stat"><div class="label">Users</div><div class="value" id="stat-users">-</div></div>
-        <div class="stat"><div class="label">Collections</div><div class="value" id="stat-collections">-</div></div>
-        <div class="stat"><div class="label">Records</div><div class="value" id="stat-records">-</div></div>
-        <div class="stat"><div class="label">Files</div><div class="value" id="stat-files">-</div></div>
-      </section>
-
-      <section class="panel">
-        <h3>Usage Overview</h3>
-        <p>Live visual summary of the current private data platform.</p>
-        <div id="chart-box"></div>
-      </section>
-
-      <section class="panel">
-        <h3>System Health</h3>
-        <p>Private company-owned data engine with auth, collections, records, files, audit logs, and API keys.</p>
-        <pre id="health-box">Loading...</pre>
-      </section>
-    </main>
-  </div>
-
-  <script src="/js/auth.js"></script>
-  <script src="/js/dashboard.js"></script>
 </body>
 </html>

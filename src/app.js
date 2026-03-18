@@ -21,6 +21,7 @@ const relationshipRoutes = require('./modules/relationships/routes/relationship.
 const realtimeRoutes = require('./modules/realtime/routes/realtime.routes');
 const functionRoutes = require('./modules/functions/routes/function.routes');
 const permissionMatrixRoutes = require('./modules/permissionMatrix/routes/permission-matrix.routes');
+const installerRoutes = require('./modules/installer/routes/installer.routes');
 const webhookRoutes = require('./modules/webhooks/routes/webhook.routes');
 const bootstrapRoutes = require('./modules/bootstrap/routes/bootstrap.routes');
 
@@ -64,6 +65,7 @@ app.use('/api/relationships', relationshipRoutes);
 app.use('/api/realtime', realtimeRoutes);
 app.use('/api/functions', functionRoutes);
 app.use('/api/permission-matrix', permissionMatrixRoutes);
+app.use('/api/installer', installerRoutes);
 app.use('/api/webhooks', webhookRoutes);
 app.use('/api/bootstrap', bootstrapRoutes);
 

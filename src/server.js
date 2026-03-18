@@ -18,6 +18,7 @@ require('./modules/settings/models/setting.model');
 require('./modules/relationships/models/relationship.model');
 require('./modules/webhooks/models/webhook.model');
 require('./modules/functions/models/function.model');
+require('./modules/installer/models/install-state.model');
 
 const PORT = process.env.PORT || 3000;
 
