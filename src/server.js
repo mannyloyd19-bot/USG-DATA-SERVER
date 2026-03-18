@@ -13,6 +13,8 @@ require('./modules/apiKeys/models/api-key.model');
 require('./modules/relational/models/table.model');
 require('./modules/relational/models/column.model');
 require('./modules/relational/models/row.model');
+const settingController = require('./modules/settings/controllers/setting.controller');
+require('./modules/settings/models/setting.model');
 
 const PORT = process.env.PORT || 3000;
 
@@ -72,6 +74,7 @@ async function start() {
     await sequelize.sync();
     await ensureDefaultAdmin();
     await seedDefaultPermissions();
+    await settingController.seedDefaults();
 
     app.listen(PORT, () => {
       console.log('USG DATA SERVER running on port ' + PORT);

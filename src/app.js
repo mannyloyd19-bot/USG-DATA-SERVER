@@ -15,6 +15,7 @@ const userRoutes = require('./modules/users/routes/user.routes');
 const dashboardRoutes = require('./modules/dashboard.routes');
 const apiKeyRoutes = require('./modules/apiKeys/routes/api-key.routes');
 const relationalRoutes = require('./modules/relational/routes/relational.routes');
+const settingRoutes = require('./modules/settings/routes/setting.routes');
 const bootstrapRoutes = require('./modules/bootstrap/routes/bootstrap.routes');
 
 const app = express();
@@ -46,6 +47,7 @@ app.use('/api/audit-logs', auditRoutes);
 app.use('/api/files', fileRoutes);
 app.use('/api/api-keys', apiKeyRoutes);
 app.use('/api/relational', relationalRoutes);
+app.use('/api/settings', settingRoutes);
 app.use('/api/bootstrap', bootstrapRoutes);
 
 app.use((req, res) => {
