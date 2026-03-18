@@ -3,16 +3,20 @@ const User = require('./users/models/user.model');
 const Collection = require('./collections/models/collection.model');
 const Record = require('./records/models/record.model');
 const FileEntry = require('./files/models/file.model');
+const RelTable = require('./relational/models/table.model');
+const Relationship = require('./relationships/models/relationship.model');
 
 const router = express.Router();
 
 router.get('/stats', async (req, res) => {
   try {
-    const [users, collections, records, files] = await Promise.all([
+    const [users, collections, records, files, tables, relationships] = await Promise.all([
       User.count(),
       Collection.count(),
       Record.count({ where: { isDeleted: false } }),
-      FileEntry.count()
+      FileEntry.count(),
+      RelTable.count(),
+      Relationship.count()
     ]);
 
     return res.json({
@@ -22,6 +26,8 @@ router.get('/stats', async (req, res) => {
         collections,
         records,
         files,
+        tables,
+        relationships,
         mode: process.env.DB_DIALECT || 'sqlite'
       }
     });

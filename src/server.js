@@ -2,6 +2,32 @@ require('dotenv').config();
 
 const fs = require('fs');
 const path = require('path');
+const bcrypt = require('bcrypt');
+
+const app = require('./app');
+const env = require('./core/utils/env');
+const sequelize = require('./core/database');
+
+const User = require('./modules/users/models/user.model');
+const Permission = require('./modules/permissions/models/permission.model');
+const settingController = require('./modules/settings/controllers/setting.controller');
+
+require('./modules/collections/models/collection.model');
+require('./modules/fields/models/field.model');
+require('./modules/records/models/record.model');
+require('./modules/audit/models/audit-log.model');
+require('./modules/files/models/file.model');
+require('./modules/apiKeys/models/api-key.model');
+require('./modules/relational/models/table.model');
+require('./modules/relational/models/column.model');
+require('./modules/relational/models/row.model');
+require('./modules/settings/models/setting.model');
+require('./modules/relationships/models/relationship.model');
+require('./modules/webhooks/models/webhook.model');
+require('./modules/functions/models/function.model');
+require('./modules/installer/models/install-state.model');
+
+let server = null;
 
 function applyPendingRestore() {
   const restoreFile = path.join(process.cwd(), 'database.sqlite.restore_pending');
@@ -13,29 +39,6 @@ function applyPendingRestore() {
     console.log('Pending database restore applied.');
   }
 }
-
-const bcrypt = require('bcrypt');
-const app = require('./app');
-const sequelize = require('./core/database');
-const User = require('./modules/users/models/user.model');
-const Permission = require('./modules/permissions/models/permission.model');
-require('./modules/collections/models/collection.model');
-require('./modules/fields/models/field.model');
-require('./modules/records/models/record.model');
-require('./modules/audit/models/audit-log.model');
-require('./modules/files/models/file.model');
-require('./modules/apiKeys/models/api-key.model');
-require('./modules/relational/models/table.model');
-require('./modules/relational/models/column.model');
-require('./modules/relational/models/row.model');
-const settingController = require('./modules/settings/controllers/setting.controller');
-require('./modules/settings/models/setting.model');
-require('./modules/relationships/models/relationship.model');
-require('./modules/webhooks/models/webhook.model');
-require('./modules/functions/models/function.model');
-require('./modules/installer/models/install-state.model');
-
-const PORT = process.env.PORT || 3000;
 
 async function ensureDefaultAdmin() {
   const username = process.env.DEFAULT_ADMIN_USERNAME || 'admin';
@@ -79,31 +82,62 @@ async function seedDefaultPermissions() {
     ['admin', 'api_keys', 'delete']
   ];
 
-  for (const [role, module, action] of defaults) {
+  for (const [role, moduleName, action] of defaults) {
     await Permission.findOrCreate({
-      where: { role, module, action },
+      where: { role, module: moduleName, action },
       defaults: { allowed: true }
     });
   }
 }
 
-applyPendingRestore();
-
 async function start() {
   try {
+    applyPendingRestore();
+
     await sequelize.authenticate();
     await sequelize.sync();
     await ensureDefaultAdmin();
     await seedDefaultPermissions();
     await settingController.seedDefaults();
 
-    app.listen(PORT, () => {
-      console.log('USG DATA SERVER running on port ' + PORT);
+    server = app.listen(env.PORT, () => {
+      console.log(`USG DATA SERVER running on port ${env.PORT}`);
     });
   } catch (error) {
     console.error('Server startup failed:', error);
     process.exit(1);
   }
 }
+
+async function shutdown(signal) {
+  console.log(`Received ${signal}. Shutting down gracefully...`);
+
+  try {
+    if (server) {
+      await new Promise((resolve, reject) => {
+        server.close((err) => {
+          if (err) return reject(err);
+          resolve();
+        });
+      });
+    }
+
+    await sequelize.close();
+    console.log('Shutdown complete.');
+    process.exit(0);
+  } catch (error) {
+    console.error('Shutdown failed:', error);
+    process.exit(1);
+  }
+}
+
+process.on('SIGINT', () => shutdown('SIGINT'));
+process.on('SIGTERM', () => shutdown('SIGTERM'));
+process.on('uncaughtException', (error) => {
+  console.error('Uncaught exception:', error);
+});
+process.on('unhandledRejection', (error) => {
+  console.error('Unhandled rejection:', error);
+});
 
 start();

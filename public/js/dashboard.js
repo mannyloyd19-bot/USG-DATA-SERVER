@@ -34,7 +34,9 @@ async function loadDashboard() {
       ['Users', stats.data?.users || 0],
       ['Collections', stats.data?.collections || 0],
       ['Records', stats.data?.records || 0],
-      ['Files', stats.data?.files || 0]
+      ['Files', stats.data?.files || 0],
+      ['Tables', stats.data?.tables || 0],
+      ['Relations', stats.data?.relationships || 0]
     ];
 
     const max = Math.max(...bars.map(x => x[1]), 1);
