@@ -81,9 +81,9 @@
         <div class="topbar">
           <button class="theme-btn" type="button" data-theme-btn>Dark Mode</button>
           <div class="badges">
-            <div class="badge"><span class="badge-dot"></span> System Online</div>
+            <div class="badge ok"><span class="badge-dot"></span> System Online</div>
             <div class="badge"><span class="badge-dot"></span> Private Platform</div>
-            <div class="badge"><span class="badge-dot"></span> Admin Mode</div>
+            <div class="badge warn"><span class="badge-dot"></span> Admin Mode</div>
           </div>
         </div>
         <div id="page-content"></div>
