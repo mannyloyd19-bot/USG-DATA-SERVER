@@ -42,10 +42,10 @@ async function loadApiKeys() {
           </div>
         </form>
 
-        <div class="kicker" style="margin-top:18px">NOTES</div>
+        <div class="kicker" style="margin-top:18px">RUNTIME</div>
         <div class="list-card">
-          <strong>Advanced Security</strong><br>
-          <span class="muted">Use scopes and IP whitelists for stricter integration control.</span>
+          <strong>Tracking Enabled</strong><br>
+          <span class="muted">Usage count, last used time, and last used IP now update when API keys authenticate requests.</span>
         </div>
       </section>
 
