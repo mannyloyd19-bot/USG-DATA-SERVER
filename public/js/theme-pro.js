@@ -12,8 +12,7 @@
   }
 
   function toggleTheme() {
-    const current = getTheme();
-    setTheme(current === 'dark' ? 'light' : 'dark');
+    setTheme(getTheme() === 'dark' ? 'light' : 'dark');
   }
 
   function updateToggle(theme) {
@@ -30,7 +29,7 @@
       btn.className = 'theme-toggle';
       btn.setAttribute('data-theme-toggle', 'true');
       btn.addEventListener('click', toggleTheme);
-      container.appendChild(btn);
+      container.prepend(btn);
     });
     updateToggle(getTheme());
   }
@@ -51,10 +50,36 @@
     });
   }
 
+  function setupRawToggles() {
+    document.querySelectorAll('pre').forEach((pre, index) => {
+      if (pre.dataset.rawHandled === 'true') return;
+      pre.dataset.rawHandled = 'true';
+
+      const wrapper = document.createElement('div');
+      const btn = document.createElement('button');
+      btn.className = 'raw-toggle';
+      btn.type = 'button';
+      btn.textContent = 'Show Raw Data';
+
+      pre.classList.add('raw-json');
+      pre.id = pre.id || `raw-json-${index}`;
+
+      btn.addEventListener('click', () => {
+        const open = pre.classList.toggle('open');
+        btn.textContent = open ? 'Hide Raw Data' : 'Show Raw Data';
+      });
+
+      pre.parentNode.insertBefore(wrapper, pre);
+      wrapper.appendChild(btn);
+      wrapper.appendChild(pre);
+    });
+  }
+
   function init() {
     setTheme(getTheme());
     ensureToggle();
     injectBadges();
+    setupRawToggles();
   }
 
   if (document.readyState === 'loading') {
