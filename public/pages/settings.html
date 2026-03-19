@@ -4,89 +4,12 @@
   <meta charset="UTF-8">
   <title>Settings · USG DATA SERVER</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="/css/pro-ui.css">
-  <link rel="stylesheet" href="/css/theme-pro.css">
-  <link rel="stylesheet" href="/css/sidebar-pro.css">
-  <link rel="stylesheet" href="/css/page-shell-fix.css">
-  <style>
-    .page-main{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:24px;
-      align-items:start;
-    }
-    .card{padding:24px}
-    @media (max-width:1100px){
-      .page-main{grid-template-columns:1fr}
-    }
-  </style>
+  <link rel="stylesheet" href="/css/app-shell.css">
 </head>
 <body>
-  <div class="wrap">
-    <aside class="sidebar">
-      <div class="brand">
-        <div class="logo">U</div>
-        <div>
-          <div class="small">PRIVATE DATA PLATFORM</div>
-          <h1 data-brand-title>UNI-SOGOOD<br>USG DATA SERVER</h1>
-        </div>
-      </div>
-      <nav class="nav">
-        <a href="/index.html">Dashboard</a>
-        <a href="/pages/permissions-pro.html">Permissions Pro</a>
-        <a href="/pages/users.html">Users</a>
-        <a href="/pages/collections.html">Collections</a>
-        <a href="/pages/fields.html">Fields</a>
-        <a href="/pages/files.html">Files</a>
-        <a href="/pages/api-keys.html">API Keys</a>
-        <a href="/pages/relational.html">Relational</a>
-        <a href="/pages/relationships.html">Relationships</a>
-        <a href="/pages/webhooks.html">Webhooks</a>
-        <a href="/pages/realtime.html">Realtime</a>
-        <a class="active" href="/pages/settings.html">Settings</a>
-        <a href="/pages/audit-logs.html">Audit Logs</a>
-        <a href="/pages/backups.html">Backups</a>
-        <a href="/pages/sdk.html">SDK</a>
-        <a href="/pages/release.html">Release</a>
-        <a href="/pages/query-builder.html">Query Builder</a>
-        <a href="/pages/enterprise-db.html">Enterprise DB</a>
-        <button type="button" data-logout>Logout</button>
-      </nav>
-    </aside>
-
-    <main class="main">
-      <div class="top-actions" data-top-actions data-badge-host></div>
-      <div class="page-main">
-        <section class="card">
-          <div class="small">CONFIGURATION</div>
-          <h2>Save Setting</h2>
-          <form id="setting-form">
-            <input id="setting-key" placeholder="Setting key, e.g. app.theme" required>
-            <input id="setting-group" placeholder="Group, e.g. general">
-            <input id="setting-label" placeholder="Label">
-            <input id="setting-description" placeholder="Description">
-            <textarea id="setting-value" rows="7" placeholder='"dark" or {"enabled":true}' required></textarea>
-            <button class="primary" type="submit">Save Setting</button>
-          </form>
-
-          <div class="small" style="margin-top:18px">SYSTEM INFO</div>
-          <pre id="system-info-box">Loading...</pre>
-        </section>
-
-        <section class="card">
-          <div class="small">CURRENT SETTINGS</div>
-          <h2>Saved Configuration</h2>
-          <div id="settings-list">Loading...</div>
-        </section>
-      </div>
-    </main>
-  </div>
-
+  <div id="app-shell" class="shell"></div>
   <script src="/js/auth.js"></script>
-  <script src="/js/company-brand.js"></script>
-  <script src="/js/pro-ui.js"></script>
-  <script src="/js/theme-pro.js"></script>
-  <script src="/js/sidebar-pro.js"></script>
-  <script src="/js/settings.js"></script>
+  <script src="/js/app-shell.js"></script>
+  <script src="/js/pages/settings-shell.js"></script>
 </body>
 </html>
