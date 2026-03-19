@@ -25,11 +25,12 @@
     .item-card{padding:16px;border:1px solid var(--line);border-radius:18px;background:#fff;margin-bottom:12px}
     .muted{color:var(--muted)}
     pre{margin:0;background:#050814;color:#f3f6ff;padding:18px;border-radius:20px;overflow:auto;font-size:13px;line-height:1.5}
-    @media (max-width:1100px){.wrap{grid-template-columns:1fr}.main{grid-template-columns:1fr}}
+    @media (max-width:1100px){.wrap{grid-template-columns:1fr}.main{grid-template-columns:1fr !important;align-items:start}}
   </style>
   <link rel="stylesheet" href="/css/pro-ui.css">
   <link rel="stylesheet" href="/css/theme-pro.css">
   <link rel="stylesheet" href="/css/sidebar-pro.css">
+  <link rel="stylesheet" href="/css/page-shell-fix.css">
 </head>
 <body>
   <div class="wrap">
@@ -63,7 +64,7 @@
 
     <main class="main">
       <div class="top-actions" data-top-actions data-badge-host></div>
-      <section 
+            <section 
         <div class="small">SYSTEM CONFIGURATION</div>
         <h2>Save Setting</h2>
         <form id="setting-form">

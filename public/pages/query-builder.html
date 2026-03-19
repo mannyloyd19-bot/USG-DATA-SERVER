@@ -53,7 +53,8 @@
     .nav a.active{background:var(--blue-soft);color:var(--blue)}
     .main{
       display:grid;
-      grid-template-columns:1.1fr .9fr;
+      align-items:start;
+      grid-template-columns:1.15fr .85fr;
       gap:24px
     }
     .card{padding:24px}
@@ -115,6 +116,7 @@
   </style>
   <link rel="stylesheet" href="/css/theme-pro.css">
   <link rel="stylesheet" href="/css/sidebar-pro.css">
+  <link rel="stylesheet" href="/css/page-shell-fix.css">
 </head>
 <body>
   <div class="wrap">
@@ -151,7 +153,7 @@
 
     <main class="main">
       <div class="top-actions" data-top-actions data-badge-host></div>
-      <section 
+            <section 
         <div class="small">VISUAL QUERY</div>
         <h2>Query Builder</h2>
 

@@ -52,6 +52,7 @@
     .nav a.active{background:#e7eefc;color:#2f6fda}
     .main{
       display:grid;
+      align-items:start;
       grid-template-columns:1fr 1fr;
       gap:24px
     }
@@ -68,11 +69,12 @@
     }
     @media (max-width:1100px){
       .wrap{grid-template-columns:1fr}
-      .main{grid-template-columns:1fr}
+      .main{grid-template-columns:1fr !important}
     }
   </style>
   <link rel="stylesheet" href="/css/theme-pro.css">
   <link rel="stylesheet" href="/css/sidebar-pro.css">
+  <link rel="stylesheet" href="/css/page-shell-fix.css">
 </head>
 <body>
   <div class="wrap">
@@ -110,7 +112,7 @@
 
     <main class="main">
       <div class="top-actions" data-top-actions data-badge-host></div>
-      <section 
+            <section 
         <div class="small">DATABASE MODE</div>
         <h2>Current Runtime DB</h2>
         <pre id="db-info">Loading...</pre>
