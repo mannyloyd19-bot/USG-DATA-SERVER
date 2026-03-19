@@ -1,0 +1,148 @@
+:root{
+  --bg:#eef1f7;
+  --bg-2:#e8ecf4;
+  --panel:rgba(255,255,255,.78);
+  --panel-strong:rgba(255,255,255,.9);
+  --text:#1f2a44;
+  --muted:#7b8498;
+  --line:#d6dbe6;
+  --blue:#2f6fda;
+  --blue-soft:#e7eefc;
+  --shadow:0 12px 30px rgba(31,42,68,.08);
+  --shadow-soft:0 6px 18px rgba(31,42,68,.06);
+  --radius:28px;
+  --radius-sm:18px;
+}
+
+body{
+  background:linear-gradient(180deg,var(--bg) 0%,var(--bg-2) 100%) !important;
+  color:var(--text);
+}
+
+.sidebar,.panel,.card,.stat{
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+
+.logo{
+  width:56px !important;
+  height:56px !important;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  overflow:visible !important;
+  flex:0 0 auto;
+}
+
+.logo img{
+  width:100% !important;
+  height:100% !important;
+  object-fit:contain !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  filter:drop-shadow(0 2px 8px rgba(0,0,0,.08));
+}
+
+.brand h1,
+[data-brand-title]{
+  letter-spacing:-.03em;
+  line-height:.98;
+}
+
+.nav a,.nav button{
+  transition:all .18s ease;
+}
+
+.nav a:hover,.nav button:hover{
+  transform:translateY(-1px);
+  box-shadow:var(--shadow-soft);
+}
+
+.nav a.active{
+  background:var(--blue-soft) !important;
+  color:var(--blue) !important;
+}
+
+button,
+button.primary{
+  box-shadow:var(--shadow-soft);
+  transition:all .18s ease;
+}
+
+button:hover,
+button.primary:hover{
+  transform:translateY(-1px);
+}
+
+input,select,textarea{
+  transition:border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+
+input:focus,select:focus,textarea:focus{
+  outline:none;
+  border-color:rgba(47,111,218,.35) !important;
+  box-shadow:0 0 0 4px rgba(47,111,218,.08);
+}
+
+.login-brand-pro{
+  text-align:center;
+  margin-bottom:22px;
+}
+
+.login-brand-pro .logo-large-wrap{
+  display:flex;
+  justify-content:center;
+  margin-bottom:12px;
+}
+
+.login-brand-pro .logo-large{
+  width:84px;
+  height:84px;
+  object-fit:contain;
+  filter:drop-shadow(0 4px 10px rgba(0,0,0,.08));
+  animation:logoFade .45s ease;
+}
+
+.login-brand-pro .brand-kicker{
+  font-size:12px;
+  letter-spacing:.18em;
+  color:var(--muted);
+  font-weight:700;
+  margin-bottom:6px;
+}
+
+.login-brand-pro .brand-main{
+  font-size:24px;
+  font-weight:800;
+  letter-spacing:-.04em;
+  line-height:1.02;
+}
+
+.login-brand-pro .brand-sub{
+  font-size:16px;
+  color:var(--muted);
+  margin-top:4px;
+}
+
+@keyframes logoFade{
+  from{opacity:0;transform:scale(.96)}
+  to{opacity:1;transform:scale(1)}
+}
+
+.bar-track{
+  background:#dde3ee !important;
+}
+
+.bar-fill{
+  box-shadow:0 4px 12px rgba(47,111,218,.18);
+}
