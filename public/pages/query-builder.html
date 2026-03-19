@@ -4,119 +4,52 @@
   <meta charset="UTF-8">
   <title>Query Builder · USG DATA SERVER</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/css/pro-ui.css">
+  <link rel="stylesheet" href="/css/theme-pro.css">
+  <link rel="stylesheet" href="/css/sidebar-pro.css">
+  <link rel="stylesheet" href="/css/page-shell-fix.css">
   <style>
-    :root{
-      --panel:#ffffffcc;
-      --text:#1f2a44;
-      --muted:#7b8498;
-      --line:#d6dbe6;
-      --blue:#2f6fda;
-      --blue-soft:#e7eefc;
-      --shadow:0 12px 30px rgba(31,42,68,.08);
-      --radius:28px
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Arial,sans-serif;
-      background:linear-gradient(180deg,#eef1f7 0%,#e8ecf4 100%);
-      color:var(--text)
-    }
-    .wrap{
+    .page-main{
       display:grid;
-      grid-template-columns:300px 1fr;
+      grid-template-columns:1.1fr .9fr;
       gap:24px;
-      min-height:100vh;
-      padding:28px
-    }
-    .sidebar,.card{
-      background:var(--panel);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      backdrop-filter:blur(16px)
-    }
-    .sidebar{padding:24px}
-    .brand{display:flex;gap:14px;align-items:center;margin-bottom:28px}
-    .logo{
-      width:60px;height:60px;border-radius:20px;display:grid;place-items:center;
-      background:linear-gradient(180deg,#3d82ee,#2f6fda);color:#fff;font-size:34px;font-weight:700;
-      overflow:hidden
-    }
-    .small{font-size:12px;letter-spacing:.18em;color:var(--muted);font-weight:700}
-    .brand h1{margin:4px 0 0;font-size:28px;line-height:1}
-    .nav a,.nav button{
-      display:block;width:100%;text-align:left;padding:16px 18px;margin-bottom:12px;border-radius:20px;
-      text-decoration:none;color:var(--text);font-weight:600;border:1px solid var(--line);
-      background:#ffffff80;cursor:pointer
-    }
-    .nav a.active{background:var(--blue-soft);color:var(--blue)}
-    .main{
-      display:grid;
       align-items:start;
-      grid-template-columns:1.15fr .85fr;
-      gap:24px
     }
-    .card{padding:24px}
-    input,select,textarea{
-      width:100%;
-      padding:14px 16px;
-      border-radius:18px;
-      border:1px solid var(--line);
-      background:#fff;
-      margin-bottom:12px;
-      font-size:15px
-    }
-    button.primary,.qb-remove{
-      padding:14px 18px;
-      border:none;
-      border-radius:18px;
-      background:var(--blue);
-      color:#fff;
-      font-weight:700;
-      cursor:pointer
-    }
-    .qb-remove{
-      background:#c0392b;
-      padding:12px 14px
+    .card{
+      padding:24px;
     }
     .row-top{
       display:grid;
       grid-template-columns:1fr 1fr;
-      gap:12px
+      gap:12px;
     }
     .qb-row{
       display:grid;
       grid-template-columns:1.2fr 1fr 1.2fr auto;
       gap:10px;
-      margin-bottom:12px
-    }
-    pre{
-      margin:0;
-      background:#050814;
-      color:#f3f6ff;
-      padding:18px;
-      border-radius:20px;
-      overflow:auto;
-      font-size:13px;
-      line-height:1.5
+      margin-bottom:12px;
     }
     .actions{
       display:flex;
       gap:12px;
       flex-wrap:wrap;
-      margin-top:12px
+      margin-top:12px;
+    }
+    .qb-remove{
+      padding:12px 14px;
+      border:none;
+      border-radius:16px;
+      background:#c0392b;
+      color:#fff;
+      font-weight:700;
+      cursor:pointer;
     }
     @media (max-width:1100px){
-      .wrap{grid-template-columns:1fr}
-      .main{grid-template-columns:1fr}
-      .qb-row{grid-template-columns:1fr}
+      .page-main{grid-template-columns:1fr}
       .row-top{grid-template-columns:1fr}
+      .qb-row{grid-template-columns:1fr}
     }
   </style>
-  <link rel="stylesheet" href="/css/theme-pro.css">
-  <link rel="stylesheet" href="/css/sidebar-pro.css">
-  <link rel="stylesheet" href="/css/page-shell-fix.css">
 </head>
 <body>
   <div class="wrap">
@@ -128,7 +61,6 @@
           <h1 data-brand-title>UNI-SOGOOD<br>USG DATA SERVER</h1>
         </div>
       </div>
-
       <nav class="nav">
         <a href="/index.html">Dashboard</a>
         <a href="/pages/permissions-pro.html">Permissions Pro</a>
@@ -147,48 +79,50 @@
         <a href="/pages/sdk.html">SDK</a>
         <a href="/pages/release.html">Release</a>
         <a class="active" href="/pages/query-builder.html">Query Builder</a>
+        <a href="/pages/enterprise-db.html">Enterprise DB</a>
         <button type="button" data-logout>Logout</button>
       </nav>
     </aside>
 
     <main class="main">
       <div class="top-actions" data-top-actions data-badge-host></div>
-            <section 
-        <div class="small">VISUAL QUERY</div>
-        <h2>Query Builder</h2>
+      <div class="page-main">
+        <section class="card">
+          <div class="small">VISUAL QUERY</div>
+          <h2>Query Builder</h2>
 
-        <div class="row-top">
-          <select id="qb-collection"></select>
-          <input id="qb-search" placeholder="Global search">
-        </div>
+          <div class="row-top">
+            <select id="qb-collection"></select>
+            <input id="qb-search" placeholder="Global search">
+          </div>
 
-        <div class="row-top">
-          <input id="qb-sort-by" placeholder="Sort by field">
-          <select id="qb-sort-order">
-            <option value="asc">asc</option>
-            <option value="desc">desc</option>
-          </select>
-        </div>
+          <div class="row-top">
+            <input id="qb-sort-by" placeholder="Sort by field">
+            <select id="qb-sort-order">
+              <option value="asc">asc</option>
+              <option value="desc">desc</option>
+            </select>
+          </div>
 
-        <input id="qb-limit" type="number" value="10" min="1" placeholder="Limit">
+          <input id="qb-limit" type="number" value="10" min="1" placeholder="Limit">
+          <div id="qb-rows"></div>
 
-        <div id="qb-rows"></div>
+          <div class="actions">
+            <button class="primary" type="button" id="qb-add-row">Add Filter</button>
+            <button class="primary" type="button" id="qb-run">Run Query</button>
+          </div>
+        </section>
 
-        <div class="actions">
-          <button class="primary" type="button" id="qb-add-row">Add Filter</button>
-          <button class="primary" type="button" id="qb-run">Run Query</button>
-        </div>
-      </section>
+        <section class="card">
+          <div class="small">PREVIEW</div>
+          <h2>Generated Query</h2>
+          <pre id="qb-preview">Loading...</pre>
 
-      <section 
-        <div class="small">PREVIEW</div>
-        <h2>Generated Query</h2>
-        <pre id="qb-preview">Loading...</pre>
-
-        <div class="small" style="margin-top:18px">RESULTS</div>
-        <h2>Query Results</h2>
-        <pre id="qb-results">No query executed yet.</pre>
-      </section>
+          <div class="small" style="margin-top:18px">RESULTS</div>
+          <h2>Query Results</h2>
+          <pre id="qb-results">No query executed yet.</pre>
+        </section>
+      </div>
     </main>
   </div>
 
@@ -196,7 +130,7 @@
   <script src="/js/company-brand.js"></script>
   <script src="/js/pro-ui.js"></script>
   <script src="/js/theme-pro.js"></script>
-  <script src="/js/query-builder.js"></script>
   <script src="/js/sidebar-pro.js"></script>
+  <script src="/js/query-builder.js"></script>
 </body>
 </html>
