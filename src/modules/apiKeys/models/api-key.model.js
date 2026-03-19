@@ -37,6 +37,23 @@ const ApiKey = sequelize.define('ApiKey', {
     type: DataTypes.JSON,
     allowNull: true
   }
+  purpose: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  owner: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  status: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    defaultValue: 'active'
+  },
+  expiresAt: {
+    type: DataTypes.DATE,
+    allowNull: true
+  },
 });
 
 module.exports = ApiKey;
