@@ -27,12 +27,12 @@ body{
 .brand{
   display:flex;
   align-items:center;
-  gap:14px;
+  gap:16px;
 }
 
 .logo{
-  width:56px !important;
-  height:56px !important;
+  width:84px !important;
+  height:84px !important;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -50,7 +50,7 @@ body{
   border-radius:0 !important;
   background:transparent !important;
   box-shadow:none !important;
-  filter:drop-shadow(0 2px 8px rgba(0,0,0,.08));
+  filter:drop-shadow(0 3px 10px rgba(0,0,0,.10));
 }
 
 .brand h1,
@@ -106,8 +106,8 @@ input:focus,select:focus,textarea:focus{
 }
 
 .login-brand-pro .logo-large{
-  width:84px;
-  height:84px;
+  width:120px;
+  height:120px;
   object-fit:contain;
   filter:drop-shadow(0 4px 10px rgba(0,0,0,.08));
   animation:logoFade .45s ease;
@@ -145,4 +145,23 @@ input:focus,select:focus,textarea:focus{
 
 .bar-fill{
   box-shadow:0 4px 12px rgba(47,111,218,.18);
+}
+
+.raw-toggle{
+  margin:12px 0 14px;
+  padding:10px 14px;
+  border:none;
+  border-radius:14px;
+  background:var(--blue-soft);
+  color:var(--blue);
+  font-weight:700;
+  cursor:pointer;
+}
+
+.raw-json{
+  display:none;
+}
+
+.raw-json.open{
+  display:block;
 }
