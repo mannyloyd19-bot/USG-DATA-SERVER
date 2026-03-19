@@ -9,6 +9,7 @@ router.use(authMiddleware);
 router.get('/', controller.findAll);
 router.post('/', controller.create);
 router.patch('/:id/status', controller.updateStatus);
+router.post('/:id/rotate', controller.rotate);
 router.delete('/:id', controller.remove);
 
 module.exports = router;

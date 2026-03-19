@@ -54,6 +54,19 @@ const ApiKey = sequelize.define('ApiKey', {
     type: DataTypes.DATE,
     allowNull: true
   },
+  ipWhitelist: {
+    type: DataTypes.TEXT,
+    allowNull: true
+  },
+  usageCount: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 0
+  },
+  lastUsedIp: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
 });
 
 module.exports = ApiKey;
