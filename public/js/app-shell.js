@@ -97,7 +97,7 @@
   }
 
   function setupRawToggles(scope = document) {
-    scope.querySelectorAll('pre').forEach((pre, index) => {
+    scope.querySelectorAll('pre').forEach((pre) => {
       if (pre.dataset.rawHandled === 'true') return;
       pre.dataset.rawHandled = 'true';
 
@@ -119,10 +119,5 @@
     });
   }
 
-  window.USGShell = {
-    buildShell,
-    setupRawToggles,
-    setTheme,
-    getTheme
-  };
+  window.USGShell = { buildShell, setupRawToggles };
 })();
