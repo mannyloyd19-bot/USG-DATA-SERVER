@@ -27,6 +27,7 @@ require('./modules/relationships/models/relationship.model');
 require('./modules/webhooks/models/webhook.model');
 require('./modules/functions/models/function.model');
 require('./modules/installer/models/install-state.model');
+require('./modules/apiKeyLogs/models/api-key-log.model');
 
 let server = null;
 

@@ -7,6 +7,7 @@
     ['/pages/fields.html','📄','Fields'],
     ['/pages/files.html','📁','Files'],
     ['/pages/api-keys.html','🔑','API Keys'],
+    ['/pages/api-key-logs.html','🧠','API Key Logs'],
     ['/pages/relational.html','🗂','Relational'],
     ['/pages/relationships.html','🔗','Relations'],
     ['/pages/webhooks.html','🪝','Webhooks'],

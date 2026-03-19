@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const User = require('../modules/users/models/user.model');
 const ApiKey = require('../modules/apiKeys/models/api-key.model');
+const ApiKeyLog = require('../modules/apiKeyLogs/models/api-key-log.model');
 
 function parseBearer(headerValue = '') {
   if (!headerValue) return null;
@@ -31,6 +32,32 @@ function getClientIp(req) {
     req.socket?.remoteAddress ||
     ''
   );
+}
+
+function attachApiKeyLogger(req, item, clientIp) {
+  resFinishOnce(req, async (statusCode) => {
+    try {
+      await ApiKeyLog.create({
+        apiKeyId: item.id || null,
+        apiKeyName: item.name || null,
+        method: req.method,
+        path: req.originalUrl || req.url || '',
+        statusCode: Number(statusCode || 0),
+        ipAddress: clientIp || null
+      });
+    } catch (error) {
+      console.error('Failed to write API key log:', error.message);
+    }
+  });
+}
+
+function resFinishOnce(req, callback) {
+  if (req._apiKeyLogBound) return;
+  req._apiKeyLogBound = true;
+
+  req.res.on('finish', () => {
+    callback(req.res.statusCode);
+  });
 }
 
 async function tryApiKeyAuth(req) {
@@ -85,11 +112,15 @@ async function tryApiKeyAuth(req) {
     console.error('Failed to update API key usage:', error.message);
   }
 
+  attachApiKeyLogger(req, item, clientIp);
+
   return { ok: true };
 }
 
 module.exports = async (req, res, next) => {
   try {
+    req.res = res;
+
     const apiKeyResult = await tryApiKeyAuth(req);
     if (apiKeyResult) {
       if (!apiKeyResult.ok) {

@@ -31,6 +31,7 @@ const installerRoutes = require('./modules/installer/routes/installer.routes');
 const sdkRoutes = require('./modules/sdk/routes/sdk.routes');
 const systemRoutes = require('./modules/system/routes/system.routes');
 const bootstrapRoutes = require('./modules/bootstrap/routes/bootstrap.routes');
+const apiKeyLogRoutes = require('./modules/apiKeyLogs/routes/api-key-log.routes');
 
 const app = express();
 
@@ -98,6 +99,7 @@ app.use('/api/permission-matrix', permissionMatrixRoutes);
 app.use('/api/installer', installerRoutes);
 app.use('/api/system', systemRoutes);
 app.use('/api/bootstrap', bootstrapRoutes);
+app.use('/api/api-key-logs', apiKeyLogRoutes);
 app.use('/sdk', sdkRoutes);
 
 app.use(notFoundHandler);
