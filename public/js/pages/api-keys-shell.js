@@ -34,7 +34,7 @@ async function loadApiKeys() {
             <input id="api-key-expires" type="datetime-local" placeholder="Expires At">
           </div>
 
-          <input id="api-key-scopes" placeholder="Scopes, comma-separated (example: collections.read,records.write)">
+          <input id="api-key-scopes" placeholder="Scopes, comma-separated (example: collections.read,records.write,files.*)">
           <input id="api-key-ip-whitelist" placeholder="IP whitelist, comma-separated (example: 192.168.1.10,10.0.0.5)">
 
           <div class="actions">
@@ -42,10 +42,14 @@ async function loadApiKeys() {
           </div>
         </form>
 
-        <div class="kicker" style="margin-top:18px">RUNTIME</div>
+        <div class="kicker" style="margin-top:18px">SCOPE GUIDE</div>
         <div class="list-card">
-          <strong>Tracking Enabled</strong><br>
-          <span class="muted">Usage count, last used time, and last used IP now update when API keys authenticate requests.</span>
+          <strong>Examples</strong><br>
+          <span class="muted">collections.read, collections.write, records.read, records.write, files.read, files.*, *.*</span>
+        </div>
+        <div class="list-card">
+          <strong>Enforcement Active</strong><br>
+          <span class="muted">Routes using permission middleware now validate API key scopes at runtime.</span>
         </div>
       </section>
 
