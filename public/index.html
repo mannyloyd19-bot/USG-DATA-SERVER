@@ -29,7 +29,7 @@
       min-height:100vh;
       padding:28px
     }
-    .sidebar,.panel,.stat{
+    .sidebar,.panel,.stat,.insight-card{
       background:var(--panel);
       border:1px solid var(--line);
       border-radius:var(--radius);
@@ -52,28 +52,131 @@
     }
     .nav a.active{background:var(--blue-soft);color:var(--blue)}
     .main{display:flex;flex-direction:column;gap:24px}
-    .hero{padding:26px 28px;display:flex;justify-content:space-between;align-items:center}
+    .hero{
+      padding:26px 28px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center
+    }
     .hero h2{margin:6px 0 0;font-size:32px}
-    .pill{padding:14px 22px;border-radius:999px;background:var(--blue-soft);color:var(--blue);font-weight:700}
-    .stats{display:grid;grid-template-columns:repeat(6,1fr);gap:18px}
-    .stat{padding:18px 20px;min-height:110px}
-    .stat .label{font-size:12px;letter-spacing:.18em;color:var(--muted);font-weight:700;text-transform:uppercase;margin-bottom:10px}
-    .stat .value{font-size:34px;font-weight:800}
+    .pill{
+      padding:14px 22px;
+      border-radius:999px;
+      background:var(--blue-soft);
+      color:var(--blue);
+      font-weight:700
+    }
+    .stats{
+      display:grid;
+      grid-template-columns:repeat(6,1fr);
+      gap:18px
+    }
+    .stat{
+      padding:18px 20px;
+      min-height:110px
+    }
+    .stat .label{
+      font-size:12px;
+      letter-spacing:.18em;
+      color:var(--muted);
+      font-weight:700;
+      text-transform:uppercase;
+      margin-bottom:10px
+    }
+    .stat .value{
+      font-size:34px;
+      font-weight:800
+    }
     .panel{padding:28px}
     .panel h3{margin:0 0 8px;font-size:24px}
     .panel p{margin:0 0 18px;color:var(--muted);font-size:15px}
-    pre{margin:0;background:#050814;color:#f3f6ff;padding:22px;border-radius:24px;overflow:auto;font-size:14px;line-height:1.5}
     .top-user{margin-top:10px;color:var(--muted);font-size:14px}
-    .bar-row{display:grid;grid-template-columns:120px 1fr 60px;gap:12px;align-items:center;margin-bottom:14px}
+
+    .insight-grid{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:18px
+    }
+    .insight-card{
+      padding:20px;
+      min-height:180px;
+      position:relative;
+      overflow:hidden
+    }
+    .insight-label{
+      font-size:12px;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+      color:var(--muted);
+      font-weight:700;
+      margin-bottom:10px
+    }
+    .insight-value{
+      font-size:34px;
+      font-weight:800;
+      margin-bottom:6px
+    }
+    .insight-sub{
+      color:var(--muted);
+      font-size:13px;
+      margin-bottom:16px
+    }
+    .mini-line{
+      height:64px;
+      color:var(--blue)
+    }
+    .mini-line-svg{
+      width:100%;
+      height:100%
+    }
+
+    pre{
+      margin:0;
+      background:#050814;
+      color:#f3f6ff;
+      padding:22px;
+      border-radius:24px;
+      overflow:auto;
+      font-size:14px;
+      line-height:1.5
+    }
+    .bar-row{
+      display:grid;
+      grid-template-columns:120px 1fr 80px;
+      gap:12px;
+      align-items:center;
+      margin-bottom:14px
+    }
     .bar-label{font-weight:700}
-    .bar-track{height:14px;background:#e7ebf3;border-radius:999px;overflow:hidden}
-    .bar-fill{height:100%;background:linear-gradient(180deg,#3d82ee,#2f6fda);border-radius:999px}
-    .bar-value{text-align:right;font-weight:700}
-    @media (max-width:1100px){.wrap{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}}
-    @media (max-width:640px){.stats{grid-template-columns:1fr}.hero{flex-direction:column;align-items:flex-start;gap:16px}}
+    .bar-track{
+      height:14px;
+      background:#e7ebf3;
+      border-radius:999px;
+      overflow:hidden
+    }
+    .bar-fill{
+      height:100%;
+      background:linear-gradient(180deg,#3d82ee,#2f6fda);
+      border-radius:999px
+    }
+    .bar-value{
+      text-align:right;
+      font-weight:700
+    }
+
+    @media (max-width:1200px){
+      .stats{grid-template-columns:repeat(3,1fr)}
+      .insight-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media (max-width:1100px){
+      .wrap{grid-template-columns:1fr}
+    }
+    @media (max-width:640px){
+      .stats{grid-template-columns:1fr}
+      .insight-grid{grid-template-columns:1fr}
+      .hero{flex-direction:column;align-items:flex-start;gap:16px}
+    }
   </style>
-  <link rel="stylesheet" href="/css/pro-ui.css">
-  <link rel="stylesheet" href="/css/theme-pro.css">
 </head>
 <body>
   <div class="wrap">
@@ -82,7 +185,7 @@
         <div class="logo">U</div>
         <div>
           <div class="small">PRIVATE DATA PLATFORM</div>
-          <h1>UNI-SOGOOD<br>USG DATA SERVER</h1>
+          <h1 data-brand-title>UNI-SOGOOD<br>USG DATA SERVER</h1>
         </div>
       </div>
 
@@ -104,12 +207,11 @@
         <a href="/pages/sdk.html">SDK</a>
         <a href="/pages/release.html">Release</a>
         <a href="/pages/query-builder.html">Query Builder</a>
-        <button type="button" data-logout data-logout>Logout</button>
+        <button type="button" data-logout>Logout</button>
       </nav>
     </aside>
 
     <main class="main">
-      <div class="top-actions" data-top-actions data-badge-host></div>
       <section class="hero panel">
         <div>
           <div class="small">SYSTEM OVERVIEW</div>
@@ -129,7 +231,13 @@
       </section>
 
       <section class="panel">
-        <h3>Usage Overview</h3>
+        <h3>Growth Insights</h3>
+        <p>Premium analytics view for core platform modules.</p>
+        <div class="insight-grid" id="insight-box"></div>
+      </section>
+
+      <section class="panel">
+        <h3>Module Comparison</h3>
         <p>Live visual summary of the current private data platform.</p>
         <div id="chart-box"></div>
       </section>
@@ -144,8 +252,8 @@
 
   <script src="/js/auth.js"></script>
   <script src="/js/company-brand.js"></script>
-  <script src="/js/dashboard.js"></script>
   <script src="/js/pro-ui.js"></script>
   <script src="/js/theme-pro.js"></script>
+  <script src="/js/dashboard.js"></script>
 </body>
 </html>
