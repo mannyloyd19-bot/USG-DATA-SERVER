@@ -21,22 +21,6 @@ const ApiKey = sequelize.define('ApiKey', {
     allowNull: false,
     defaultValue: 'admin'
   },
-  isActive: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: true
-  },
-  createdBy: {
-    type: DataTypes.UUID,
-    allowNull: true
-  },
-  lastUsedAt: {
-    type: DataTypes.DATE,
-    allowNull: true
-  },
-  scopes: {
-    type: DataTypes.JSON,
-    allowNull: true
-  }
   purpose: {
     type: DataTypes.STRING,
     allowNull: true
@@ -54,8 +38,12 @@ const ApiKey = sequelize.define('ApiKey', {
     type: DataTypes.DATE,
     allowNull: true
   },
-  ipWhitelist: {
-    type: DataTypes.TEXT,
+  lastUsedAt: {
+    type: DataTypes.DATE,
+    allowNull: true
+  },
+  lastUsedIp: {
+    type: DataTypes.STRING,
     allowNull: true
   },
   usageCount: {
@@ -63,10 +51,17 @@ const ApiKey = sequelize.define('ApiKey', {
     allowNull: false,
     defaultValue: 0
   },
-  lastUsedIp: {
-    type: DataTypes.STRING,
+  scopes: {
+    type: DataTypes.TEXT,
     allowNull: true
   },
+  ipWhitelist: {
+    type: DataTypes.TEXT,
+    allowNull: true
+  }
+}, {
+  tableName: 'api_keys',
+  timestamps: true
 });
 
 module.exports = ApiKey;
