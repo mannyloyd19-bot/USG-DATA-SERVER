@@ -6,7 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     :root{
-      --bg:#eef1f7;
       --panel:#ffffffd9;
       --text:#1f2a44;
       --muted:#7b8498;
@@ -38,96 +37,43 @@
       box-shadow:var(--shadow);
       backdrop-filter:blur(16px);
     }
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:14px;
-      margin-bottom:18px;
-    }
+    .brand{display:flex;align-items:center;gap:14px;margin-bottom:18px}
     .logo{
-      width:70px;
-      height:70px;
-      border-radius:22px;
-      display:grid;
-      place-items:center;
-      background:linear-gradient(180deg,#3d82ee,#2f6fda);
-      color:#fff;
-      font-size:34px;
-      font-weight:800;
-      overflow:hidden;
+      width:70px;height:70px;border-radius:22px;display:grid;place-items:center;
+      background:linear-gradient(180deg,#3d82ee,#2f6fda);color:#fff;font-size:34px;font-weight:800;overflow:hidden;
     }
-    .small{
-      font-size:12px;
-      letter-spacing:.18em;
-      color:var(--muted);
-      font-weight:700;
-    }
-    h1{
-      margin:6px 0 0;
-      font-size:34px;
-      line-height:1;
-    }
-    .tabs{
-      display:grid;
-      grid-template-columns:1fr 1fr 1fr;
-      gap:8px;
-      margin:18px 0;
-    }
+    .small{font-size:12px;letter-spacing:.18em;color:var(--muted);font-weight:700}
+    h1{margin:6px 0 0;font-size:34px;line-height:1}
+    .tabs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:18px 0}
     .tab-btn{
-      padding:12px 14px;
-      border-radius:16px;
-      border:1px solid var(--line);
-      background:#fff;
-      color:var(--text);
-      font-weight:700;
-      cursor:pointer;
+      padding:12px 14px;border-radius:16px;border:1px solid var(--line);
+      background:#fff;color:var(--text);font-weight:700;cursor:pointer
     }
-    .tab-btn.active{
-      background:var(--blue-soft);
-      color:var(--blue);
-    }
+    .tab-btn.active{background:var(--blue-soft);color:var(--blue)}
     input,select{
-      width:100%;
-      padding:15px 16px;
-      border-radius:18px;
-      border:1px solid var(--line);
-      background:#fff;
-      margin-bottom:14px;
-      font-size:16px;
+      width:100%;padding:15px 16px;border-radius:18px;border:1px solid var(--line);
+      background:#fff;margin-bottom:14px;font-size:16px
     }
     button.primary{
-      width:100%;
-      padding:15px 18px;
-      border:none;
-      border-radius:18px;
-      background:var(--blue);
-      color:#fff;
-      font-size:16px;
-      font-weight:700;
-      cursor:pointer;
+      width:100%;padding:15px 18px;border:none;border-radius:18px;background:var(--blue);
+      color:#fff;font-size:16px;font-weight:700;cursor:pointer
     }
-    .message{
-      min-height:20px;
-      margin:4px 0 12px;
-      font-size:14px;
-    }
+    .message{min-height:20px;margin:4px 0 12px;font-size:14px}
     .message[data-state="error"]{color:var(--danger)}
     .message[data-state="success"]{color:var(--success)}
-    .hint{
-      margin-top:14px;
-      color:var(--muted);
-      font-size:14px;
-      line-height:1.5;
-    }
+    .hint{margin-top:14px;color:var(--muted);font-size:14px;line-height:1.5}
   </style>
 </head>
 <body>
   <div class="card">
     <div class="brand">
-      <div class="logo">U</div>
+      <div class="logo">
+        <img src="/assets/company-logo.png" alt="UNI-SOGOOD" style="width:100%;height:100%;object-fit:contain;border-radius:18px"
+             onerror="this.style.display='none'; this.parentNode.innerHTML='U';">
+      </div>
       <div>
         <div class="small">PRIVATE DATA PLATFORM</div>
-        <h1 data-brand-title>UNI-SOGOOD<br>USG DATA SERVER</h1>
+        <h1>UNI-SOGOOD<br>USG DATA SERVER</h1>
       </div>
     </div>
 
@@ -168,7 +114,6 @@
     </div>
   </div>
 
-  <script src="/js/company-brand.js"></script>
   <script src="/js/login.js"></script>
 </body>
 </html>

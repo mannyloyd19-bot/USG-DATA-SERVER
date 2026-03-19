@@ -2,17 +2,9 @@ function getToken() {
   return localStorage.getItem('usg_token') || '';
 }
 
-function setToken(token) {
-  localStorage.setItem('usg_token', token);
-}
-
 function clearToken() {
   localStorage.removeItem('usg_token');
   localStorage.removeItem('usg_user');
-}
-
-function setUser(user) {
-  localStorage.setItem('usg_user', JSON.stringify(user || null));
 }
 
 function getUser() {
@@ -32,12 +24,14 @@ function authHeaders(extra = {}) {
 }
 
 async function apiFetch(url, options = {}) {
-  const headers = authHeaders(options.headers || {});
-  const res = await fetch(url, { ...options, headers });
+  const res = await fetch(url, {
+    ...options,
+    headers: authHeaders(options.headers || {})
+  });
 
   if (res.status === 401) {
     clearToken();
-    location.href = '/login.html';
+    window.location.replace('/login.html');
     throw new Error('Unauthorized');
   }
 
@@ -46,7 +40,7 @@ async function apiFetch(url, options = {}) {
 
 function requireAuth() {
   if (!getToken()) {
-    location.href = '/login.html';
+    window.location.replace('/login.html');
   }
 }
 
@@ -56,9 +50,6 @@ function logout() {
 }
 
 window.getToken = getToken;
-window.setToken = setToken;
-window.clearToken = clearToken;
-window.setUser = setUser;
 window.getUser = getUser;
 window.authHeaders = authHeaders;
 window.apiFetch = apiFetch;

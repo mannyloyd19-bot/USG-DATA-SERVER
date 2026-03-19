@@ -25,7 +25,7 @@ document.querySelectorAll('.tab-btn').forEach((btn) => {
 });
 
 if (localStorage.getItem('usg_token')) {
-  location.href = '/index.html';
+  window.location.replace('/index.html');
 }
 
 loginForm.addEventListener('submit', async (e) => {
@@ -45,9 +45,7 @@ loginForm.addEventListener('submit', async (e) => {
     let data = {};
     try { data = await res.json(); } catch {}
 
-    if (!res.ok) {
-      throw new Error(data.message || 'Sign in failed.');
-    }
+    if (!res.ok) throw new Error(data.message || 'Sign in failed.');
 
     localStorage.setItem('usg_token', data.token);
     localStorage.setItem('usg_user', JSON.stringify(data.user || null));
@@ -79,9 +77,7 @@ createForm.addEventListener('submit', async (e) => {
     let data = {};
     try { data = await res.json(); } catch {}
 
-    if (!res.ok) {
-      throw new Error(data.message || 'Account creation failed.');
-    }
+    if (!res.ok) throw new Error(data.message || 'Account creation failed.');
 
     createForm.reset();
     document.getElementById('login-username').value = username;
@@ -113,9 +109,7 @@ forgotForm.addEventListener('submit', async (e) => {
     let data = {};
     try { data = await res.json(); } catch {}
 
-    if (!res.ok) {
-      throw new Error(data.message || 'Password reset failed.');
-    }
+    if (!res.ok) throw new Error(data.message || 'Password reset failed.');
 
     forgotForm.reset();
     document.getElementById('login-username').value = username;
