@@ -77,3 +77,31 @@ exports.dryRun = async (req, res) => {
     });
   }
 };
+
+exports.runMigration = async (req, res) => {
+  try {
+    const result = await service.runMigration(req.body || {});
+
+    const latest = await DbMigrationState.findOne({ order: [['createdAt', 'DESC']] });
+    if (latest) {
+      latest.status = result.success ? 'migrated' : 'migration_completed_with_errors';
+      latest.notes = JSON.stringify({
+        backupPath: result.backupPath,
+        tableCount: result.tables.length,
+        success: result.success
+      });
+      await latest.save();
+    }
+
+    return res.json({
+      success: result.success,
+      result
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: 'Migration failed',
+      error: error.message
+    });
+  }
+};

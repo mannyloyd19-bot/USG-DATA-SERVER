@@ -1,4 +1,7 @@
+const fs = require('fs');
+const path = require('path');
 const { Sequelize } = require('sequelize');
+const sourceSequelize = require('../../../core/database');
 
 function buildTargetSequelize(config) {
   const dialect = String(config.targetDialect || '').toLowerCase();
@@ -34,7 +37,61 @@ function buildTargetSequelize(config) {
   throw new Error('Unsupported target dialect');
 }
 
-exports.testConnection = async (config) => {
+function cloneAttributes(rawAttributes) {
+  const out = {};
+
+  for (const [name, attr] of Object.entries(rawAttributes || {})) {
+    const next = {};
+
+    if (attr.type) next.type = attr.type;
+    if (attr.allowNull !== undefined) next.allowNull = attr.allowNull;
+    if (attr.primaryKey !== undefined) next.primaryKey = attr.primaryKey;
+    if (attr.autoIncrement !== undefined) next.autoIncrement = attr.autoIncrement;
+    if (attr.defaultValue !== undefined) next.defaultValue = attr.defaultValue;
+    if (attr.unique !== undefined) next.unique = attr.unique;
+    if (attr.field) next.field = attr.field;
+    if (attr.comment) next.comment = attr.comment;
+    if (attr.values) next.values = attr.values;
+    if (attr.onUpdate) next.onUpdate = attr.onUpdate;
+    if (attr.onDelete) next.onDelete = attr.onDelete;
+
+    if (attr.references) {
+      let refModel = attr.references.model;
+      if (refModel && typeof refModel.getTableName === 'function') {
+        refModel = refModel.getTableName();
+      }
+      next.references = {
+        model: refModel,
+        key: attr.references.key
+      };
+    }
+
+    out[name] = next;
+  }
+
+  return out;
+}
+
+function cloneModelOptions(model) {
+  return {
+    tableName: model.getTableName(),
+    timestamps: model.options.timestamps,
+    paranoid: model.options.paranoid,
+    underscored: model.options.underscored,
+    freezeTableName: model.options.freezeTableName
+  };
+}
+
+function getMigratableModels() {
+  const models = Object.values(sourceSequelize.models || {});
+  const exclude = new Set([
+    'DbMigrationState'
+  ]);
+
+  return models.filter(model => !exclude.has(model.name));
+}
+
+async function testConnection(config) {
   const sequelize = buildTargetSequelize(config);
   try {
     await sequelize.authenticate();
@@ -42,9 +99,9 @@ exports.testConnection = async (config) => {
   } finally {
     await sequelize.close().catch(() => {});
   }
-};
+}
 
-exports.buildDryRunPlan = async (config) => {
+async function buildDryRunPlan(config) {
   const targetDialect = String(config.targetDialect || '').toLowerCase();
   const supported = ['mysql', 'postgres', 'postgresql'];
 
@@ -52,26 +109,150 @@ exports.buildDryRunPlan = async (config) => {
     throw new Error('Dry run supports mysql or postgres targets only');
   }
 
+  const models = getMigratableModels();
+
   const plan = {
-    sourceDialect: config.sourceDialect || 'sqlite',
+    sourceDialect: config.sourceDialect || process.env.DB_DIALECT || 'sqlite',
     targetDialect,
+    modelCount: models.length,
+    tables: models.map(m => ({
+      model: m.name,
+      table: m.getTableName()
+    })),
     steps: [
       'Validate source database accessibility',
       'Validate target database connection',
       'Create backup before migration',
-      'Create target schema using Sequelize models',
-      'Copy core tables and records',
-      'Verify row counts and integrity',
-      'Switch environment config to target DB',
-      'Restart application and run final health check'
+      'Clone target schema using Sequelize models',
+      'Copy records table by table',
+      'Verify row counts and summarize results',
+      'Switch environment config to target DB manually after review'
     ],
     warnings: [
-      'Automatic live data copy is not included in this batch',
-      'Take a full backup before actual migration',
-      'Run migration first on staging or test machine',
-      'Verify files/uploads path separately from database migration'
+      'Automatic environment switch is not included in this batch',
+      'Run first on staging or test target database',
+      'Target database should be empty or prepared to avoid PK conflicts',
+      'Verify uploads/files storage separately from database migration'
     ]
   };
 
   return plan;
+}
+
+async function disableForeignKeys(sequelize) {
+  const dialect = sequelize.getDialect();
+
+  if (dialect === 'mysql') {
+    await sequelize.query('SET FOREIGN_KEY_CHECKS = 0');
+  } else if (dialect === 'postgres') {
+    await sequelize.query("SET session_replication_role = 'replica'");
+  } else if (dialect === 'sqlite') {
+    await sequelize.query('PRAGMA foreign_keys = OFF');
+  }
+}
+
+async function enableForeignKeys(sequelize) {
+  const dialect = sequelize.getDialect();
+
+  if (dialect === 'mysql') {
+    await sequelize.query('SET FOREIGN_KEY_CHECKS = 1');
+  } else if (dialect === 'postgres') {
+    await sequelize.query("SET session_replication_role = 'origin'");
+  } else if (dialect === 'sqlite') {
+    await sequelize.query('PRAGMA foreign_keys = ON');
+  }
+}
+
+function maybeBackupSource() {
+  const dialect = String(process.env.DB_DIALECT || 'sqlite').toLowerCase();
+  if (dialect !== 'sqlite') return null;
+
+  const storage = process.env.DB_STORAGE || './database.sqlite';
+  const sourcePath = path.resolve(storage);
+  if (!fs.existsSync(sourcePath)) return null;
+
+  const backupsDir = path.resolve('backups');
+  fs.mkdirSync(backupsDir, { recursive: true });
+
+  const stamp = new Date().toISOString().replace(/[:.]/g, '-');
+  const targetPath = path.join(backupsDir, `pre-migration-${stamp}.sqlite`);
+
+  fs.copyFileSync(sourcePath, targetPath);
+  return targetPath;
+}
+
+async function runMigration(config) {
+  const targetSequelize = buildTargetSequelize(config);
+  const sourceModels = getMigratableModels();
+
+  const summary = {
+    backupPath: null,
+    sourceDialect: sourceSequelize.getDialect(),
+    targetDialect: targetSequelize.getDialect(),
+    tables: [],
+    success: false
+  };
+
+  try {
+    await sourceSequelize.authenticate();
+    await targetSequelize.authenticate();
+
+    summary.backupPath = maybeBackupSource();
+
+    const targetModels = {};
+    for (const model of sourceModels) {
+      const attrs = cloneAttributes(model.rawAttributes);
+      const options = cloneModelOptions(model);
+      targetModels[model.name] = targetSequelize.define(model.name, attrs, options);
+    }
+
+    await targetSequelize.sync();
+
+    await disableForeignKeys(targetSequelize);
+
+    for (const sourceModel of sourceModels) {
+      const targetModel = targetModels[sourceModel.name];
+      const rows = await sourceModel.findAll({ raw: true });
+
+      let inserted = 0;
+      let skipped = 0;
+      let errorMessage = null;
+
+      try {
+        if (rows.length > 0) {
+          await targetModel.bulkCreate(rows, {
+            validate: false,
+            hooks: false
+          });
+          inserted = rows.length;
+        }
+      } catch (error) {
+        errorMessage = error.message;
+        skipped = rows.length;
+      }
+
+      summary.tables.push({
+        model: sourceModel.name,
+        table: sourceModel.getTableName(),
+        sourceRows: rows.length,
+        inserted,
+        skipped,
+        error: errorMessage
+      });
+    }
+
+    await enableForeignKeys(targetSequelize);
+
+    summary.success = summary.tables.every(t => !t.error);
+    return summary;
+  } finally {
+    await enableForeignKeys(targetSequelize).catch(() => {});
+    await targetSequelize.close().catch(() => {});
+  }
+}
+
+module.exports = {
+  testConnection,
+  buildDryRunPlan,
+  runMigration
 };

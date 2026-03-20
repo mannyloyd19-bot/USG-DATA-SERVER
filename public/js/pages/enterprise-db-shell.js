@@ -41,7 +41,8 @@ async function loadEnterpriseDb() {
           <div class="actions">
             <button class="primary-btn" type="button" id="save-draft-btn">Save Draft</button>
             <button class="ghost-btn" type="button" id="test-connection-btn">Test Connection</button>
-            <button class="primary-btn" type="button" id="dry-run-btn">Run Dry Run</button>
+            <button class="ghost-btn" type="button" id="dry-run-btn">Run Dry Run</button>
+            <button class="danger-btn" type="button" id="run-migration-btn">Run Migration</button>
           </div>
         </form>
       </section>
@@ -55,9 +56,9 @@ async function loadEnterpriseDb() {
       </section>
 
       <section class="card">
-        <div class="kicker">DRY RUN RESULT</div>
-        <h2>Migration Plan</h2>
-        <pre id="migration-plan-box">No dry run yet.</pre>
+        <div class="kicker">RESULT</div>
+        <h2>Migration Output</h2>
+        <pre id="migration-plan-box">No migration action yet.</pre>
       </section>
     </div>
   `;
@@ -145,6 +146,29 @@ async function loadEnterpriseDb() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || 'Dry run failed');
+      planBox.textContent = JSON.stringify(data, null, 2);
+      await refreshInfo();
+      USGShell.setupRawToggles(content);
+    } catch (error) {
+      planBox.textContent = JSON.stringify({ error: error.message }, null, 2);
+      USGShell.setupRawToggles(content);
+    }
+  });
+
+  document.getElementById('run-migration-btn').addEventListener('click', async () => {
+    if (!confirm('Run actual database migration now? Make sure the target DB is ready and backed up.')) {
+      return;
+    }
+
+    try {
+      planBox.textContent = 'Running migration...';
+      const res = await apiFetch('/api/db-migration/run', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(getPayload())
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Migration failed');
       planBox.textContent = JSON.stringify(data, null, 2);
       await refreshInfo();
       USGShell.setupRawToggles(content);
