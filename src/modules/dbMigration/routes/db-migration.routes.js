@@ -11,5 +11,6 @@ router.post('/draft', controller.saveDraft);
 router.post('/test-connection', controller.testConnection);
 router.post('/dry-run', controller.dryRun);
 router.post('/run', controller.runMigration);
+router.post('/verify', controller.verifyMigration);
 
 module.exports = router;

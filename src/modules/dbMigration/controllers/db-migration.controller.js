@@ -105,3 +105,23 @@ exports.runMigration = async (req, res) => {
     });
   }
 };
+
+exports.verifyMigration = async (req, res) => {
+  try {
+    const result = await service.verifyMigration(req.body || {});
+
+    const latest = await DbMigrationState.findOne({ order: [['createdAt', 'DESC']] });
+    if (latest) {
+      latest.status = result.success ? 'verified' : 'verification_mismatch';
+      await latest.save();
+    }
+
+    return res.json(result);
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: 'Verification failed',
+      error: error.message
+    });
+  }
+};

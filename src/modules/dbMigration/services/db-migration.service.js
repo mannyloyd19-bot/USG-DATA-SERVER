@@ -111,7 +111,7 @@ async function buildDryRunPlan(config) {
 
   const models = getMigratableModels();
 
-  const plan = {
+  return {
     sourceDialect: config.sourceDialect || process.env.DB_DIALECT || 'sqlite',
     targetDialect,
     modelCount: models.length,
@@ -135,8 +135,6 @@ async function buildDryRunPlan(config) {
       'Verify uploads/files storage separately from database migration'
     ]
   };
-
-  return plan;
 }
 
 async function disableForeignKeys(sequelize) {
@@ -181,9 +179,22 @@ function maybeBackupSource() {
   return targetPath;
 }
 
+async function buildTargetModels(targetSequelize) {
+  const sourceModels = getMigratableModels();
+  const targetModels = {};
+
+  for (const model of sourceModels) {
+    const attrs = cloneAttributes(model.rawAttributes);
+    const options = cloneModelOptions(model);
+    targetModels[model.name] = targetSequelize.define(model.name, attrs, options);
+  }
+
+  await targetSequelize.sync();
+  return { sourceModels, targetModels };
+}
+
 async function runMigration(config) {
   const targetSequelize = buildTargetSequelize(config);
-  const sourceModels = getMigratableModels();
 
   const summary = {
     backupPath: null,
@@ -199,14 +210,7 @@ async function runMigration(config) {
 
     summary.backupPath = maybeBackupSource();
 
-    const targetModels = {};
-    for (const model of sourceModels) {
-      const attrs = cloneAttributes(model.rawAttributes);
-      const options = cloneModelOptions(model);
-      targetModels[model.name] = targetSequelize.define(model.name, attrs, options);
-    }
-
-    await targetSequelize.sync();
+    const { sourceModels, targetModels } = await buildTargetModels(targetSequelize);
 
     await disableForeignKeys(targetSequelize);
 
@@ -251,8 +255,60 @@ async function runMigration(config) {
   }
 }
 
+async function verifyMigration(config) {
+  const targetSequelize = buildTargetSequelize(config);
+
+  try {
+    await sourceSequelize.authenticate();
+    await targetSequelize.authenticate();
+
+    const { sourceModels, targetModels } = await buildTargetModels(targetSequelize);
+
+    const tables = [];
+    for (const sourceModel of sourceModels) {
+      const targetModel = targetModels[sourceModel.name];
+
+      let sourceCount = 0;
+      let targetCount = 0;
+      let error = null;
+
+      try {
+        sourceCount = await sourceModel.count();
+        targetCount = await targetModel.count();
+      } catch (err) {
+        error = err.message;
+      }
+
+      tables.push({
+        model: sourceModel.name,
+        table: sourceModel.getTableName(),
+        sourceCount,
+        targetCount,
+        matched: !error && sourceCount === targetCount,
+        error
+      });
+    }
+
+    const matchedTables = tables.filter(t => t.matched).length;
+    const mismatchedTables = tables.filter(t => !t.matched).length;
+
+    return {
+      success: mismatchedTables === 0,
+      summary: {
+        totalTables: tables.length,
+        matchedTables,
+        mismatchedTables
+      },
+      tables
+    };
+  } finally {
+    await targetSequelize.close().catch(() => {});
+  }
+}
+
 module.exports = {
   testConnection,
   buildDryRunPlan,
-  runMigration
+  runMigration,
+  verifyMigration
 };

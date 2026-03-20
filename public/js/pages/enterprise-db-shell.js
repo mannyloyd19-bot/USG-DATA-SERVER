@@ -43,6 +43,7 @@ async function loadEnterpriseDb() {
             <button class="ghost-btn" type="button" id="test-connection-btn">Test Connection</button>
             <button class="ghost-btn" type="button" id="dry-run-btn">Run Dry Run</button>
             <button class="danger-btn" type="button" id="run-migration-btn">Run Migration</button>
+            <button class="primary-btn" type="button" id="verify-migration-btn">Verify Migration</button>
           </div>
         </form>
       </section>
@@ -169,6 +170,25 @@ async function loadEnterpriseDb() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || 'Migration failed');
+      planBox.textContent = JSON.stringify(data, null, 2);
+      await refreshInfo();
+      USGShell.setupRawToggles(content);
+    } catch (error) {
+      planBox.textContent = JSON.stringify({ error: error.message }, null, 2);
+      USGShell.setupRawToggles(content);
+    }
+  });
+
+  document.getElementById('verify-migration-btn').addEventListener('click', async () => {
+    try {
+      planBox.textContent = 'Verifying migration...';
+      const res = await apiFetch('/api/db-migration/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(getPayload())
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Verification failed');
       planBox.textContent = JSON.stringify(data, null, 2);
       await refreshInfo();
       USGShell.setupRawToggles(content);
