@@ -2,14 +2,10 @@ function getToken() {
   return localStorage.getItem('usg_token') || '';
 }
 
-function setToken(token) {
-  localStorage.setItem('usg_token', token);
-}
-
 function clearToken() {
   localStorage.removeItem('usg_token');
   localStorage.removeItem('usg_user');
-  sessionStorage.clear();
+  localStorage.removeItem('usg_current_tenant');
 }
 
 function getUser() {
@@ -20,11 +16,23 @@ function getUser() {
   }
 }
 
+function getCurrentTenant() {
+  try {
+    return JSON.parse(localStorage.getItem('usg_current_tenant') || 'null');
+  } catch {
+    return null;
+  }
+}
+
 function authHeaders(extra = {}) {
   const token = getToken();
+  const tenant = getCurrentTenant();
+
   return {
     ...extra,
-    ...(token ? { Authorization: `Bearer ${token}` } : {})
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    ...(tenant?.id ? { 'x-tenant-id': tenant.id } : {}),
+    ...(tenant?.slug ? { 'x-tenant-slug': tenant.slug } : {})
   };
 }
 
@@ -35,7 +43,8 @@ async function apiFetch(url, options = {}) {
   });
 
   if (res.status === 401) {
-    logout(true);
+    clearToken();
+    window.location.replace('/login.html');
     throw new Error('Unauthorized');
   }
 
@@ -48,45 +57,15 @@ function requireAuth() {
   }
 }
 
-function logout(force = false) {
-  try {
-    clearToken();
-  } catch {}
-
-  const target = '/login.html';
-
-  if (force) {
-    window.location.replace(target);
-    return;
-  }
-
-  setTimeout(() => {
-    window.location.replace(target);
-  }, 10);
+function logout() {
+  clearToken();
+  window.location.replace('/login.html');
 }
-
-function bindLogoutButtons() {
-  document.querySelectorAll('[data-logout]').forEach((el) => {
-    if (el.dataset.logoutBound === 'true') return;
-    el.dataset.logoutBound = 'true';
-
-    el.addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      logout();
-    });
-  });
-}
-
-document.addEventListener('DOMContentLoaded', bindLogoutButtons);
-window.addEventListener('load', bindLogoutButtons);
 
 window.getToken = getToken;
-window.setToken = setToken;
-window.clearToken = clearToken;
 window.getUser = getUser;
+window.getCurrentTenant = getCurrentTenant;
 window.authHeaders = authHeaders;
 window.apiFetch = apiFetch;
 window.requireAuth = requireAuth;
 window.logout = logout;
-window.bindLogoutButtons = bindLogoutButtons;
