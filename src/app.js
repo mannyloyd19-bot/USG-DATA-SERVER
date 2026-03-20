@@ -32,6 +32,7 @@ const sdkRoutes = require('./modules/sdk/routes/sdk.routes');
 const systemRoutes = require('./modules/system/routes/system.routes');
 const bootstrapRoutes = require('./modules/bootstrap/routes/bootstrap.routes');
 const apiKeyLogRoutes = require('./modules/apiKeyLogs/routes/api-key-log.routes');
+const dbMigrationRoutes = require('./modules/dbMigration/routes/db-migration.routes');
 
 const app = express();
 
@@ -100,6 +101,7 @@ app.use('/api/installer', installerRoutes);
 app.use('/api/system', systemRoutes);
 app.use('/api/bootstrap', bootstrapRoutes);
 app.use('/api/api-key-logs', apiKeyLogRoutes);
+app.use('/api/db-migration', dbMigrationRoutes);
 app.use('/sdk', sdkRoutes);
 
 app.use(notFoundHandler);
