@@ -32,4 +32,9 @@ const Collection = sequelize.define('Collection', {
   }
 });
 
+const collectionRealtimeHooks = require('../hooks/collection.realtime');
+
+Collection.addHook('afterCreate', collectionRealtimeHooks.afterCreate);
+Collection.addHook('afterUpdate', collectionRealtimeHooks.afterUpdate);
+Collection.addHook('afterDestroy', collectionRealtimeHooks.afterDelete);
 module.exports = Collection;

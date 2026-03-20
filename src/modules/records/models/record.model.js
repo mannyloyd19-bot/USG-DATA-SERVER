@@ -40,4 +40,9 @@ const Record = sequelize.define('Record', {
 Collection.hasMany(Record, { foreignKey: 'collectionId', as: 'records' });
 Record.belongsTo(Collection, { foreignKey: 'collectionId', as: 'collection' });
 
+const recordRealtimeHooks = require('../hooks/record.realtime');
+
+Record.addHook('afterCreate', recordRealtimeHooks.afterCreate);
+Record.addHook('afterUpdate', recordRealtimeHooks.afterUpdate);
+Record.addHook('afterDestroy', recordRealtimeHooks.afterDelete);
 module.exports = Record;

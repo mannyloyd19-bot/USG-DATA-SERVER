@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const FileEntry = require('../models/file.model');
 const auditService = require('../../audit/services/audit.service');
+const fileRealtimeHooks = require('../hooks/file.realtime');
 
 function isPreviewable(mimeType = '') {
   return (
@@ -93,7 +94,8 @@ exports.findOne = async (req, res) => {
       return res.status(404).json({ message: 'File not found' });
     }
 
-    return res.json(file);
+    return await fileRealtimeHooks.afterUpload(file);
+    res.json(file);
   } catch (error) {
     return res.status(500).json({
       message: 'Failed to fetch file',
@@ -179,6 +181,7 @@ exports.remove = async (req, res) => {
     }
 
     await file.destroy();
+    await fileRealtimeHooks.afterDelete(file);
 
     await auditService.writeLog({
       req,
