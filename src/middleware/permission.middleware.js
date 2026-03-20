@@ -21,6 +21,22 @@ function hasApiKeyScope(scopes, moduleName, action) {
   );
 }
 
+function isWriteLikeAction(action) {
+  return ['create', 'update', 'write', 'delete', 'revoke', 'rotate', 'run'].includes(String(action || '').toLowerCase());
+}
+
+function isSecretOnlyModule(moduleName) {
+  return [
+    'settings',
+    'release',
+    'api_keys',
+    'permissions',
+    'backups',
+    'db_migration',
+    'audit_logs'
+  ].includes(String(moduleName || '').toLowerCase());
+}
+
 module.exports = function requirePermission(moduleName, action) {
   return async function (req, res, next) {
     try {
@@ -32,15 +48,26 @@ module.exports = function requirePermission(moduleName, action) {
         });
       }
 
-      // API key scope enforcement
       if (req.authType === 'api_key' && req.apiKey) {
         const scopes = safeJsonParse(req.apiKey.scopes, []);
+        const keyType = req.apiKeyMeta?.keyType || req.user?.keyType || 'sk';
+
         const normalizedAction =
           action === 'update' ? 'write' :
           action === 'create' ? 'write' :
           action === 'delete' ? 'delete' :
           action === 'read' ? 'read' :
           action;
+
+        if (keyType === 'pk') {
+          if (isWriteLikeAction(action) || isSecretOnlyModule(moduleName)) {
+            return res.status(403).json({
+              success: false,
+              message: `Forbidden: public key cannot access ${moduleName}.${action}`,
+              requestId: req.requestId || null
+            });
+          }
+        }
 
         const allowed =
           hasApiKeyScope(scopes, moduleName, action) ||
@@ -57,10 +84,8 @@ module.exports = function requirePermission(moduleName, action) {
         return next();
       }
 
-      // JWT user permission enforcement
       const role = req.user.role;
 
-      // super_admin shortcut
       if (role === 'super_admin') {
         return next();
       }
@@ -77,7 +102,6 @@ module.exports = function requirePermission(moduleName, action) {
         return next();
       }
 
-      // Fallback shortcut for admin if permission row not yet seeded
       if (role === 'admin') {
         return next();
       }

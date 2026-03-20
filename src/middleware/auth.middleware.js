@@ -34,6 +34,21 @@ function getClientIp(req) {
   );
 }
 
+function inferKeyMeta(fullKey = '') {
+  const m = /^usg_(pk|sk)_(live|test)_(.+)$/i.exec(fullKey);
+  if (!m) {
+    return {
+      keyType: 'sk',
+      keyEnvironment: 'live'
+    };
+  }
+
+  return {
+    keyType: m[1].toLowerCase(),
+    keyEnvironment: m[2].toLowerCase()
+  };
+}
+
 function attachApiKeyLogger(req, item, clientIp) {
   resFinishOnce(req, async (statusCode) => {
     try {
@@ -93,6 +108,8 @@ async function tryApiKeyAuth(req) {
     }
   }
 
+  const meta = inferKeyMeta(item.key);
+
   req.apiKey = item;
   req.authType = 'api_key';
   req.user = {
@@ -100,8 +117,12 @@ async function tryApiKeyAuth(req) {
     username: item.name || 'api_key',
     role: item.role || 'admin',
     authType: 'api_key',
-    apiKeyId: item.id
+    apiKeyId: item.id,
+    keyType: meta.keyType,
+    keyEnvironment: meta.keyEnvironment
   };
+
+  req.apiKeyMeta = meta;
 
   try {
     item.usageCount = Number(item.usageCount || 0) + 1;

@@ -34,6 +34,17 @@ async function loadApiKeys() {
             <input id="api-key-expires" type="datetime-local" placeholder="Expires At">
           </div>
 
+          <div class="row-top">
+            <select id="api-key-type">
+              <option value="sk">Secret Key (sk)</option>
+              <option value="pk">Public Key (pk)</option>
+            </select>
+            <select id="api-key-environment">
+              <option value="live">live</option>
+              <option value="test">test</option>
+            </select>
+          </div>
+
           <input id="api-key-scopes" placeholder="Scopes, comma-separated (example: collections.read,records.write,files.*)">
           <input id="api-key-ip-whitelist" placeholder="IP whitelist, comma-separated (example: 192.168.1.10,10.0.0.5)">
 
@@ -42,14 +53,14 @@ async function loadApiKeys() {
           </div>
         </form>
 
-        <div class="kicker" style="margin-top:18px">SCOPE GUIDE</div>
+        <div class="kicker" style="margin-top:18px">WIRING GUIDE</div>
         <div class="list-card">
-          <strong>Examples</strong><br>
-          <span class="muted">collections.read, collections.write, records.read, records.write, files.read, files.*, *.*</span>
+          <strong>Public Key (pk)</strong><br>
+          <span class="muted">Use only for limited public/read access. Do not use for admin or write flows.</span>
         </div>
         <div class="list-card">
-          <strong>Enforcement Active</strong><br>
-          <span class="muted">Routes using permission middleware now validate API key scopes at runtime.</span>
+          <strong>Secret Key (sk)</strong><br>
+          <span class="muted">Use on backend/server only for protected write/admin integrations.</span>
         </div>
       </section>
 
@@ -83,7 +94,8 @@ async function loadApiKeys() {
             <div>
               <strong>${item.name || 'Unnamed Key'}</strong><br>
               <span class="muted">${item.maskedKey || ''}</span><br>
-              <span class="muted">role: ${item.role || '-'} · owner: ${item.owner || '-'} · purpose: ${item.purpose || '-'}</span><br>
+              <span class="muted">type: ${item.keyType || 'sk'} · env: ${item.environment || 'live'} · role: ${item.role || '-'}</span><br>
+              <span class="muted">owner: ${item.owner || '-'} · purpose: ${item.purpose || '-'}</span><br>
               <span class="muted">expires: ${item.expiresAt ? new Date(item.expiresAt).toLocaleString() : 'never'}</span><br>
               <span class="muted">usage count: ${item.usageCount ?? 0} · last used: ${item.lastUsedAt ? new Date(item.lastUsedAt).toLocaleString() : 'never'} · last IP: ${item.lastUsedIp || '-'}</span><br>
               <span class="muted">scopes: ${(item.scopes || []).join(', ') || '-'}</span><br>
@@ -195,6 +207,8 @@ async function loadApiKeys() {
       purpose: document.getElementById('api-key-purpose').value.trim(),
       role: document.getElementById('api-key-role').value,
       expiresAt: document.getElementById('api-key-expires').value || null,
+      keyType: document.getElementById('api-key-type').value,
+      environment: document.getElementById('api-key-environment').value,
       scopes: parseCsv(document.getElementById('api-key-scopes').value),
       ipWhitelist: parseCsv(document.getElementById('api-key-ip-whitelist').value)
     };
@@ -210,6 +224,8 @@ async function loadApiKeys() {
 
       createdBox.textContent = JSON.stringify({
         name: data.name,
+        keyType: data.keyType,
+        environment: data.environment,
         role: data.role,
         owner: data.owner,
         purpose: data.purpose,

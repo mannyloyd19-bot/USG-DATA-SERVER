@@ -3,8 +3,8 @@ const ApiKey = require('../models/api-key.model');
 
 function maskKey(value = '') {
   if (!value) return '';
-  if (value.length <= 8) return value;
-  return value.slice(0, 4) + '••••••••' + value.slice(-4);
+  if (value.length <= 12) return value;
+  return value.slice(0, 10) + '••••••••' + value.slice(-6);
 }
 
 function safeJsonParse(value, fallback) {
@@ -15,25 +15,72 @@ function safeJsonParse(value, fallback) {
   }
 }
 
+function inferKeyMeta(fullKey = '') {
+  const m = /^usg_(pk|sk)_(live|test)_(.+)$/i.exec(fullKey);
+  if (!m) {
+    return {
+      keyType: 'sk',
+      environment: 'live'
+    };
+  }
+
+  return {
+    keyType: m[1].toLowerCase(),
+    environment: m[2].toLowerCase()
+  };
+}
+
 function toPayload(item) {
   const json = item.toJSON();
+  const meta = inferKeyMeta(json.key);
+
   return {
     ...json,
+    ...meta,
     maskedKey: maskKey(json.key),
     scopes: safeJsonParse(json.scopes, []),
     ipWhitelist: safeJsonParse(json.ipWhitelist, [])
   };
 }
 
+function buildFormattedKey({ keyType = 'sk', environment = 'live' }) {
+  const random = crypto.randomBytes(24).toString('hex');
+  return `usg_${keyType}_${environment}_${random}`;
+}
+
 exports.create = async (req, res) => {
   try {
-    const { name, role, purpose, owner, expiresAt, scopes, ipWhitelist } = req.body || {};
+    const {
+      name,
+      role,
+      purpose,
+      owner,
+      expiresAt,
+      scopes,
+      ipWhitelist,
+      keyType,
+      environment
+    } = req.body || {};
 
     if (!name) {
       return res.status(400).json({ message: 'name is required' });
     }
 
-    const rawKey = crypto.randomBytes(24).toString('hex');
+    const finalKeyType = (keyType || 'sk').toLowerCase();
+    const finalEnv = (environment || 'live').toLowerCase();
+
+    if (!['pk', 'sk'].includes(finalKeyType)) {
+      return res.status(400).json({ message: 'Invalid keyType' });
+    }
+
+    if (!['live', 'test'].includes(finalEnv)) {
+      return res.status(400).json({ message: 'Invalid environment' });
+    }
+
+    const rawKey = buildFormattedKey({
+      keyType: finalKeyType,
+      environment: finalEnv
+    });
 
     const item = await ApiKey.create({
       name,
@@ -109,7 +156,9 @@ exports.rotate = async (req, res) => {
       return res.status(404).json({ message: 'API key not found' });
     }
 
-    const newRawKey = crypto.randomBytes(24).toString('hex');
+    const meta = inferKeyMeta(item.key);
+    const newRawKey = buildFormattedKey(meta);
+
     item.key = newRawKey;
     item.status = 'active';
     await item.save();
