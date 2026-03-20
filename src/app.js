@@ -1,3 +1,5 @@
+const collectionStatsRoutes = require('./modules/collectionStats/routes/collection-stats.routes');
+const indexRoutes = require('./modules/indexes/routes/index.routes');
 const backupSystemRoutes = require('./modules/backupSystem/routes/backup-system.routes');
 const systemMetricsRoutes = require('./modules/infrastructure/routes/system-metrics.routes');
 const systemAuditRoutes = require('./modules/systemAudit/routes/system-audit.routes');
@@ -151,3 +153,7 @@ app.use('/api/system-audit', systemAuditRoutes);
 app.use('/api/system', systemMetricsRoutes);
 
 app.use('/api/backup-system', backupSystemRoutes);
+
+app.use('/api/indexes', indexRoutes);
+
+app.use('/api/collection-stats', collectionStatsRoutes);
