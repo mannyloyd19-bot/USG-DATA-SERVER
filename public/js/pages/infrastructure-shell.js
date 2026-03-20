@@ -65,7 +65,10 @@ async function loadInfrastructure() {
         <div class="kicker">SSL CENTER</div>
         <h2>HTTPS / Reverse Proxy</h2>
         <div id="ssl-cards"></div>
-        <pre id="nginx-guide-box" style="margin-top:16px">Loading...</pre>
+        <div class="actions" style="margin-top:12px">
+          <button class="ghost-btn" type="button" id="refresh-ssl-status">Refresh SSL Status</button>
+        </div>
+        <pre id="ssl-status-box" style="margin-top:16px">Loading...</pre>
       </section>
     </div>
 
@@ -127,7 +130,7 @@ async function loadInfrastructure() {
   const pm2Box = document.getElementById('pm2-box');
   const pm2LogsBox = document.getElementById('pm2-logs-box');
   const sslCards = document.getElementById('ssl-cards');
-  const nginxGuideBox = document.getElementById('nginx-guide-box');
+  const sslStatusBox = document.getElementById('ssl-status-box');
 
   async function refreshInfra() {
     const [configRes, statusRes] = await Promise.all([
@@ -184,7 +187,7 @@ async function loadInfrastructure() {
     sslCards.innerHTML = `
       <div class="grid-3">
         <div class="info-card">
-          <div class="info-title">SSL</div>
+          <div class="info-title">SSL Config</div>
           <div class="info-value" style="font-size:18px">${cfg.sslEnabled ? 'Enabled' : 'Disabled'}</div>
         </div>
         <div class="info-card">
@@ -192,26 +195,19 @@ async function loadInfrastructure() {
           <div class="info-value" style="font-size:18px">${cfg.reverseProxyEnabled ? 'Enabled' : 'Disabled'}</div>
         </div>
         <div class="info-card">
-          <div class="info-title">Public Port</div>
-          <div class="info-value" style="font-size:18px">${cfg.publicPort || 3000}</div>
+          <div class="info-title">Domain</div>
+          <div class="info-value" style="font-size:16px">${cfg.customDomain || cfg.ddnsDomain || 'Not set'}</div>
         </div>
       </div>
     `;
 
-    nginxGuideBox.textContent = [
-      'server {',
-      '  listen 80;',
-      `  server_name ${cfg.customDomain || cfg.ddnsDomain || 'your-domain'};`,
-      '  location / {',
-      `    proxy_pass http://127.0.0.1:${cfg.appPort || 3000};`,
-      '    proxy_set_header Host $host;',
-      '    proxy_set_header X-Real-IP $remote_addr;',
-      '    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;',
-      '    proxy_set_header X-Forwarded-Proto $scheme;',
-      '  }',
-      '}'
-    ].join('\n');
+    USGShell.setupRawToggles(content);
+  }
 
+  async function refreshSsl() {
+    const res = await apiFetch('/api/infrastructure/ssl-status');
+    const data = await res.json();
+    sslStatusBox.textContent = JSON.stringify(data, null, 2);
     USGShell.setupRawToggles(content);
   }
 
@@ -280,6 +276,7 @@ async function loadInfrastructure() {
     }
 
     await refreshInfra();
+    await refreshSsl();
     alert('Infrastructure config saved');
   });
 
@@ -287,7 +284,10 @@ async function loadInfrastructure() {
     await refreshInfra();
     await refreshDdns();
     await refreshPm2();
+    await refreshSsl();
   });
+
+  document.getElementById('refresh-ssl-status').addEventListener('click', refreshSsl);
 
   document.getElementById('ddns-run').addEventListener('click', async () => {
     const res = await apiFetch('/api/ddns/run', { method: 'POST' });
@@ -363,6 +363,7 @@ async function loadInfrastructure() {
   await refreshInfra();
   await refreshDdns();
   await refreshPm2();
+  await refreshSsl();
 }
 
 loadInfrastructure();

@@ -1,3 +1,4 @@
+const infrastructureRoutes = require('./modules/infrastructure/routes/infrastructure.routes');
 const deploymentRoutes = require('./modules/deployments/routes/deployment.routes');
 const appRoutes = require('./modules/apps/routes/app.routes');
 const networkRoutes = require('./modules/network/routes/network.routes');
@@ -139,3 +140,5 @@ app.use('/api/network', networkRoutes);
 app.use('/api/apps', appRoutes);
 
 app.use('/api/deployments', deploymentRoutes);
+
+app.use('/api/infrastructure', infrastructureRoutes);
