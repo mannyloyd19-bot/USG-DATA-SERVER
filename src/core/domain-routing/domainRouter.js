@@ -1,47 +1,66 @@
 const Domain = require('../../modules/domains/models/domain.model');
 
+function stripPort(host = '') {
+  return String(host || '').split(':')[0].trim().toLowerCase();
+}
+
+function getForwardedHost(req) {
+  return stripPort(
+    req.headers['x-forwarded-host'] ||
+    req.headers['host'] ||
+    ''
+  );
+}
+
+function inferInternalDomainFromHost(host) {
+  if (!host) return null;
+
+  if (host.endsWith('.usg')) {
+    return host;
+  }
+
+  const parts = host.split('.');
+  if (parts.length >= 3) {
+    return `${parts[0]}.usg`;
+  }
+
+  return null;
+}
+
 async function domainRouter(req, res, next) {
   try {
-    let host = req.headers.host;
+    const host = getForwardedHost(req);
+    const internalCandidate = inferInternalDomainFromHost(host);
 
-    if (!host) return next();
-
-    // remove port
-    host = host.split(':')[0];
-
-    // handle subdomain (audit.usgdataserver.duckdns.org)
-    const parts = host.split('.');
-    
-    let subdomain = null;
-
-    if (parts.length >= 3) {
-      subdomain = parts[0]; // audit
+    if (!internalCandidate) {
+      return next();
     }
-
-    // handle internal .usg (dev/local)
-    if (host.endsWith('.usg')) {
-      subdomain = host.replace('.usg', '');
-    }
-
-    if (!subdomain) return next();
-
-    const domainName = subdomain + '.usg';
 
     const domain = await Domain.findOne({
-      where: { name: domainName, isActive: true }
+      where: {
+        name: internalCandidate,
+        isActive: true
+      }
     });
 
-    if (!domain) return next();
+    if (!domain) {
+      return next();
+    }
 
-    // rewrite URL
-    req.url = domain.target + req.url;
+    const originalUrl = req.url || '/';
+    const mappedBase = String(domain.target || '/').replace(/\/+$/, '') || '/';
+    const normalizedOriginal = originalUrl === '/' ? '' : originalUrl;
+    const rewritten = mappedBase === '/' ? normalizedOriginal || '/' : `${mappedBase}${normalizedOriginal}`;
 
-    console.log(`🌐 Domain routed: ${domain.name} → ${domain.target}`);
+    req.headers['x-usg-domain-name'] = domain.name;
+    req.headers['x-usg-domain-target'] = domain.target;
+    req.url = rewritten;
 
-    next();
+    console.log(`Domain routed: ${host} -> ${domain.name} -> ${rewritten}`);
+    return next();
   } catch (err) {
-    console.error('Domain routing error:', err);
-    next();
+    console.error('Domain routing error:', err.message);
+    return next();
   }
 }
 

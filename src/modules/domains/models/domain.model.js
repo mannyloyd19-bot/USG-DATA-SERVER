@@ -25,8 +25,35 @@ const Domain = sequelize.define('Domain', {
     type: DataTypes.STRING,
     allowNull: false
   },
+  internalHost: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  externalHost: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  publicPath: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  sslEnabled: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false
+  },
+  reverseProxyEnabled: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false
+  },
+  notes: {
+    type: DataTypes.TEXT,
+    allowNull: true
+  },
   isActive: {
     type: DataTypes.BOOLEAN,
+    allowNull: false,
     defaultValue: true
   }
 }, {
