@@ -65,7 +65,7 @@ exports.list = async (req, res) => {
     const rows = await Domain.findAll({ order: [['createdAt', 'DESC']] });
     return res.json({ success: true, domains: rows });
   } catch (error) {
-    console.error('[domains.list]', error);
+    console.error('[domains.list] error:', error);
     return res.status(500).json({ success: false, message: formatError(error) });
   }
 };
