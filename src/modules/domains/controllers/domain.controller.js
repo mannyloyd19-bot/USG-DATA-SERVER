@@ -37,9 +37,18 @@ function createDomainKey(name) {
   return `dom_${clean}_${rand}`;
 }
 
+function formatError(error) {
+  if (error?.name === 'SequelizeValidationError' && Array.isArray(error.errors)) {
+    return error.errors.map(e => e.message).join(', ');
+  }
+  if (error?.name === 'SequelizeUniqueConstraintError' && Array.isArray(error.errors)) {
+    return error.errors.map(e => e.message).join(', ');
+  }
+  return error?.message || 'Unknown error';
+}
+
 async function routeConflictExists(routePath, excludeId = null) {
-  const where = { routePath };
-  const rows = await Domain.findAll({ where });
+  const rows = await Domain.findAll({ where: { routePath } });
   return rows.some((r) => r.id !== excludeId && r.status === 'active');
 }
 
@@ -48,44 +57,39 @@ exports.list = async (req, res) => {
     const rows = await Domain.findAll({ order: [['createdAt', 'DESC']] });
     return res.json({ success: true, domains: rows });
   } catch (error) {
-    return res.status(500).json({ success: false, message: error.message });
+    return res.status(500).json({ success: false, message: formatError(error) });
   }
 };
 
 exports.create = async (req, res) => {
   try {
-    const {
-      name,
-      serviceName,
-      routePath,
-      accessMode,
-      environment,
-      notes
-    } = req.body || {};
+    const { name, serviceName, routePath, accessMode, environment, notes } = req.body || {};
 
     const finalName = normalizeName(name);
+    const finalService = String(serviceName || '').trim();
     const finalRoute = normalizeRoute(routePath);
+    const finalAccess = accessMode || 'internal';
+    const finalEnv = environment || 'production';
 
-    if (!finalName || !finalRoute || !serviceName) {
-      return res.status(400).json({
-        success: false,
-        message: 'Domain Name, Service Name, and Route Path are required'
-      });
+    if (!finalName) {
+      return res.status(400).json({ success: false, message: 'Domain Name is required' });
     }
 
     if (!finalName.endsWith('.usg')) {
-      return res.status(400).json({
-        success: false,
-        message: 'Domain Name must end with .usg'
-      });
+      return res.status(400).json({ success: false, message: 'Domain Name must end with .usg' });
+    }
+
+    if (!finalService) {
+      return res.status(400).json({ success: false, message: 'Service Name is required' });
+    }
+
+    if (!finalRoute) {
+      return res.status(400).json({ success: false, message: 'Route Path is required' });
     }
 
     const existing = await Domain.findOne({ where: { name: finalName } });
     if (existing) {
-      return res.status(400).json({
-        success: false,
-        message: 'Domain already exists'
-      });
+      return res.status(400).json({ success: false, message: 'Domain already exists' });
     }
 
     if (await routeConflictExists(finalRoute)) {
@@ -96,23 +100,22 @@ exports.create = async (req, res) => {
     }
 
     const item = await Domain.create({
-      id: crypto.randomUUID(),
       name: finalName,
-      serviceName: String(serviceName).trim(),
+      serviceName: finalService,
       routePath: finalRoute,
-      accessMode: accessMode || 'internal',
-      environment: environment || 'production',
+      accessMode: finalAccess,
+      environment: finalEnv,
       domainKey: createDomainKey(finalName),
-      publicAddress: buildPublicAddress(finalRoute, accessMode || 'internal'),
+      publicAddress: buildPublicAddress(finalRoute, finalAccess),
       routingMode: 'path',
       status: 'active',
-      sslStatus: (accessMode || 'internal') === 'public' ? 'pending' : 'not_required',
+      sslStatus: finalAccess === 'public' ? 'pending' : 'not_required',
       notes: notes || null
     });
 
     return res.json({ success: true, domain: item });
   } catch (error) {
-    return res.status(500).json({ success: false, message: error.message });
+    return res.status(500).json({ success: false, message: formatError(error) });
   }
 };
 
@@ -141,19 +144,19 @@ exports.update = async (req, res) => {
     }
 
     item.name = nextName;
-    if (payload.serviceName !== undefined) item.serviceName = String(payload.serviceName).trim();
+    if (payload.serviceName !== undefined) item.serviceName = String(payload.serviceName || '').trim();
     item.routePath = nextRoute;
     item.accessMode = nextAccess;
     if (payload.environment !== undefined) item.environment = payload.environment;
     if (payload.status !== undefined) item.status = payload.status;
     if (payload.notes !== undefined) item.notes = payload.notes || null;
     item.publicAddress = buildPublicAddress(item.routePath, item.accessMode);
-    item.sslStatus = item.accessMode === 'public' ? item.sslStatus || 'pending' : 'not_required';
+    item.sslStatus = item.accessMode === 'public' ? (item.sslStatus || 'pending') : 'not_required';
 
     await item.save();
     return res.json({ success: true, domain: item });
   } catch (error) {
-    return res.status(500).json({ success: false, message: error.message });
+    return res.status(500).json({ success: false, message: formatError(error) });
   }
 };
 
@@ -162,7 +165,7 @@ exports.remove = async (req, res) => {
     await Domain.destroy({ where: { id: req.params.id } });
     return res.json({ success: true });
   } catch (error) {
-    return res.status(500).json({ success: false, message: error.message });
+    return res.status(500).json({ success: false, message: formatError(error) });
   }
 };
 
@@ -193,6 +196,6 @@ exports.details = async (req, res) => {
       }
     });
   } catch (error) {
-    return res.status(500).json({ success: false, message: error.message });
+    return res.status(500).json({ success: false, message: formatError(error) });
   }
 };

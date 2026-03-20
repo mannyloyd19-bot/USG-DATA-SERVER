@@ -4,20 +4,31 @@ const sequelize = require('../../../core/database');
 const Domain = sequelize.define('Domain', {
   id: {
     type: DataTypes.STRING,
-    primaryKey: true
+    primaryKey: true,
+    allowNull: false,
+    defaultValue: DataTypes.UUIDV4
   },
   name: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false,
+    validate: {
+      notEmpty: { msg: 'Domain Name is required' }
+    }
   },
   serviceName: {
     type: DataTypes.STRING,
-    allowNull: true
+    allowNull: false,
+    validate: {
+      notEmpty: { msg: 'Service Name is required' }
+    }
   },
   routePath: {
     type: DataTypes.STRING,
     allowNull: false,
-    defaultValue: '/'
+    defaultValue: '/',
+    validate: {
+      notEmpty: { msg: 'Route Path is required' }
+    }
   },
   accessMode: {
     type: DataTypes.STRING,
