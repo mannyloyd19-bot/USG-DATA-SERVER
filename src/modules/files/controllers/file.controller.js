@@ -46,6 +46,8 @@ exports.uploadSingle = async (req, res) => {
       afterData: entry.toJSON()
     });
 
+    await fileRealtimeHooks.afterUpload(entry);
+
     return res.status(201).json(entry);
   } catch (error) {
     await auditService.writeLog({
@@ -94,8 +96,7 @@ exports.findOne = async (req, res) => {
       return res.status(404).json({ message: 'File not found' });
     }
 
-    return await fileRealtimeHooks.afterUpload(file);
-    res.json(file);
+    return res.json(file);
   } catch (error) {
     return res.status(500).json({
       message: 'Failed to fetch file',

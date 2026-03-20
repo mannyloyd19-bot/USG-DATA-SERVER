@@ -7,9 +7,17 @@ exports.stream = async (req, res) => {
     Connection: 'keep-alive'
   });
 
-  res.write(`event: connected\ndata: ${JSON.stringify({ ok: true, time: new Date().toISOString() })}\n\n`);
+  res.write(`event: connected\ndata: ${JSON.stringify({
+    ok: true,
+    time: new Date().toISOString(),
+    tenantId: req.tenantContext?.tenantId || null,
+    tenantSlug: req.tenantContext?.tenantSlug || null
+  })}\n\n`);
 
-  realtimeService.addClient(res);
+  realtimeService.addClient(res, {
+    tenantId: req.tenantContext?.tenantId || null,
+    tenantSlug: req.tenantContext?.tenantSlug || null
+  });
 
   req.on('close', () => {
     realtimeService.removeClient(res);

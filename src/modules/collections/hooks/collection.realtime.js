@@ -1,20 +1,11 @@
-const { getRealtime } = require('../../../realtime');
-
-function send(channel, payload = {}, options = {}) {
-  const realtime = getRealtime();
-  if (!realtime) return;
-  try {
-    realtime.broadcast(channel, payload, options);
-  } catch (error) {
-    console.error('collection realtime broadcast failed:', error.message);
-  }
-}
+const { broadcast } = require('../../../realtime/broadcast');
 
 exports.afterCreate = async (collection) => {
   const data = collection?.toJSON ? collection.toJSON() : collection;
-  send('collections.created', {
+  broadcast('collections.created', {
     collectionId: data?.id || null,
     name: data?.name || null,
+    key: data?.key || null,
     collection: data,
     time: Date.now()
   }, {
@@ -24,9 +15,10 @@ exports.afterCreate = async (collection) => {
 
 exports.afterUpdate = async (collection) => {
   const data = collection?.toJSON ? collection.toJSON() : collection;
-  send('collections.updated', {
+  broadcast('collections.updated', {
     collectionId: data?.id || null,
     name: data?.name || null,
+    key: data?.key || null,
     collection: data,
     time: Date.now()
   }, {
@@ -36,9 +28,10 @@ exports.afterUpdate = async (collection) => {
 
 exports.afterDelete = async (collection) => {
   const data = collection?.toJSON ? collection.toJSON() : collection;
-  send('collections.deleted', {
+  broadcast('collections.deleted', {
     collectionId: data?.id || null,
     name: data?.name || null,
+    key: data?.key || null,
     collection: data,
     time: Date.now()
   }, {

@@ -53,6 +53,7 @@ if (env.HELMET_ENABLED) {
 
 app.use(morgan(env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 app.use(express.json({ limit: '10mb' }));
+app.use(tenantContextMiddleware);
 app.use('/uploads', express.static(path.join(process.cwd(), 'storage', 'uploads')));
 app.use(express.static(path.join(process.cwd(), 'public')));
 
