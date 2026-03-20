@@ -111,6 +111,7 @@ exports.create = async (req, res) => {
     }
 
     const payload = {
+      id: crypto.randomUUID(),
       name: finalName,
       serviceName: finalService,
       routePath: finalRoute,
