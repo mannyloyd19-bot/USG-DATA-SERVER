@@ -149,3 +149,5 @@ process.on('unhandledRejection', (error) => {
 start();
 
 require('./modules/domains/models/domain.model');
+
+require('./modules/infrastructure/models/infrastructure-config.model');
