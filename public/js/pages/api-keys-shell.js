@@ -16,12 +16,16 @@ function parseCsv(value) {
 
 async function loadApiKeys() {
   const content = document.getElementById('page-content');
+  const tenant = getCurrentTenant();
+
   content.innerHTML = `
     <div class="grid-2">
       <section class="card">
         <div class="kicker">ACCESS TOKENS</div>
         <h2>API Keys Advanced</h2>
-        <form id="api-key-form">
+        <div class="muted">${tenant?.slug ? 'Tenant-scoped: ' + tenant.slug : 'Global scope (no tenant selected)'}</div>
+
+        <form id="api-key-form" style="margin-top:14px">
           <input id="api-key-name" placeholder="API key name" required>
           <input id="api-key-owner" placeholder="Owner / team / app">
           <input id="api-key-purpose" placeholder="Purpose">
@@ -45,23 +49,13 @@ async function loadApiKeys() {
             </select>
           </div>
 
-          <input id="api-key-scopes" placeholder="Scopes, comma-separated (example: collections.read,records.write,files.*)">
-          <input id="api-key-ip-whitelist" placeholder="IP whitelist, comma-separated (example: 192.168.1.10,10.0.0.5)">
+          <input id="api-key-scopes" placeholder="Scopes, comma-separated">
+          <input id="api-key-ip-whitelist" placeholder="IP whitelist, comma-separated">
 
           <div class="actions">
             <button class="primary-btn" type="submit">Create API Key</button>
           </div>
         </form>
-
-        <div class="kicker" style="margin-top:18px">WIRING GUIDE</div>
-        <div class="list-card">
-          <strong>Public Key (pk)</strong><br>
-          <span class="muted">Use only for limited public/read access. Do not use for admin or write flows.</span>
-        </div>
-        <div class="list-card">
-          <strong>Secret Key (sk)</strong><br>
-          <span class="muted">Use on backend/server only for protected write/admin integrations.</span>
-        </div>
       </section>
 
       <section class="card">
@@ -95,11 +89,10 @@ async function loadApiKeys() {
               <strong>${item.name || 'Unnamed Key'}</strong><br>
               <span class="muted">${item.maskedKey || ''}</span><br>
               <span class="muted">type: ${item.keyType || 'sk'} · env: ${item.environment || 'live'} · role: ${item.role || '-'}</span><br>
-              <span class="muted">owner: ${item.owner || '-'} · purpose: ${item.purpose || '-'}</span><br>
+              <span class="muted">tenantId: ${item.tenantId || 'global'} · owner: ${item.owner || '-'} · purpose: ${item.purpose || '-'}</span><br>
               <span class="muted">expires: ${item.expiresAt ? new Date(item.expiresAt).toLocaleString() : 'never'}</span><br>
-              <span class="muted">usage count: ${item.usageCount ?? 0} · last used: ${item.lastUsedAt ? new Date(item.lastUsedAt).toLocaleString() : 'never'} · last IP: ${item.lastUsedIp || '-'}</span><br>
-              <span class="muted">scopes: ${(item.scopes || []).join(', ') || '-'}</span><br>
-              <span class="muted">IP whitelist: ${(item.ipWhitelist || []).join(', ') || '-'}</span>
+              <span class="muted">usage count: ${item.usageCount ?? 0}</span><br>
+              <span class="muted">scopes: ${(item.scopes || []).join(', ') || '-'}</span>
             </div>
             <div class="badge ${badgeClass(item.status)}">
               <span class="badge-dot"></span>${item.status || 'active'}
@@ -224,16 +217,10 @@ async function loadApiKeys() {
 
       createdBox.textContent = JSON.stringify({
         name: data.name,
+        tenantId: data.tenantId,
         keyType: data.keyType,
         environment: data.environment,
-        role: data.role,
-        owner: data.owner,
-        purpose: data.purpose,
-        scopes: data.scopes,
-        ipWhitelist: data.ipWhitelist,
-        rawKey: data.rawKey,
-        expiresAt: data.expiresAt,
-        status: data.status
+        rawKey: data.rawKey
       }, null, 2);
 
       form.reset();

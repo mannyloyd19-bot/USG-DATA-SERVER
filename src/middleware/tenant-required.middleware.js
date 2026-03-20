@@ -2,6 +2,7 @@ const TenantMembership = require('../modules/tenantMemberships/models/tenant-mem
 
 module.exports = function tenantRequired(options = {}) {
   const requireMembership = options.requireMembership !== false;
+  const allowApiKeys = options.allowApiKeys !== false;
 
   return async function (req, res, next) {
     try {
@@ -20,8 +21,25 @@ module.exports = function tenantRequired(options = {}) {
         });
       }
 
-      // super_admin bypass
       if (req.user.role === 'super_admin') {
+        return next();
+      }
+
+      if (req.authType === 'api_key') {
+        if (!allowApiKeys) {
+          return res.status(403).json({
+            success: false,
+            message: 'API key access is not allowed for this tenant route'
+          });
+        }
+
+        if (req.apiKey?.tenantId && req.apiKey.tenantId !== tenantId) {
+          return res.status(403).json({
+            success: false,
+            message: 'API key tenant mismatch'
+          });
+        }
+
         return next();
       }
 
@@ -32,7 +50,7 @@ module.exports = function tenantRequired(options = {}) {
       if (!req.user.id) {
         return res.status(403).json({
           success: false,
-          message: 'API key or anonymous user has no tenant membership binding'
+          message: 'User has no tenant membership binding'
         });
       }
 

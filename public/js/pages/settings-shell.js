@@ -3,12 +3,15 @@ USGShell.buildShell();
 
 async function loadSettings() {
   const content = document.getElementById('page-content');
+  const tenant = getCurrentTenant();
+
   content.innerHTML = `
     <div class="grid-2">
       <section class="card">
         <div class="kicker">CONFIGURATION</div>
         <h2>Save Setting</h2>
-        <form id="setting-form">
+        <div class="muted">${tenant?.slug ? 'Tenant-scoped: ' + tenant.slug : 'Global scope (no tenant selected)'}</div>
+        <form id="setting-form" style="margin-top:14px">
           <input id="setting-key" placeholder="Setting key, e.g. app.theme" required>
           <input id="setting-group" placeholder="Group, e.g. general">
           <input id="setting-label" placeholder="Label">
@@ -42,14 +45,17 @@ async function loadSettings() {
       const settings = await settingsRes.json();
       const sysInfo = await sysRes.json();
 
-      sys.textContent = JSON.stringify(sysInfo, null, 2);
+      sys.textContent = JSON.stringify({
+        tenant: tenant || null,
+        health: sysInfo
+      }, null, 2);
 
       const rows = Array.isArray(settings) ? settings : [];
       list.innerHTML = rows.map(item => `
         <div class="list-card">
           <strong>${item.label || item.key}</strong><br>
           <span class="muted">${item.key}</span><br>
-          <span class="muted">group: ${item.group || '-'}</span>
+          <span class="muted">group: ${item.group || '-'} · tenantId: ${item.tenantId || 'global'}</span>
           <pre class="code-block">${typeof item.value === 'string' ? item.value : JSON.stringify(item.value, null, 2)}</pre>
         </div>
       `).join('') || '<div class="muted">No settings found.</div>';

@@ -48,6 +48,10 @@ function buildFormattedKey({ keyType = 'sk', environment = 'live' }) {
   return `usg_${keyType}_${environment}_${random}`;
 }
 
+function getTenantId(req) {
+  return req.tenantContext?.tenantId || null;
+}
+
 exports.create = async (req, res) => {
   try {
     const {
@@ -83,6 +87,7 @@ exports.create = async (req, res) => {
     });
 
     const item = await ApiKey.create({
+      tenantId: getTenantId(req),
       name,
       role: role || 'admin',
       purpose: purpose || null,
@@ -109,7 +114,11 @@ exports.create = async (req, res) => {
 
 exports.findAll = async (req, res) => {
   try {
+    const tenantId = getTenantId(req);
+    const where = tenantId ? { tenantId } : { tenantId: null };
+
     const items = await ApiKey.findAll({
+      where,
       order: [['createdAt', 'DESC']]
     });
 
@@ -124,7 +133,12 @@ exports.findAll = async (req, res) => {
 
 exports.updateStatus = async (req, res) => {
   try {
-    const item = await ApiKey.findByPk(req.params.id);
+    const tenantId = getTenantId(req);
+    const where = { id: req.params.id };
+    if (tenantId) where.tenantId = tenantId;
+    else where.tenantId = null;
+
+    const item = await ApiKey.findOne({ where });
     if (!item) {
       return res.status(404).json({ message: 'API key not found' });
     }
@@ -151,7 +165,12 @@ exports.updateStatus = async (req, res) => {
 
 exports.rotate = async (req, res) => {
   try {
-    const item = await ApiKey.findByPk(req.params.id);
+    const tenantId = getTenantId(req);
+    const where = { id: req.params.id };
+    if (tenantId) where.tenantId = tenantId;
+    else where.tenantId = null;
+
+    const item = await ApiKey.findOne({ where });
     if (!item) {
       return res.status(404).json({ message: 'API key not found' });
     }
@@ -178,7 +197,12 @@ exports.rotate = async (req, res) => {
 
 exports.remove = async (req, res) => {
   try {
-    const item = await ApiKey.findByPk(req.params.id);
+    const tenantId = getTenantId(req);
+    const where = { id: req.params.id };
+    if (tenantId) where.tenantId = tenantId;
+    else where.tenantId = null;
+
+    const item = await ApiKey.findOne({ where });
     if (!item) {
       return res.status(404).json({ message: 'API key not found' });
     }

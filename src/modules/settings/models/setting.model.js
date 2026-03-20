@@ -7,6 +7,10 @@ const Setting = sequelize.define('Setting', {
     defaultValue: DataTypes.UUIDV4,
     primaryKey: true
   },
+  tenantId: {
+    type: DataTypes.UUID,
+    allowNull: true
+  },
   key: {
     type: DataTypes.STRING,
     allowNull: false,
