@@ -1,3 +1,4 @@
+const backupSystemRoutes = require('./modules/backupSystem/routes/backup-system.routes');
 const systemMetricsRoutes = require('./modules/infrastructure/routes/system-metrics.routes');
 const systemAuditRoutes = require('./modules/systemAudit/routes/system-audit.routes');
 const infrastructureRoutes = require('./modules/infrastructure/routes/infrastructure.routes');
@@ -148,3 +149,5 @@ app.use('/api/infrastructure', infrastructureRoutes);
 app.use('/api/system-audit', systemAuditRoutes);
 
 app.use('/api/system', systemMetricsRoutes);
+
+app.use('/api/backup-system', backupSystemRoutes);

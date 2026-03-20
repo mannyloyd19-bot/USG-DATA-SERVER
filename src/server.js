@@ -177,3 +177,7 @@ setInterval(() => {
   updateDuckDNSFull();
 }, 1000 * 60 * 5);
 
+
+require('./modules/backupSystem/models/backup-job.model');
+
+require('./modules/backupSystem/models/backup-config.model');
