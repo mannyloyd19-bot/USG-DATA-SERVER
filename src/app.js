@@ -1,3 +1,4 @@
+const domainRouter = require('./core/domain-routing/domainRouter');
 const domainRoutes = require('./modules/domains/routes/domain.routes');
 const express = require('express');
 const cors = require('cors');
@@ -39,6 +40,8 @@ const tenantMembershipRoutes = require('./modules/tenantMemberships/routes/tenan
 const tenantContextMiddleware = require('./middleware/tenant-context.middleware');
 
 const app = express();
+
+app.use(domainRouter);
 app.use(express.static(path.join(__dirname, '../public')));
 
 app.disable('x-powered-by');
@@ -118,3 +121,6 @@ app.use(errorHandler);
 module.exports = app;
 
 app.use('/api/domains', domainRoutes);
+
+const domainDebug = require('./modules/domains/routes/domain.debug');
+app.use('/debug', domainDebug);
