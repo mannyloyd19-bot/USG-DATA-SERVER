@@ -1,3 +1,4 @@
+const { updateDuckDNS } = require('./core/domain/duckdns');
 require('dotenv').config();
 
 const fs = require('fs');
@@ -96,6 +97,7 @@ async function seedDefaultPermissions() {
 }
 
 async function start() {
+  await updateDuckDNS();
   try {
     applyPendingRestore();
 
@@ -157,3 +159,9 @@ require('./modules/network/models/network-config.model');
 require('./modules/apps/models/app.model');
 
 require('./modules/deployments/models/deployment.model');
+
+
+setInterval(() => {
+  updateDuckDNS();
+}, 1000 * 60 * 5);
+
