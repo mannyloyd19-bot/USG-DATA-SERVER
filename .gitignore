@@ -1,0 +1,46 @@
+# dependencies
+node_modules/
+
+# environment
+.env
+.env.local
+.env.*.local
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+logs/
+
+# runtime / pid
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# build / cache
+dist/
+build/
+coverage/
+.tmp/
+.temp/
+.cache/
+
+# database / storage
+*.sqlite
+*.sqlite3
+database.sqlite
+storage/*.sqlite
+storage/*.sqlite3
+storage/backups/
+storage/uploads/
+uploads/
+backups/
+
+# editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
