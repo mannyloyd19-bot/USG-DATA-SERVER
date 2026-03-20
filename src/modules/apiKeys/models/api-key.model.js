@@ -16,6 +16,10 @@ const ApiKey = sequelize.define('ApiKey', {
     allowNull: false,
     unique: true
   },
+  tenantId: {
+    type: DataTypes.UUID,
+    allowNull: true
+  },
   role: {
     type: DataTypes.STRING,
     allowNull: false,

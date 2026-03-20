@@ -29,6 +29,7 @@ require('./modules/functions/models/function.model');
 require('./modules/installer/models/install-state.model');
 require('./modules/apiKeyLogs/models/api-key-log.model');
 require('./modules/dbMigration/models/db-migration-state.model');
+require('./modules/tenants/models/tenant.model');
 
 let server = null;
 

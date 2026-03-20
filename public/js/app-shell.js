@@ -1,6 +1,7 @@
 (function () {
   const NAV = [
     ['/index.html','🏠','Dashboard'],
+    ['/pages/tenants.html','🏢','Tenants'],
     ['/pages/permissions-pro.html','🛡','Permissions'],
     ['/pages/users.html','👤','Users'],
     ['/pages/collections.html','📦','Collections'],
@@ -8,6 +9,7 @@
     ['/pages/files.html','📁','Files'],
     ['/pages/api-keys.html','🔑','API Keys'],
     ['/pages/api-key-logs.html','🧠','API Key Logs'],
+    ['/pages/api-key-analytics.html','📈','API Key Analytics'],
     ['/pages/relational.html','🗂','Relational'],
     ['/pages/relationships.html','🔗','Relations'],
     ['/pages/webhooks.html','🪝','Webhooks'],
@@ -37,10 +39,58 @@
     setTheme(getTheme() === 'dark' ? 'light' : 'dark');
   }
 
+  function getCurrentTenant() {
+    try {
+      return JSON.parse(localStorage.getItem('usg_current_tenant') || 'null');
+    } catch {
+      return null;
+    }
+  }
+
+  function setCurrentTenant(tenant) {
+    localStorage.setItem('usg_current_tenant', JSON.stringify(tenant || null));
+  }
+
+  async function loadTenantOptions() {
+    const select = document.getElementById('tenant-switcher');
+    if (!select || typeof window.apiFetch !== 'function') return;
+
+    try {
+      const res = await window.apiFetch('/api/tenants');
+      const rows = await res.json();
+      const list = Array.isArray(rows) ? rows : [];
+      const current = getCurrentTenant();
+
+      select.innerHTML =
+        '<option value="">No Tenant Selected</option>' +
+        list.map(t => `<option value="${t.id}" data-slug="${t.slug}">${t.name} (${t.slug})</option>`).join('');
+
+      if (current?.id) {
+        select.value = current.id;
+      }
+
+      select.addEventListener('change', () => {
+        const option = select.options[select.selectedIndex];
+        if (!select.value) {
+          setCurrentTenant(null);
+          return;
+        }
+
+        setCurrentTenant({
+          id: select.value,
+          slug: option.getAttribute('data-slug') || '',
+          name: option.textContent
+        });
+        location.reload();
+      });
+    } catch {}
+  }
+
   function logoutNow() {
     try {
       localStorage.removeItem('usg_token');
       localStorage.removeItem('usg_user');
+      localStorage.removeItem('usg_current_tenant');
       sessionStorage.clear();
     } catch {}
     location.replace('/login.html');
@@ -51,6 +101,7 @@
     if (!shell) return;
 
     const current = location.pathname === '/' ? '/index.html' : location.pathname;
+    const tenant = getCurrentTenant();
 
     shell.innerHTML = `
       <aside class="sidebar">
@@ -81,11 +132,14 @@
 
       <main class="main">
         <div class="topbar">
-          <button class="theme-btn" type="button" data-theme-btn>Dark Mode</button>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+            <button class="theme-btn" type="button" data-theme-btn>Dark Mode</button>
+            <select id="tenant-switcher" style="min-width:240px;margin:0"></select>
+          </div>
           <div class="badges">
             <div class="badge ok"><span class="badge-dot"></span> System Online</div>
             <div class="badge"><span class="badge-dot"></span> Private Platform</div>
-            <div class="badge warn"><span class="badge-dot"></span> Admin Mode</div>
+            <div class="badge warn"><span class="badge-dot"></span> ${tenant?.slug ? 'Tenant: ' + tenant.slug : 'No Tenant'}</div>
           </div>
         </div>
         <div id="page-content"></div>
@@ -96,6 +150,7 @@
     const themeBtn = document.querySelector('[data-theme-btn]');
     if (themeBtn) themeBtn.addEventListener('click', toggleTheme);
     setTheme(getTheme());
+    loadTenantOptions();
   }
 
   function setupRawToggles(scope = document) {
@@ -121,5 +176,10 @@
     });
   }
 
-  window.USGShell = { buildShell, setupRawToggles };
+  window.USGShell = {
+    buildShell,
+    setupRawToggles,
+    getCurrentTenant,
+    setCurrentTenant
+  };
 })();
