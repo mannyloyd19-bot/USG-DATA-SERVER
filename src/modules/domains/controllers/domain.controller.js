@@ -1,209 +1,169 @@
 const Domain = require('../models/domain.model');
 
-function normalizeName(value = '') {
-  return String(value || '').trim().toLowerCase();
+function normalizeRoute(value = '') {
+  const v = String(value || '').trim();
+  if (!v) return '/';
+  return v.startsWith('/') ? v : `/${v}`;
 }
 
-function normalizePath(value = '') {
-  const raw = String(value || '').trim();
-  if (!raw) return '/';
-  return raw.startsWith('/') ? raw : `/${raw}`;
+function buildPublicUrl(route, type) {
+  if (type !== 'public') return 'Internal Only';
+  const base = process.env.DUCKDNS_DOMAIN
+    ? `https://${process.env.DUCKDNS_DOMAIN}.duckdns.org`
+    : 'https://usgdataserver.duckdns.org';
+  return `${base}${route}`;
 }
 
-function buildPublicPreview(domain) {
-  if (domain.externalHost) {
-    return `${domain.sslEnabled ? 'https' : 'http'}://${domain.externalHost}${domain.publicPath || ''}`;
-  }
-  return null;
+function createDomainKey(name = '') {
+  const clean = String(name || '').replace(/[^a-z0-9]/gi, '').toLowerCase().slice(0, 10);
+  const rand = Math.random().toString(36).slice(2, 8);
+  return `dom_${clean}_${rand}`;
 }
 
-function buildInternalPreview(domain) {
-  return `${domain.internalHost || domain.name} -> ${domain.target}`;
-}
-
-function buildNginxPreview(domain) {
-  const host = domain.externalHost || 'service.example.com';
-  const target = domain.target || '/';
-  return [
-    'server {',
-    '    listen 80;',
-    `    server_name ${host};`,
-    '',
-    '    location / {',
-    `        proxy_pass http://127.0.0.1:3000${target};`,
-    '        proxy_set_header Host $host;',
-    '        proxy_set_header X-Real-IP $remote_addr;',
-    '        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;',
-    '        proxy_set_header X-Forwarded-Proto $scheme;',
-    '    }',
-    '}'
-  ].join('\n');
-}
-
-exports.getDomains = async (req, res) => {
+exports.getAll = async (req, res) => {
   try {
-    const domains = await Domain.findAll({
+    const rows = await Domain.findAll({
       order: [['createdAt', 'DESC']]
     });
 
     return res.json({
       success: true,
-      domains: domains.map(item => {
-        const json = item.toJSON();
-        return {
-          ...json,
-          internalPreview: buildInternalPreview(json),
-          publicPreview: buildPublicPreview(json),
-          nginxPreview: buildNginxPreview(json)
-        };
-      })
+      domains: rows
     });
-  } catch (err) {
+  } catch (error) {
     return res.status(500).json({
       success: false,
-      message: err.message
+      message: error.message
     });
   }
 };
 
-exports.createDomain = async (req, res) => {
+exports.create = async (req, res) => {
   try {
-    const {
-      name,
-      type,
-      targetType,
-      target,
-      internalHost,
-      externalHost,
-      publicPath,
-      sslEnabled,
-      reverseProxyEnabled,
-      notes
-    } = req.body || {};
+    const { name, route, type, notes } = req.body || {};
 
-    if (!name || !target) {
+    if (!name || !route) {
       return res.status(400).json({
         success: false,
-        message: 'name and target are required'
+        message: 'Domain name and app route are required'
       });
     }
 
-    const finalName = normalizeName(name);
-    const exists = await Domain.findOne({ where: { name: finalName } });
+    const exists = await Domain.findOne({
+      where: { name: String(name).trim().toLowerCase() }
+    });
 
     if (exists) {
       return res.status(400).json({
         success: false,
-        message: 'domain already exists'
+        message: 'Domain already exists'
       });
     }
 
-    const domain = await Domain.create({
-      name: finalName,
-      type: type || 'internal',
-      targetType: targetType || 'route',
-      target: normalizePath(target),
-      internalHost: normalizeName(internalHost || finalName),
-      externalHost: normalizeName(externalHost || ''),
-      publicPath: normalizePath(publicPath || '/'),
-      sslEnabled: !!sslEnabled,
-      reverseProxyEnabled: !!reverseProxyEnabled,
-      notes: notes || null,
-      isActive: true
+    const normalizedName = String(name).trim().toLowerCase();
+    const normalizedRoute = normalizeRoute(route);
+    const finalType = type || 'internal';
+
+    const item = await Domain.create({
+      name: normalizedName,
+      route: normalizedRoute,
+      type: finalType,
+      domainKey: createDomainKey(normalizedName),
+      publicUrl: buildPublicUrl(normalizedRoute, finalType),
+      status: 'active',
+      notes: notes || null
     });
 
-    const json = domain.toJSON();
     return res.json({
       success: true,
-      domain: {
-        ...json,
-        internalPreview: buildInternalPreview(json),
-        publicPreview: buildPublicPreview(json),
-        nginxPreview: buildNginxPreview(json)
-      }
+      domain: item
     });
-  } catch (err) {
+  } catch (error) {
     return res.status(500).json({
       success: false,
-      message: err.message
+      message: error.message
     });
   }
 };
 
-exports.updateDomain = async (req, res) => {
+exports.update = async (req, res) => {
   try {
-    const domain = await Domain.findByPk(req.params.id);
-    if (!domain) {
+    const item = await Domain.findByPk(req.params.id);
+
+    if (!item) {
       return res.status(404).json({
         success: false,
-        message: 'domain not found'
+        message: 'Domain not found'
       });
     }
 
-    const fields = req.body || {};
+    const payload = req.body || {};
 
-    if (fields.name !== undefined) domain.name = normalizeName(fields.name);
-    if (fields.type !== undefined) domain.type = fields.type || 'internal';
-    if (fields.targetType !== undefined) domain.targetType = fields.targetType || 'route';
-    if (fields.target !== undefined) domain.target = normalizePath(fields.target);
-    if (fields.internalHost !== undefined) domain.internalHost = normalizeName(fields.internalHost || '');
-    if (fields.externalHost !== undefined) domain.externalHost = normalizeName(fields.externalHost || '');
-    if (fields.publicPath !== undefined) domain.publicPath = normalizePath(fields.publicPath || '/');
-    if (fields.sslEnabled !== undefined) domain.sslEnabled = !!fields.sslEnabled;
-    if (fields.reverseProxyEnabled !== undefined) domain.reverseProxyEnabled = !!fields.reverseProxyEnabled;
-    if (fields.notes !== undefined) domain.notes = fields.notes || null;
-    if (fields.isActive !== undefined) domain.isActive = !!fields.isActive;
+    if (payload.name !== undefined) item.name = String(payload.name).trim().toLowerCase();
+    if (payload.route !== undefined) item.route = normalizeRoute(payload.route);
+    if (payload.type !== undefined) item.type = payload.type;
+    if (payload.notes !== undefined) item.notes = payload.notes || null;
+    if (payload.status !== undefined) item.status = payload.status;
 
-    await domain.save();
+    item.publicUrl = buildPublicUrl(item.route, item.type);
 
-    const json = domain.toJSON();
+    await item.save();
+
     return res.json({
       success: true,
-      domain: {
-        ...json,
-        internalPreview: buildInternalPreview(json),
-        publicPreview: buildPublicPreview(json),
-        nginxPreview: buildNginxPreview(json)
-      }
+      domain: item
     });
-  } catch (err) {
+  } catch (error) {
     return res.status(500).json({
       success: false,
-      message: err.message
+      message: error.message
     });
   }
 };
 
-exports.deleteDomain = async (req, res) => {
+exports.deleteOne = async (req, res) => {
   try {
-    await Domain.destroy({ where: { id: req.params.id } });
+    await Domain.destroy({
+      where: { id: req.params.id }
+    });
+
     return res.json({ success: true });
-  } catch (err) {
+  } catch (error) {
     return res.status(500).json({
       success: false,
-      message: err.message
+      message: error.message
     });
   }
 };
 
-exports.nginxPreview = async (req, res) => {
+exports.preview = async (req, res) => {
   try {
-    const domain = await Domain.findByPk(req.params.id);
-    if (!domain) {
+    const item = await Domain.findByPk(req.params.id);
+
+    if (!item) {
       return res.status(404).json({
         success: false,
-        message: 'domain not found'
+        message: 'Domain not found'
       });
     }
 
     return res.json({
       success: true,
-      preview: buildNginxPreview(domain.toJSON())
+      preview: {
+        internalDomain: item.name,
+        appRoute: item.route,
+        publicWebsiteAddress: item.publicUrl,
+        domainKey: item.domainKey,
+        status: item.status,
+        subdomainReadyExample: process.env.DUCKDNS_DOMAIN
+          ? `https://${item.name.replace('.usg', '')}.${process.env.DUCKDNS_DOMAIN}.duckdns.org`
+          : `https://${item.name.replace('.usg', '')}.usgdataserver.duckdns.org`
+      }
     });
-  } catch (err) {
+  } catch (error) {
     return res.status(500).json({
       success: false,
-      message: err.message
+      message: error.message
     });
   }
 };

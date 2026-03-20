@@ -11,50 +11,32 @@ const Domain = sequelize.define('Domain', {
     type: DataTypes.STRING,
     allowNull: false
   },
+  route: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    defaultValue: '/'
+  },
   type: {
     type: DataTypes.STRING,
     allowNull: false,
     defaultValue: 'internal'
   },
-  targetType: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    defaultValue: 'route'
-  },
-  target: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  internalHost: {
+  domainKey: {
     type: DataTypes.STRING,
     allowNull: true
   },
-  externalHost: {
+  publicUrl: {
     type: DataTypes.STRING,
     allowNull: true
   },
-  publicPath: {
+  status: {
     type: DataTypes.STRING,
-    allowNull: true
-  },
-  sslEnabled: {
-    type: DataTypes.BOOLEAN,
     allowNull: false,
-    defaultValue: false
-  },
-  reverseProxyEnabled: {
-    type: DataTypes.BOOLEAN,
-    allowNull: false,
-    defaultValue: false
+    defaultValue: 'active'
   },
   notes: {
     type: DataTypes.TEXT,
     allowNull: true
-  },
-  isActive: {
-    type: DataTypes.BOOLEAN,
-    allowNull: false,
-    defaultValue: true
   }
 }, {
   tableName: 'domains',

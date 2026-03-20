@@ -5,10 +5,10 @@ const auth = require('../../../middleware/auth.middleware');
 
 router.use(auth);
 
-router.get('/', controller.getDomains);
-router.post('/', controller.createDomain);
-router.put('/:id', controller.updateDomain);
-router.get('/:id/nginx-preview', controller.nginxPreview);
-router.delete('/:id', controller.deleteDomain);
+router.get('/', controller.getAll);
+router.post('/', controller.create);
+router.put('/:id', controller.update);
+router.get('/:id/preview', controller.preview);
+router.delete('/:id', controller.deleteOne);
 
 module.exports = router;
