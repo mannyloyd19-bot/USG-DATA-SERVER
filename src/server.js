@@ -151,3 +151,5 @@ start();
 require('./modules/domains/models/domain.model');
 
 require('./modules/infrastructure/models/infrastructure-config.model');
+
+require('./modules/network/models/network-config.model');

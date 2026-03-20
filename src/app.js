@@ -1,3 +1,4 @@
+const networkRoutes = require('./modules/network/routes/network.routes');
 const runtimeRoutes = require('./modules/runtime/routes/runtime.routes');
 const ddnsRoutes = require('./modules/ddns/routes/ddns.routes');
 const domainRouter = require('./core/domain-routing/domainRouter');
@@ -130,3 +131,5 @@ app.use('/debug', domainDebug);
 app.use('/api/ddns', ddnsRoutes);
 
 app.use('/api/runtime', runtimeRoutes);
+
+app.use('/api/network', networkRoutes);
