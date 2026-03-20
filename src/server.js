@@ -1,3 +1,4 @@
+const { ensureDomainsTable } = require('./modules/domains/services/domain-migrate');
 const { updateDuckDNSFull } = require('./core/domain/duckdns-ipv6');
 const { updateDuckDNS } = require('./core/domain/duckdns');
 require('dotenv').config();
@@ -98,6 +99,7 @@ async function seedDefaultPermissions() {
 }
 
 async function start() {
+  await ensureDomainsTable();
   await updateDuckDNS();
   try {
     applyPendingRestore();

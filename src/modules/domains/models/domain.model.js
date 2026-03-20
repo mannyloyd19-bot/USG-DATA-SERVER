@@ -3,36 +3,54 @@ const sequelize = require('../../../core/database');
 
 const Domain = sequelize.define('Domain', {
   id: {
-    type: DataTypes.UUID,
-    defaultValue: DataTypes.UUIDV4,
+    type: DataTypes.STRING,
     primaryKey: true
   },
   name: {
     type: DataTypes.STRING,
     allowNull: false
   },
-  route: {
+  serviceName: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  routePath: {
     type: DataTypes.STRING,
     allowNull: false,
     defaultValue: '/'
   },
-  type: {
+  accessMode: {
     type: DataTypes.STRING,
     allowNull: false,
     defaultValue: 'internal'
+  },
+  environment: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    defaultValue: 'production'
   },
   domainKey: {
     type: DataTypes.STRING,
     allowNull: true
   },
-  publicUrl: {
+  publicAddress: {
     type: DataTypes.STRING,
     allowNull: true
+  },
+  routingMode: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    defaultValue: 'path'
   },
   status: {
     type: DataTypes.STRING,
     allowNull: false,
     defaultValue: 'active'
+  },
+  sslStatus: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    defaultValue: 'pending'
   },
   notes: {
     type: DataTypes.TEXT,
