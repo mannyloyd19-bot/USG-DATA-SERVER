@@ -11,6 +11,8 @@ const runtimeRoutes = require('./modules/runtime/routes/runtime.routes');
 const ddnsRoutes = require('./modules/ddns/routes/ddns.routes');
 const domainRouter = require('./core/domain-routing/domainRouter');
 const domainRoutes = require('./modules/domains/routes/domain.routes');
+const domainDebug = require('./modules/domains/routes/domain.debug');
+
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -51,7 +53,10 @@ const tenantMembershipRoutes = require('./modules/tenantMemberships/routes/tenan
 const tenantContextMiddleware = require('./middleware/tenant-context.middleware');
 
 const app = express();
+
 app.use(express.static(path.join(__dirname, '../public')));
+app.use(express.static(path.join(process.cwd(), 'public')));
+app.use('/uploads', express.static(path.join(process.cwd(), 'storage', 'uploads')));
 
 app.use(domainRouter);
 
@@ -69,8 +74,6 @@ if (env.HELMET_ENABLED) {
 app.use(morgan(env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 app.use(express.json({ limit: '10mb' }));
 app.use(tenantContextMiddleware);
-app.use('/uploads', express.static(path.join(process.cwd(), 'storage', 'uploads')));
-app.use(express.static(path.join(process.cwd(), 'public')));
 
 app.get('/health', (req, res) => {
   res.json({
@@ -126,34 +129,21 @@ app.use('/api/tenants', tenantRoutes);
 app.use('/api/tenant-memberships', tenantMembershipRoutes);
 app.use('/sdk', sdkRoutes);
 
+app.use('/api/domains', domainRoutes);
+app.use('/debug', domainDebug);
+app.use('/api/ddns', ddnsRoutes);
+app.use('/api/runtime', runtimeRoutes);
+app.use('/api/network', networkRoutes);
+app.use('/api/apps', appRoutes);
+app.use('/api/deployments', deploymentRoutes);
+app.use('/api/infrastructure', infrastructureRoutes);
+app.use('/api/system-audit', systemAuditRoutes);
+app.use('/api/system-metrics', systemMetricsRoutes);
+app.use('/api/backup-system', backupSystemRoutes);
+app.use('/api/indexes', indexRoutes);
+app.use('/api/collection-stats', collectionStatsRoutes);
+
 app.use(notFoundHandler);
 app.use(errorHandler);
 
 module.exports = app;
-
-app.use('/api/domains', domainRoutes);
-
-const domainDebug = require('./modules/domains/routes/domain.debug');
-app.use('/debug', domainDebug);
-
-app.use('/api/ddns', ddnsRoutes);
-
-app.use('/api/runtime', runtimeRoutes);
-
-app.use('/api/network', networkRoutes);
-
-app.use('/api/apps', appRoutes);
-
-app.use('/api/deployments', deploymentRoutes);
-
-app.use('/api/infrastructure', infrastructureRoutes);
-
-app.use('/api/system-audit', systemAuditRoutes);
-
-app.use('/api/system', systemMetricsRoutes);
-
-app.use('/api/backup-system', backupSystemRoutes);
-
-app.use('/api/indexes', indexRoutes);
-
-app.use('/api/collection-stats', collectionStatsRoutes);
