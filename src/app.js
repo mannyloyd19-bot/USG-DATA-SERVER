@@ -51,9 +51,9 @@ const tenantMembershipRoutes = require('./modules/tenantMemberships/routes/tenan
 const tenantContextMiddleware = require('./middleware/tenant-context.middleware');
 
 const app = express();
+app.use(express.static(path.join(__dirname, '../public')));
 
 app.use(domainRouter);
-app.use(express.static(path.join(__dirname, '../public')));
 
 app.disable('x-powered-by');
 app.use(requestIdMiddleware);
