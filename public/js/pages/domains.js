@@ -1,6 +1,44 @@
 requireAuth();
 USGShell.buildShell();
 
+function showError(message) {
+  window.USGIOSAlert.show({
+    title: 'Domain Create Failed',
+    message: message || 'Unknown error',
+    type: 'error'
+  });
+}
+
+function showInfo(title, message) {
+  window.USGIOSAlert.show({
+    title,
+    message,
+    type: 'info'
+  });
+}
+
+function extractErrorMessage(data, fallback = 'Failed to create domain') {
+  if (!data) return fallback;
+  if (typeof data === 'string') return data;
+  if (data.message) return data.message;
+  if (data.error) return data.error;
+  if (Array.isArray(data.errors) && data.errors.length) {
+    return data.errors.map(x => x.message || String(x)).join(', ');
+  }
+  return fallback;
+}
+
+async function apiJson(url, options) {
+  const res = await apiFetch(url, options);
+  let data = null;
+  try {
+    data = await res.json();
+  } catch {
+    data = { message: 'Server returned a non-JSON response' };
+  }
+  return { res, data };
+}
+
 async function loadDomainsPage() {
   const content = document.getElementById('page-content');
   content.innerHTML = `
@@ -59,15 +97,22 @@ async function loadDomainsPage() {
   const detailsBox = document.getElementById('details-box');
 
   async function loadDetails(id) {
-    const res = await apiFetch(`/api/domains/${id}/details`);
-    const data = await res.json();
+    const { res, data } = await apiJson(`/api/domains/${id}/details`);
+    if (!res.ok) {
+      showError(extractErrorMessage(data, 'Failed to load domain details'));
+      return;
+    }
     detailsBox.textContent = JSON.stringify(data.details || data, null, 2);
     USGShell.setupRawToggles(content);
   }
 
   async function refresh() {
-    const res = await apiFetch('/api/domains');
-    const data = await res.json();
+    const { res, data } = await apiJson('/api/domains');
+    if (!res.ok) {
+      registryBox.innerHTML = `<div class="muted">${extractErrorMessage(data, 'Failed to load domains')}</div>`;
+      return;
+    }
+
     const rows = Array.isArray(data.domains) ? data.domains : [];
 
     registryBox.innerHTML = rows.map(item => `
@@ -107,12 +152,17 @@ async function loadDomainsPage() {
         const current = btn.getAttribute('data-status');
         const next = current === 'active' ? 'disabled' : 'active';
 
-        const res = await apiFetch(`/api/domains/${id}`, {
+        const { res, data } = await apiJson(`/api/domains/${id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ status: next })
         });
-        const data = await res.json();
+
+        if (!res.ok) {
+          showError(extractErrorMessage(data, 'Failed to update domain'));
+          return;
+        }
+
         detailsBox.textContent = JSON.stringify(data.domain || data, null, 2);
         await refresh();
       });
@@ -122,8 +172,14 @@ async function loadDomainsPage() {
       btn.addEventListener('click', async () => {
         const id = btn.getAttribute('data-delete');
         if (!confirm('Delete this domain?')) return;
-        const res = await apiFetch(`/api/domains/${id}`, { method: 'DELETE' });
-        const data = await res.json();
+
+        const { res, data } = await apiJson(`/api/domains/${id}`, { method: 'DELETE' });
+
+        if (!res.ok) {
+          showError(extractErrorMessage(data, 'Failed to delete domain'));
+          return;
+        }
+
         detailsBox.textContent = JSON.stringify(data, null, 2);
         await refresh();
       });
@@ -144,15 +200,15 @@ async function loadDomainsPage() {
       notes: document.getElementById('notes').value.trim()
     };
 
-    const res = await apiFetch('/api/domains', {
+    const { res, data } = await apiJson('/api/domains', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     });
 
-    const data = await res.json();
     if (!res.ok) {
-      alert(data.message || 'Failed to create domain');
+      showError(extractErrorMessage(data, 'Failed to create domain'));
+      detailsBox.textContent = JSON.stringify({ payload, server: data }, null, 2);
       return;
     }
 
@@ -164,6 +220,8 @@ async function loadDomainsPage() {
       domainKey: data.domain?.domainKey,
       status: data.domain?.status
     }, null, 2);
+
+    showInfo('Domain Created', 'Your domain was created successfully.');
 
     form.reset();
     document.getElementById('accessMode').value = 'public';
