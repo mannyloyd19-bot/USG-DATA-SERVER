@@ -38,13 +38,21 @@ function createDomainKey(name) {
 }
 
 function formatError(error) {
-  if (error?.name === 'SequelizeValidationError' && Array.isArray(error.errors)) {
+  if (!error) return 'Unknown error';
+
+  if (error.name === 'SequelizeValidationError' && Array.isArray(error.errors)) {
     return error.errors.map(e => e.message).join(', ');
   }
-  if (error?.name === 'SequelizeUniqueConstraintError' && Array.isArray(error.errors)) {
+
+  if (error.name === 'SequelizeUniqueConstraintError' && Array.isArray(error.errors)) {
     return error.errors.map(e => e.message).join(', ');
   }
-  return error?.message || 'Unknown error';
+
+  if (error.parent && error.parent.message) {
+    return error.parent.message;
+  }
+
+  return error.message || 'Unknown error';
 }
 
 async function routeConflictExists(routePath, excludeId = null) {
@@ -57,12 +65,15 @@ exports.list = async (req, res) => {
     const rows = await Domain.findAll({ order: [['createdAt', 'DESC']] });
     return res.json({ success: true, domains: rows });
   } catch (error) {
+    console.error('[domains.list]', error);
     return res.status(500).json({ success: false, message: formatError(error) });
   }
 };
 
 exports.create = async (req, res) => {
   try {
+    console.log('[domains.create] payload:', req.body);
+
     const { name, serviceName, routePath, accessMode, environment, notes } = req.body || {};
 
     const finalName = normalizeName(name);
@@ -99,7 +110,7 @@ exports.create = async (req, res) => {
       });
     }
 
-    const item = await Domain.create({
+    const payload = {
       name: finalName,
       serviceName: finalService,
       routePath: finalRoute,
@@ -111,11 +122,20 @@ exports.create = async (req, res) => {
       status: 'active',
       sslStatus: finalAccess === 'public' ? 'pending' : 'not_required',
       notes: notes || null
-    });
+    };
+
+    console.log('[domains.create] normalized payload:', payload);
+
+    const item = await Domain.create(payload);
 
     return res.json({ success: true, domain: item });
   } catch (error) {
-    return res.status(500).json({ success: false, message: formatError(error) });
+    console.error('[domains.create] error:', error);
+    return res.status(500).json({
+      success: false,
+      message: formatError(error),
+      errorName: error?.name || null
+    });
   }
 };
 
@@ -127,7 +147,6 @@ exports.update = async (req, res) => {
     }
 
     const payload = req.body || {};
-
     const nextName = payload.name !== undefined ? normalizeName(payload.name) : item.name;
     const nextRoute = payload.routePath !== undefined ? normalizeRoute(payload.routePath) : item.routePath;
     const nextAccess = payload.accessMode !== undefined ? payload.accessMode : item.accessMode;
@@ -156,6 +175,7 @@ exports.update = async (req, res) => {
     await item.save();
     return res.json({ success: true, domain: item });
   } catch (error) {
+    console.error('[domains.update] error:', error);
     return res.status(500).json({ success: false, message: formatError(error) });
   }
 };
@@ -165,6 +185,7 @@ exports.remove = async (req, res) => {
     await Domain.destroy({ where: { id: req.params.id } });
     return res.json({ success: true });
   } catch (error) {
+    console.error('[domains.remove] error:', error);
     return res.status(500).json({ success: false, message: formatError(error) });
   }
 };
@@ -196,6 +217,7 @@ exports.details = async (req, res) => {
       }
     });
   } catch (error) {
+    console.error('[domains.details] error:', error);
     return res.status(500).json({ success: false, message: formatError(error) });
   }
 };
