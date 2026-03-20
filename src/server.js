@@ -155,3 +155,5 @@ require('./modules/infrastructure/models/infrastructure-config.model');
 require('./modules/network/models/network-config.model');
 
 require('./modules/apps/models/app.model');
+
+require('./modules/deployments/models/deployment.model');
