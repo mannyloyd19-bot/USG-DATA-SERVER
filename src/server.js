@@ -1,3 +1,4 @@
+const { updateDuckDNSFull } = require('./core/domain/duckdns-ipv6');
 const { updateDuckDNS } = require('./core/domain/duckdns');
 require('dotenv').config();
 
@@ -163,5 +164,16 @@ require('./modules/deployments/models/deployment.model');
 
 setInterval(() => {
   updateDuckDNS();
+}, 1000 * 60 * 5);
+
+
+
+// AUTO DuckDNS IPv4 + IPv6 update
+setTimeout(() => {
+  updateDuckDNSFull();
+}, 3000);
+
+setInterval(() => {
+  updateDuckDNSFull();
 }, 1000 * 60 * 5);
 
