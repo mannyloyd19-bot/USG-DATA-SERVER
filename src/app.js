@@ -1,3 +1,4 @@
+const domainRoutes = require('./modules/domains/routes/domain.routes');
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -115,3 +116,5 @@ app.use(notFoundHandler);
 app.use(errorHandler);
 
 module.exports = app;
+
+app.use('/api/domains', domainRoutes);

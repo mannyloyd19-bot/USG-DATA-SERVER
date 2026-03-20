@@ -147,3 +147,5 @@ process.on('unhandledRejection', (error) => {
 });
 
 start();
+
+require('./modules/domains/models/domain.model');

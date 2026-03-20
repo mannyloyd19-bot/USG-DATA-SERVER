@@ -21,7 +21,8 @@
     ['/pages/release.html','🚀','Release'],
     ['/pages/query-builder.html','📊','Query Builder'],
     ['/pages/enterprise-db.html','🗄','Enterprise DB'],
-    ['/pages/system-analytics.html','📊','System Analytics']
+    ['/pages/system-analytics.html','📊','System Analytics'],
+['/pages/domains.html','🌐','Domains']
   ];
 
   function getTheme() {
