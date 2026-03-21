@@ -17,7 +17,7 @@ window.USGIOSAlert = {
 
     const card = document.createElement('div');
     card.style.width = 'min(420px, 92vw)';
-    card.style.background = 'rgba(255,255,255,0.92)';
+    card.style.background = 'rgba(255,255,255,0.94)';
     card.style.color = '#111';
     card.style.borderRadius = '26px';
     card.style.boxShadow = '0 20px 60px rgba(0,0,0,0.35)';

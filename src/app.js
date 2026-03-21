@@ -1,3 +1,4 @@
+const liveReadinessRoutes = require('./modules/liveReadiness/routes/live-readiness.routes');
 const collectionStatsRoutes = require('./modules/collectionStats/routes/collection-stats.routes');
 const indexRoutes = require('./modules/indexes/routes/index.routes');
 const backupSystemRoutes = require('./modules/backupSystem/routes/backup-system.routes');
@@ -143,6 +144,7 @@ app.use('/api/backup-system', backupSystemRoutes);
 app.use('/api/indexes', indexRoutes);
 app.use('/api/collection-stats', collectionStatsRoutes);
 
+app.use('/api/live-readiness', liveReadinessRoutes);
 app.use(notFoundHandler);
 app.use(errorHandler);
 
