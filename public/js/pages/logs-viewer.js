@@ -8,36 +8,26 @@ async function loadLogsViewer() {
   USGPageKit.setPageHeader({
     kicker: 'OBSERVABILITY',
     title: 'Logs Viewer',
-    subtitle: 'Inspect runtime logs, recent failures, and service output',
-    actions: [
-      { label: 'Refresh', primary: true, onClick: () => loadLogsViewer() }
-    ]
+    subtitle: 'Unified logs from platform runtime',
+    actions: [{ label: 'Refresh', primary: true, onClick: () => loadLogsViewer() }]
   });
 
-  content.innerHTML += USGPageKit.searchToolbar({
-    placeholder: 'Search logs...'
-  });
+  content.innerHTML += USGPageKit.searchToolbar({ placeholder: 'Search logs...' });
 
   try {
-    const res = await apiFetch('/api/runtime/pm2/logs?lines=120');
+    const res = await apiFetch('/api/platform-logs/unified?lines=120');
     const data = await res.json();
-    const raw = JSON.stringify(data, null, 2);
+    const output = data.logs?.output || 'No logs available.';
 
     content.innerHTML += `
       <section class="card" style="margin-top:24px">
-        <div class="kicker">RUNTIME LOGS</div>
-        <h2>PM2 Logs</h2>
-        <pre id="logs-raw">${raw}</pre>
+        <div class="kicker">UNIFIED LOGS</div>
+        <h2>Runtime Output</h2>
+        <pre id="logs-raw">${output}</pre>
       </section>
     `;
-
-    USGPageKit.attachBasicSearch({
-      itemSelector: '#logs-raw',
-      textSelector: null
-    });
   } catch (err) {
     USGIOSAlert.show({ title: 'Logs Error', message: err.message, type: 'error' });
   }
 }
-
 loadLogsViewer();

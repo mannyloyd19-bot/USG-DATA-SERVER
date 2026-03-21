@@ -8,11 +8,11 @@ async function loadTenantOverview() {
   USGPageKit.setPageHeader({
     kicker: 'TENANTS',
     title: 'Tenant Overview',
-    subtitle: 'See tenant status, usage, and ownership summary'
+    subtitle: 'Real tenant usage and status summary'
   });
 
   try {
-    const res = await apiFetch('/api/tenants');
+    const res = await apiFetch('/api/tenant-usage/summary');
     const data = await res.json();
     const rows = data.tenants || [];
 
@@ -24,13 +24,13 @@ async function loadTenantOverview() {
       </div>
 
       <section class="card" style="margin-top:24px">
-        <div class="kicker">TENANT LIST</div>
-        <h2>Registered Tenants</h2>
+        <div class="kicker">USAGE</div>
+        <h2>Tenant Usage</h2>
         ${rows.length ? rows.map(t => `
           <div class="list-card">
-            <strong>${t.name || t.slug || 'Unnamed Tenant'}</strong><br>
-            <span class="muted">status: ${t.status || 'active'}</span>
-            <div class="actions">${USGPageKit.statusBadge(t.status || 'active')}</div>
+            <strong>${t.name}</strong><br>
+            <span class="muted">storage: ${t.storageUsedMb} MB · api calls: ${t.apiCalls} · members: ${t.members}</span>
+            <div class="actions">${USGPageKit.statusBadge(t.status)}</div>
           </div>
         `).join('') : USGPageKit.emptyState({ title: 'No tenants found' })}
       </section>
@@ -39,5 +39,4 @@ async function loadTenantOverview() {
     USGIOSAlert.show({ title: 'Tenant Error', message: err.message, type: 'error' });
   }
 }
-
 loadTenantOverview();

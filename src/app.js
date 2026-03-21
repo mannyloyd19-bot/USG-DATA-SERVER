@@ -1,3 +1,9 @@
+const realtimeInsightsRoutes = require('./modules/realtimeInsights/routes/realtime-insights.routes');
+const hostingHealthRoutes = require('./modules/hostingHealth/routes/hosting-health.routes');
+const tenantUsageRoutes = require('./modules/tenantUsage/routes/tenant-usage.routes');
+const queryBuilderProRoutes = require('./modules/queryBuilderPro/routes/query-builder-pro.routes');
+const platformLogsRoutes = require('./modules/platformLogs/routes/platform-logs.routes');
+const platformAnalyticsRoutes = require('./modules/platformAnalytics/routes/platform-analytics.routes');
 const liveReadinessRoutes = require('./modules/liveReadiness/routes/live-readiness.routes');
 const collectionStatsRoutes = require('./modules/collectionStats/routes/collection-stats.routes');
 const indexRoutes = require('./modules/indexes/routes/index.routes');
@@ -145,6 +151,12 @@ app.use('/api/indexes', indexRoutes);
 app.use('/api/collection-stats', collectionStatsRoutes);
 
 app.use('/api/live-readiness', liveReadinessRoutes);
+app.use('/api/platform-analytics', platformAnalyticsRoutes);
+app.use('/api/platform-logs', platformLogsRoutes);
+app.use('/api/query-builder-pro', queryBuilderProRoutes);
+app.use('/api/tenant-usage', tenantUsageRoutes);
+app.use('/api/hosting-health', hostingHealthRoutes);
+app.use('/api/realtime-insights', realtimeInsightsRoutes);
 app.use(notFoundHandler);
 app.use(errorHandler);
 

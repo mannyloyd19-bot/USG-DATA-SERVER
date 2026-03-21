@@ -8,34 +8,36 @@ async function loadRealtimeMonitor() {
   USGPageKit.setPageHeader({
     kicker: 'REALTIME',
     title: 'Realtime Monitor',
-    subtitle: 'Track live events, channels, and broadcast activity'
+    subtitle: 'Live channel summary and event insights'
   });
 
-  const synthetic = [
-    { channel: 'collections', status: 'active', events: 24 },
-    { channel: 'audit', status: 'active', events: 11 },
-    { channel: 'tenants', status: 'idle', events: 2 }
-  ];
+  try {
+    const res = await apiFetch('/api/realtime-insights/summary');
+    const data = await res.json();
+    const rt = data.realtime || {};
+    const channels = rt.channels || [];
 
-  content.innerHTML += `
-    <div class="grid-3" style="margin-top:18px">
-      ${USGPageKit.infoCard('Channels', synthetic.length)}
-      ${USGPageKit.infoCard('Active', synthetic.filter(x => x.status === 'active').length)}
-      ${USGPageKit.infoCard('Events', synthetic.reduce((s, x) => s + x.events, 0))}
-    </div>
+    content.innerHTML += `
+      <div class="grid-3" style="margin-top:18px">
+        ${USGPageKit.infoCard('Channels', channels.length)}
+        ${USGPageKit.infoCard('Connected Clients', rt.connectedClients || 0)}
+        ${USGPageKit.infoCard('Total Events', rt.totalEvents || 0)}
+      </div>
 
-    <section class="card" style="margin-top:24px">
-      <div class="kicker">CHANNEL STATUS</div>
-      <h2>Realtime Channels</h2>
-      ${synthetic.map(item => `
-        <div class="list-card">
-          <strong>${item.channel}</strong><br>
-          <span class="muted">events: ${item.events}</span>
-          <div class="actions">${USGPageKit.statusBadge(item.status)}</div>
-        </div>
-      `).join('')}
-    </section>
-  `;
+      <section class="card" style="margin-top:24px">
+        <div class="kicker">CHANNELS</div>
+        <h2>Live Status</h2>
+        ${channels.map(item => `
+          <div class="list-card">
+            <strong>${item.name}</strong><br>
+            <span class="muted">events: ${item.events}</span>
+            <div class="actions">${USGPageKit.statusBadge(item.status)}</div>
+          </div>
+        `).join('')}
+      </section>
+    `;
+  } catch (err) {
+    USGIOSAlert.show({ title: 'Realtime Error', message: err.message, type: 'error' });
+  }
 }
-
 loadRealtimeMonitor();

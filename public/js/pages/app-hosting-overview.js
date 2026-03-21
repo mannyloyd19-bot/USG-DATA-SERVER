@@ -8,19 +8,14 @@ async function loadAppHostingOverview() {
   USGPageKit.setPageHeader({
     kicker: 'HOSTING',
     title: 'App Hosting Overview',
-    subtitle: 'Inspect hosted apps, deployments, and app-level health'
+    subtitle: 'Real hosted apps and deployment health'
   });
 
   try {
-    const [appsRes, depRes] = await Promise.all([
-      apiFetch('/api/apps'),
-      apiFetch('/api/deployments')
-    ]);
-
-    const appsData = await appsRes.json();
-    const depData = await depRes.json();
-    const apps = appsData.apps || [];
-    const deps = depData.deployments || [];
+    const res = await apiFetch('/api/hosting-health/summary');
+    const data = await res.json();
+    const apps = data.hosting?.apps || [];
+    const deps = data.hosting?.deployments || [];
 
     content.innerHTML += `
       <div class="grid-3" style="margin-top:18px">
@@ -35,7 +30,7 @@ async function loadAppHostingOverview() {
         ${apps.length ? apps.map(app => `
           <div class="list-card">
             <strong>${app.name}</strong><br>
-            <span class="muted">port: ${app.port || '-'} · domain: ${app.domain || '-'}</span>
+            <span class="muted">port: ${app.port || '-'} · domain: ${app.domain || '-'} · entry: ${app.entry || '-'}</span>
             <div class="actions">${USGPageKit.statusBadge(app.status || 'stopped')}</div>
           </div>
         `).join('') : USGPageKit.emptyState({ title: 'No apps registered' })}
@@ -45,5 +40,4 @@ async function loadAppHostingOverview() {
     USGIOSAlert.show({ title: 'Hosting Error', message: err.message, type: 'error' });
   }
 }
-
 loadAppHostingOverview();

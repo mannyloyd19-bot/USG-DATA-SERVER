@@ -185,3 +185,5 @@ require('./modules/backupSystem/models/backup-job.model');
 require('./modules/backupSystem/models/backup-config.model');
 
 require('./modules/indexes/models/index.model');
+
+require('./modules/queryBuilderPro/models/saved-query.model');
