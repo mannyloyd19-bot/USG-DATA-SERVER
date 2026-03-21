@@ -1,3 +1,6 @@
+const envRoutes = require('./modules/productionCore/routes/env.routes');
+const domainHealthRoutes = require('./modules/productionCore/routes/domain-health.routes');
+const backupRestoreRoutes = require('./modules/productionCore/routes/backup-restore.routes');
 const realtimeInsightsRoutes = require('./modules/realtimeInsights/routes/realtime-insights.routes');
 const hostingHealthRoutes = require('./modules/hostingHealth/routes/hosting-health.routes');
 const tenantUsageRoutes = require('./modules/tenantUsage/routes/tenant-usage.routes');
@@ -157,6 +160,9 @@ app.use('/api/query-builder-pro', queryBuilderProRoutes);
 app.use('/api/tenant-usage', tenantUsageRoutes);
 app.use('/api/hosting-health', hostingHealthRoutes);
 app.use('/api/realtime-insights', realtimeInsightsRoutes);
+app.use('/api/backup-restore', backupRestoreRoutes);
+app.use('/api/domain-health', domainHealthRoutes);
+app.use('/api/env', envRoutes);
 app.use(notFoundHandler);
 app.use(errorHandler);
 
