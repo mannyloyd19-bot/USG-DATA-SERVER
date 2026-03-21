@@ -458,3 +458,34 @@ pre,.code-block{
   }
 }
 
+
+
+.usg-app-footer{
+  margin-top:24px;
+  padding:18px 20px 30px;
+  color:var(--usg-muted);
+  font-size:13px;
+  border-top:1px solid rgba(140,175,255,.08);
+}
+.usg-health-banner{
+  margin-bottom:18px;
+  border:1px solid rgba(140,175,255,.12);
+}
+.shell{
+  min-height:100vh;
+}
+#page-content{
+  padding-bottom:28px;
+}
+.card h2{
+  margin-top:0;
+}
+.list-card .actions{
+  margin-top:12px;
+}
+@media (max-width: 900px){
+  .usg-app-footer{
+    padding-bottom:80px;
+  }
+}
+

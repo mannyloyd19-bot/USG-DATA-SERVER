@@ -184,3 +184,18 @@
     setCurrentTenant
   };
 })();
+
+
+setTimeout(() => {
+  try {
+    if (window.USGAppMeta) USGAppMeta.renderFooter();
+  } catch {}
+}, 50);
+
+setTimeout(() => {
+  try {
+    if (window.USGHealthBanner && document.getElementById('page-content')) {
+      USGHealthBanner.render();
+    }
+  } catch {}
+}, 120);
