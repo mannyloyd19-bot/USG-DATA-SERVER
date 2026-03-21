@@ -1,17 +1,9 @@
 const express = require('express');
-const controller = require('../controllers/collection.controller');
-const authMiddleware = require('../../../middleware/auth.middleware');
-
 const router = express.Router();
+const controller = require('../controllers/collection.controller');
 
-router.use(authMiddleware);
-
+router.get('/', controller.list);
 router.post('/', controller.create);
-router.get('/', controller.findAll);
-router.get('/:key', controller.findOne);
-router.patch('/:key', controller.update);
-router.delete('/:key', controller.remove);
-
 router.put('/:id', controller.update);
 router.delete('/:id', controller.remove);
 
