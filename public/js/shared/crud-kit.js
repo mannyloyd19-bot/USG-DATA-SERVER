@@ -1,10 +1,22 @@
 window.USGCrudKit = {
-  async create({ title = 'Create', fields = [], endpoint, onDone }) {
+  async create({ title = 'Create', fields = [], endpoint, validate, onDone }) {
     USGFormModal({
       title,
       fields,
       onSubmit: async (data) => {
         try {
+          if (typeof validate === 'function') {
+            const errors = validate(data) || [];
+            if (errors.length) {
+              USGIOSAlert.show({
+                title: `${title} Failed`,
+                message: errors.join('\n'),
+                type: 'error'
+              });
+              return;
+            }
+          }
+
           const res = await apiFetch(endpoint, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -38,7 +50,7 @@ window.USGCrudKit = {
     });
   },
 
-  async edit({ title = 'Edit', fields = [], endpoint, initial = {}, onDone }) {
+  async edit({ title = 'Edit', fields = [], endpoint, initial = {}, validate, onDone }) {
     const overlay = document.createElement('div');
     overlay.style.position = 'fixed';
     overlay.style.inset = '0';
@@ -79,6 +91,18 @@ window.USGCrudKit = {
       });
 
       try {
+        if (typeof validate === 'function') {
+          const errors = validate(data) || [];
+          if (errors.length) {
+            USGIOSAlert.show({
+              title: `${title} Failed`,
+              message: errors.join('\n'),
+              type: 'error'
+            });
+            return;
+          }
+        }
+
         const res = await apiFetch(endpoint, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },

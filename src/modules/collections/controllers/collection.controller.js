@@ -1,3 +1,4 @@
+const validation = require('../../../core/utils/validation');
 const Collection = require('../models/collection.model');
 
 function normalizeKey(value) {
@@ -10,6 +11,25 @@ function normalizeKey(value) {
 
 exports.create = async (req, res) => {
   try {
+    const payload = req.body || {};
+    const errors = validation.collect(
+      validation.required(payload.name, 'Collection Name'),
+      validation.minLength(payload.name, 'Collection Name', 2),
+      validation.required(payload.key, 'Collection Key'),
+      validation.minLength(payload.key, 'Collection Key', 2),
+      validation.required(payload.tableName, 'Table Name'),
+      validation.minLength(payload.tableName, 'Table Name', 2)
+    );
+    if (errors.length) {
+      return res.status(400).json({ success: false, message: errors.join(', ') });
+    }
+
+    const Model = require('../models/collection.model');
+    const existing = await Model.findOne({ where: { key: payload.key } });
+    if (existing) {
+      return res.status(400).json({ success: false, message: 'key already exists' });
+    }
+
     const { name, key, description, schemaMode } = req.body;
 
     if (!name) {

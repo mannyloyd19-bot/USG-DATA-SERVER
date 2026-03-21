@@ -1,6 +1,14 @@
 requireAuth();
 USGShell.buildShell();
 
+function validateTenant(data) {
+  return USGValidationKit.collect(
+    USGValidationKit.required(data.name, 'Tenant Name'),
+    USGValidationKit.required(data.slug, 'Slug'),
+    USGValidationKit.required(data.status, 'Status')
+  );
+}
+
 async function loadTenants() {
   const content = document.getElementById('page-content');
   content.innerHTML = '';
@@ -16,6 +24,7 @@ async function loadTenants() {
         onClick: () => USGCrudKit.create({
           title: 'Create Tenant',
           endpoint: '/api/tenants',
+          validate: validateTenant,
           fields: [
             { name: 'name', label: 'Tenant Name' },
             { name: 'slug', label: 'Slug' },
@@ -50,6 +59,7 @@ async function loadTenants() {
         editBtn.onclick = () => USGCrudKit.edit({
           title: 'Edit Tenant',
           endpoint: `/api/tenants/${t.id}`,
+          validate: validateTenant,
           initial: {
             name: t.name || '',
             slug: t.slug || '',

@@ -1,3 +1,4 @@
+const validation = require('../../../core/utils/validation');
 const Tenant = require('../models/tenant.model');
 
 function slugify(value = '') {
@@ -24,6 +25,24 @@ exports.findAll = async (req, res) => {
 
 exports.create = async (req, res) => {
   try {
+    const payload = req.body || {};
+    const errors = validation.collect(
+      validation.required(payload.name, 'Tenant Name'),
+      validation.minLength(payload.name, 'Tenant Name', 2),
+      validation.required(payload.slug, 'Slug'),
+      validation.minLength(payload.slug, 'Slug', 2),
+      validation.required(payload.status, 'Status')
+    );
+    if (errors.length) {
+      return res.status(400).json({ success: false, message: errors.join(', ') });
+    }
+
+    const Model = require('../models/tenant.model');
+    const existing = await Model.findOne({ where: { slug: payload.slug } });
+    if (existing) {
+      return res.status(400).json({ success: false, message: 'slug already exists' });
+    }
+
     const { name, slug, ownerName, ownerEmail, notes } = req.body || {};
 
     if (!name) {

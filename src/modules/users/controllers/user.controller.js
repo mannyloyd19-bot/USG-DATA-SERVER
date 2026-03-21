@@ -1,8 +1,20 @@
+const validation = require('../../../core/utils/validation');
 const bcrypt = require('bcrypt');
 const User = require('../models/user.model');
 
 exports.create = async (req, res) => {
   try {
+    const payload = req.body || {};
+    const errors = validation.collect(
+      validation.required(payload.username, 'Username'),
+      validation.minLength(payload.username, 'Username', 3),
+      validation.required(payload.role, 'Role'),
+      validation.email(payload.email, 'Email')
+    );
+    if (errors.length) {
+      return res.status(400).json({ success: false, message: errors.join(', ') });
+    }
+
     const { username, password, role } = req.body;
 
     if (!username || !password) {

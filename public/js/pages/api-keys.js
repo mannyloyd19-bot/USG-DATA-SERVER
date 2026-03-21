@@ -1,6 +1,14 @@
 requireAuth();
 USGShell.buildShell();
 
+function validateApiKey(data) {
+  return USGValidationKit.collect(
+    USGValidationKit.required(data.name, 'Key Name'),
+    USGValidationKit.required(data.scope, 'Scope'),
+    USGValidationKit.required(data.status, 'Status')
+  );
+}
+
 async function loadKeys() {
   const content = document.getElementById('page-content');
   content.innerHTML = '';
@@ -16,6 +24,7 @@ async function loadKeys() {
         onClick: () => USGCrudKit.create({
           title: 'Create API Key',
           endpoint: '/api/api-keys',
+          validate: validateApiKey,
           fields: [
             { name: 'name', label: 'Key Name' },
             { name: 'scope', label: 'Scope' },
@@ -54,6 +63,7 @@ async function loadKeys() {
         editBtn.onclick = () => USGCrudKit.edit({
           title: 'Edit API Key',
           endpoint: `/api/api-keys/${k.id}`,
+          validate: validateApiKey,
           initial: {
             name: k.name || '',
             scope: k.scope || '',

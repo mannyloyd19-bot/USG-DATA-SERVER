@@ -1,3 +1,4 @@
+const validation = require('../../../core/utils/validation');
 const crypto = require('crypto');
 const ApiKey = require('../models/api-key.model');
 
@@ -54,6 +55,19 @@ function getTenantId(req) {
 
 exports.create = async (req, res) => {
   try {
+    const payload = req.body || {};
+    const errors = validation.collect(
+      validation.required(payload.name, 'Key Name'),
+      validation.minLength(payload.name, 'Key Name', 2),
+      validation.required(payload.scope, 'Scope'),
+      validation.minLength(payload.scope, 'Scope', 1),
+      validation.required(payload.status, 'Status'),
+      validation.minLength(payload.status, 'Status', 1)
+    );
+    if (errors.length) {
+      return res.status(400).json({ success: false, message: errors.join(', ') });
+    }
+
     const {
       name,
       role,

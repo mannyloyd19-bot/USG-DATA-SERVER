@@ -1,6 +1,15 @@
 requireAuth();
 USGShell.buildShell();
 
+function validateUser(data) {
+  return USGValidationKit.collect(
+    USGValidationKit.required(data.username, 'Username'),
+    USGValidationKit.email(data.email, 'Email'),
+    data.password !== undefined && data.password !== '' ? USGValidationKit.minLength(data.password, 'Password', 6) : null,
+    USGValidationKit.required(data.role, 'Role')
+  );
+}
+
 async function loadUsers() {
   const content = document.getElementById('page-content');
   content.innerHTML = '';
@@ -16,6 +25,7 @@ async function loadUsers() {
         onClick: () => USGCrudKit.create({
           title: 'Create User',
           endpoint: '/api/users',
+          validate: validateUser,
           fields: [
             { name: 'username', label: 'Username' },
             { name: 'email', label: 'Email' },
@@ -52,6 +62,11 @@ async function loadUsers() {
         editBtn.onclick = () => USGCrudKit.edit({
           title: 'Edit User',
           endpoint: `/api/users/${u.id}`,
+          validate: (data) => USGValidationKit.collect(
+            USGValidationKit.required(data.username, 'Username'),
+            USGValidationKit.email(data.email, 'Email'),
+            USGValidationKit.required(data.role, 'Role')
+          ),
           initial: {
             username: u.username || '',
             email: u.email || '',

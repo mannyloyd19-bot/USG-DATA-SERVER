@@ -1,6 +1,16 @@
 requireAuth();
 USGShell.buildShell();
 
+function validateDomain(data) {
+  return USGValidationKit.collect(
+    USGValidationKit.required(data.name, 'Domain'),
+    USGValidationKit.domain(data.name, 'Domain'),
+    USGValidationKit.required(data.serviceName, 'Service Name'),
+    USGValidationKit.required(data.routePath, 'Route Path'),
+    USGValidationKit.route(data.routePath, 'Route Path')
+  );
+}
+
 function configBlock(binding) {
   const cfg = binding?.config || {};
   return `APP_NAME=${cfg.APP_NAME || ''}
@@ -122,54 +132,16 @@ async function loadDomains() {
         label: '+ Create Domain',
         primary: true,
         onClick: () => {
-          USGFormModal({
+          USGCrudKit.create({
             title: 'Create Domain',
+            endpoint: '/api/domains',
+            validate: validateDomain,
             fields: [
               { name: 'name', label: 'Domain (.usg)' },
               { name: 'serviceName', label: 'Service Name' },
               { name: 'routePath', label: 'Route Path (/website)' }
             ],
-            onSubmit: async (data) => {
-              try {
-                const payload = {
-                  name: (data.name || '').trim(),
-                  serviceName: (data.serviceName || '').trim(),
-                  routePath: (data.routePath || '').trim(),
-                  accessMode: 'public',
-                  environment: 'production',
-                  notes: ''
-                };
-
-                const res = await apiFetch('/api/domains', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify(payload)
-                });
-
-                const result = await res.json();
-                if (!res.ok) {
-                  USGIOSAlert.show({
-                    title: 'Create Domain Failed',
-                    message: result.message || 'Failed to create domain',
-                    type: 'error'
-                  });
-                  return;
-                }
-
-                USGIOSAlert.show({
-                  title: 'Domain Created',
-                  message: `${result.domain?.name || 'Domain'} is now active.`
-                });
-
-                loadDomains();
-              } catch (error) {
-                USGIOSAlert.show({
-                  title: 'Create Domain Failed',
-                  message: error.message,
-                  type: 'error'
-                });
-              }
-            }
+            onDone: () => loadDomains()
           });
         }
       }
@@ -236,5 +208,4 @@ async function loadDomains() {
     USGIOSAlert.show({ title: 'Domain Error', message: err.message, type: 'error' });
   }
 }
-
 loadDomains();

@@ -1,6 +1,14 @@
 requireAuth();
 USGShell.buildShell();
 
+function validateCollection(data) {
+  return USGValidationKit.collect(
+    USGValidationKit.required(data.name, 'Collection Name'),
+    USGValidationKit.required(data.key, 'Collection Key'),
+    USGValidationKit.required(data.tableName, 'Table Name')
+  );
+}
+
 async function loadCollections() {
   const content = document.getElementById('page-content');
   content.innerHTML = '';
@@ -16,6 +24,7 @@ async function loadCollections() {
         onClick: () => USGCrudKit.create({
           title: 'Create Collection',
           endpoint: '/api/collections',
+          validate: validateCollection,
           fields: [
             { name: 'name', label: 'Collection Name' },
             { name: 'key', label: 'Collection Key' },
@@ -50,6 +59,7 @@ async function loadCollections() {
         editBtn.onclick = () => USGCrudKit.edit({
           title: 'Edit Collection',
           endpoint: `/api/collections/${c.id}`,
+          validate: validateCollection,
           initial: {
             name: c.name || '',
             key: c.key || '',
