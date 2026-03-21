@@ -8,7 +8,7 @@ window.USGIOSAlert = {
     overlay.style.position = 'fixed';
     overlay.style.inset = '0';
     overlay.style.background = 'rgba(0,0,0,0.45)';
-    overlay.style.backdropFilter = 'blur(8px)';
+    overlay.style.backdropFilter = 'blur(10px)';
     overlay.style.zIndex = '99999';
     overlay.style.display = 'flex';
     overlay.style.alignItems = 'center';
@@ -16,11 +16,11 @@ window.USGIOSAlert = {
     overlay.style.padding = '24px';
 
     const card = document.createElement('div');
-    card.style.width = 'min(420px, 92vw)';
+    card.style.width = 'min(430px, 92vw)';
     card.style.background = 'rgba(255,255,255,0.94)';
     card.style.color = '#111';
-    card.style.borderRadius = '26px';
-    card.style.boxShadow = '0 20px 60px rgba(0,0,0,0.35)';
+    card.style.borderRadius = '28px';
+    card.style.boxShadow = '0 24px 70px rgba(0,0,0,0.35)';
     card.style.padding = '22px 22px 18px';
     card.style.fontFamily = 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
 
