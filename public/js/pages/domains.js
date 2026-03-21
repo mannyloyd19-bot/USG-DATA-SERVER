@@ -56,10 +56,20 @@ async function openBindingModal(domainId) {
     box.innerHTML = `
       <div class="kicker">DOMAIN APP BINDING</div>
       <h2 style="margin-top:8px">${binding.domain || 'Domain'}</h2>
+
       <div class="grid-3" style="margin-top:18px">
-        <div class="info-card"><div class="info-title">Service</div><div class="info-value" style="font-size:18px">${binding.serviceName || '-'}</div></div>
-        <div class="info-card"><div class="info-title">Bind Status</div><div class="info-value" style="font-size:18px">${binding.bindStatus || 'unbound'}</div></div>
-        <div class="info-card"><div class="info-title">Route</div><div class="info-value" style="font-size:18px">${binding.routePath || '/'}</div></div>
+        <div class="info-card">
+          <div class="info-title">Service</div>
+          <div class="info-value" style="font-size:18px">${binding.serviceName || '-'}</div>
+        </div>
+        <div class="info-card">
+          <div class="info-title">Bind Status</div>
+          <div class="info-value" style="font-size:18px">${binding.bindStatus || 'unbound'}</div>
+        </div>
+        <div class="info-card">
+          <div class="info-title">Route</div>
+          <div class="info-value" style="font-size:18px">${binding.routePath || '/'}</div>
+        </div>
       </div>
 
       <section class="card" style="margin-top:18px">
@@ -78,7 +88,7 @@ async function openBindingModal(domainId) {
       <section class="card" style="margin-top:18px">
         <div class="kicker">PROJECT CONFIG</div>
         <h2>Copy to Project</h2>
-        <pre id="binding-config-block">${block}</pre>
+        <pre>${block}</pre>
         <div class="actions">
           <button class="ghost-btn" id="copy-binding-config">Copy Config</button>
           <button class="ghost-btn" id="copy-domain-key">Copy Domain Key</button>
@@ -109,7 +119,6 @@ async function openBindingModal(domainId) {
     document.getElementById('copy-binding-config').onclick = () => copyValue(configBlock(binding), 'Project config copied');
     document.getElementById('copy-domain-key').onclick = () => copyValue(binding.domainKey || '', 'Domain key copied');
     document.getElementById('copy-app-token').onclick = () => copyValue(binding.appToken || '', 'App token copied');
-
   } catch (error) {
     USGIOSAlert.show({
       title: 'Binding Error',
@@ -121,62 +130,65 @@ async function openBindingModal(domainId) {
 
 async function loadDomains() {
   const content = document.getElementById('page-content');
-  content.innerHTML = '';
-
-  USGPageKit.setPageHeader({
-    kicker: 'DOMAIN',
-    title: 'Domain Registry',
-    subtitle: 'Create and manage domain bindings for live app access',
-    actions: [
-      {
-        label: '+ Create Domain',
-        primary: true,
-        onClick: () => {
-          USGCrudKit.create({
-            title: 'Create Domain',
-            endpoint: '/api/domains',
-            validate: validateDomain,
-            fields: [
-              { name: 'name', label: 'Domain (.usg)' },
-              { name: 'serviceName', label: 'Service Name' },
-              { name: 'routePath', label: 'Route Path (/website)' }
-            ],
-            onDone: () => loadDomains()
-          });
-        }
-      }
-    ]
-  });
-
-  content.innerHTML += USGPageKit.searchToolbar({
-    placeholder: 'Search domains...'
-  });
+  content.innerHTML = USGPageKit.loadingState({ label: 'Loading domains...' });
 
   try {
     const res = await apiFetch('/api/domains');
     const data = await res.json();
     const rows = data.domains || [];
 
-    content.innerHTML += rows.length ? rows.map(d => `
-      <div class="list-card">
-        <strong>${d.name}</strong><br>
-        <span class="muted">Service: ${d.serviceName || '-'}</span><br>
-        <span class="muted">Route: ${d.routePath || '-'}</span><br>
-        <span class="muted">Public Address: ${d.publicAddress || 'Internal Only'}</span>
-        <div class="actions">
-          ${USGPageKit.statusBadge(d.status || 'active')}
-          ${d.publicAddress ? USGPageKit.copyButton(d.publicAddress, 'Copy URL') : ''}
-          <button class="ghost-btn" data-binding="${d.id}">Binding</button>
-          ${d.publicAddress && d.publicAddress !== 'Internal Only' ? `<a href="${d.publicAddress}" target="_blank" class="ghost-btn">Open</a>` : ''}
-          <button class="danger-btn" data-delete="${d.id}">Delete</button>
-        </div>
-      </div>
-    `).join('') : USGPageKit.emptyState({
-      title: 'No domains yet',
-      message: 'Create your first public or internal domain.'
+    const bodyHtml = `
+      ${USGPageKit.searchToolbar({ placeholder: 'Search domains...' })}
+      <section style="margin-top:18px">
+        ${rows.length ? rows.map(d => `
+          <div class="list-card">
+            <strong>${d.name}</strong><br>
+            <span class="muted">Service: ${d.serviceName || '-'}</span><br>
+            <span class="muted">Route: ${d.routePath || '-'}</span><br>
+            <span class="muted">Public Address: ${d.publicAddress || 'Internal Only'}</span>
+            <div class="actions">
+              ${USGPageKit.statusBadge(d.status || 'active')}
+              ${d.publicAddress ? USGPageKit.copyButton(d.publicAddress, 'Copy URL') : ''}
+              <button class="ghost-btn" data-binding="${d.id}">Binding</button>
+              ${d.publicAddress && d.publicAddress !== 'Internal Only' ? `<a href="${d.publicAddress}" target="_blank" class="ghost-btn">Open</a>` : ''}
+              <button class="danger-btn" data-delete="${d.id}">Delete</button>
+            </div>
+          </div>
+        `).join('') : USGPageKit.emptyState({
+          title: 'No domains yet',
+          message: 'Create your first public or internal domain.'
+        })}
+      </section>
+    `;
+
+    content.innerHTML = bodyHtml;
+
+    USGPageKit.setPageHeader({
+      kicker: 'DOMAIN',
+      title: 'Domain Registry',
+      subtitle: 'Create and manage domain bindings for live app access',
+      actions: [
+        {
+          label: '+ Create Domain',
+          primary: true,
+          onClick: () => {
+            USGCrudKit.create({
+              title: 'Create Domain',
+              endpoint: '/api/domains',
+              validate: validateDomain,
+              fields: [
+                { name: 'name', label: 'Domain (.usg)' },
+                { name: 'serviceName', label: 'Service Name' },
+                { name: 'routePath', label: 'Route Path (/website)' }
+              ],
+              onDone: () => loadDomains()
+            });
+          }
+        }
+      ]
     });
 
-    USGPageKit.wireCopyButtons();
+    USGPageKit.wireCopyButtons(content);
     USGPageKit.attachBasicSearch({});
 
     document.querySelectorAll('[data-binding]').forEach(btn => {
@@ -200,12 +212,31 @@ async function loadDomains() {
           return;
         }
 
-        USGIOSAlert.show({ title: 'Deleted', message: 'Domain removed successfully.' });
+        USGIOSAlert.show({
+          title: 'Deleted',
+          message: 'Domain removed successfully.'
+        });
+
         loadDomains();
       };
     });
   } catch (err) {
-    USGIOSAlert.show({ title: 'Domain Error', message: err.message, type: 'error' });
+    content.innerHTML = '';
+    USGPageKit.setPageHeader({
+      kicker: 'DOMAIN',
+      title: 'Domain Registry',
+      subtitle: 'Create and manage domain bindings for live app access'
+    });
+    content.innerHTML += USGPageKit.emptyState({
+      title: 'Domain page failed to load',
+      message: err.message || 'Unknown error'
+    });
+    USGIOSAlert.show({
+      title: 'Domain Error',
+      message: err.message,
+      type: 'error'
+    });
   }
 }
+
 loadDomains();
