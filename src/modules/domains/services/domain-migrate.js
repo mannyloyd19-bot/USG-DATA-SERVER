@@ -30,6 +30,8 @@ async function ensureDomainsTable() {
   await addColumnIfMissing('domains', 'status', "TEXT DEFAULT 'active'");
   await addColumnIfMissing('domains', 'sslStatus', "TEXT DEFAULT 'pending'");
   await addColumnIfMissing('domains', 'notes', 'TEXT');
+  await addColumnIfMissing('domains', 'appToken', 'TEXT');
+  await addColumnIfMissing('domains', 'bindStatus', "TEXT DEFAULT 'unbound'");
 }
 
 module.exports = { ensureDomainsTable };

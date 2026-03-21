@@ -66,6 +66,15 @@ const Domain = sequelize.define('Domain', {
   notes: {
     type: DataTypes.TEXT,
     allowNull: true
+  },
+  appToken: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  bindStatus: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    defaultValue: 'unbound'
   }
 }, {
   tableName: 'domains',

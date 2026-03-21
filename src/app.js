@@ -1,3 +1,4 @@
+const domainBindingRoutes = require('./modules/domainBindings/routes/domain-binding.routes');
 const finalPolishRoutes = require('./modules/finalPolish/routes/final-polish.routes');
 const finalReadinessRoutes = require('./modules/finalReadiness/routes/final-readiness.routes');
 const envManagerRoutes = require('./modules/envManager/routes/env-manager.routes');
@@ -171,6 +172,7 @@ app.use('/api/ssl-center', sslCenterRoutes);
 app.use('/api/env-manager', envManagerRoutes);
 app.use('/api/final-readiness', finalReadinessRoutes);
 app.use('/api/final-polish', finalPolishRoutes);
+app.use('/api/domain-bindings', domainBindingRoutes);
 app.use(notFoundHandler);
 app.use(errorHandler);
 
