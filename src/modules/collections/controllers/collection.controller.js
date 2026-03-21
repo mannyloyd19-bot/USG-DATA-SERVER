@@ -1,152 +1,103 @@
 const validation = require('../../../core/utils/validation');
 const Collection = require('../models/collection.model');
 
-function normalizeKey(value) {
-  return String(value || '')
-    .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '_')
-    .replace(/^_+|_+$/g, '');
+function normalize(value = '') {
+  return String(value || '').trim();
 }
+
+exports.list = async (req, res) => {
+  try {
+    const rows = await Collection.findAll({ order: [['createdAt', 'DESC']] });
+    return res.json({ success: true, collections: rows });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
 
 exports.create = async (req, res) => {
   try {
     const payload = req.body || {};
+
+    const finalName = normalize(payload.name);
+    const finalKey = normalize(payload.key);
+    const finalTableName = normalize(payload.tableName);
+
     const errors = validation.collect(
-      validation.required(payload.name, 'Collection Name'),
-      validation.minLength(payload.name, 'Collection Name', 2),
-      validation.required(payload.key, 'Collection Key'),
-      validation.minLength(payload.key, 'Collection Key', 2),
-      validation.required(payload.tableName, 'Table Name'),
-      validation.minLength(payload.tableName, 'Table Name', 2)
+      validation.required(finalName, 'Collection Name'),
+      validation.minLength(finalName, 'Collection Name', 2),
+      validation.required(finalKey, 'Collection Key'),
+      validation.minLength(finalKey, 'Collection Key', 2),
+      validation.required(finalTableName, 'Table Name'),
+      validation.minLength(finalTableName, 'Table Name', 2)
     );
+
     if (errors.length) {
       return res.status(400).json({ success: false, message: errors.join(', ') });
     }
 
-    const Model = require('../models/collection.model');
-    const existing = await Model.findOne({ where: { key: payload.key } });
+    const existing = await Collection.findOne({ where: { key: finalKey } });
     if (existing) {
       return res.status(400).json({ success: false, message: 'key already exists' });
     }
 
-    const { name, key, description, schemaMode } = req.body;
-
-    if (!name) {
-      return res.status(400).json({ message: 'name is required' });
-    }
-
-    const finalKey = normalizeKey(key || name);
-
-    if (!finalKey) {
-      return res.status(400).json({ message: 'invalid collection key' });
-    }
-
-    const existing = await Collection.findOne({ where: { key: finalKey } });
-
-    if (existing) {
-      return res.status(409).json({ message: 'collection key already exists' });
-    }
-
-    const collection = await Collection.create({
-      name,
+    const item = await Collection.create({
+      name: finalName,
       key: finalKey,
-      description: description || null,
-      schemaMode: ['strict', 'flexible'].includes(String(schemaMode || '').toLowerCase())
-        ? String(schemaMode).toLowerCase()
-        : 'strict'
+      tableName: finalTableName
     });
 
-    return res.status(201).json(collection);
+    return res.json({ success: true, collection: item, message: 'Collection created' });
   } catch (error) {
-    return res.status(500).json({
-      message: 'Failed to create collection',
-      error: error.message
-    });
-  }
-};
-
-exports.findAll = async (req, res) => {
-  try {
-    const collections = await Collection.findAll({
-      order: [['createdAt', 'DESC']]
-    });
-
-    return res.json(collections);
-  } catch (error) {
-    return res.status(500).json({
-      message: 'Failed to fetch collections',
-      error: error.message
-    });
-  }
-};
-
-exports.findOne = async (req, res) => {
-  try {
-    const collection = await Collection.findOne({
-      where: { key: req.params.key }
-    });
-
-    if (!collection) {
-      return res.status(404).json({ message: 'Collection not found' });
-    }
-
-    return res.json(collection);
-  } catch (error) {
-    return res.status(500).json({
-      message: 'Failed to fetch collection',
-      error: error.message
-    });
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
 
 exports.update = async (req, res) => {
   try {
-    const collection = await Collection.findOne({
-      where: { key: req.params.key }
-    });
-
-    if (!collection) {
-      return res.status(404).json({ message: 'Collection not found' });
+    const item = await Collection.findByPk(req.params.id);
+    if (!item) {
+      return res.status(404).json({ success: false, message: 'Collection not found' });
     }
 
-    const { name, description, isActive, schemaMode } = req.body;
+    const payload = req.body || {};
+    const finalName = normalize(payload.name ?? item.name);
+    const finalKey = normalize(payload.key ?? item.key);
+    const finalTableName = normalize(payload.tableName ?? item.tableName);
 
-    if (name !== undefined) collection.name = name;
-    if (description !== undefined) collection.description = description;
-    if (isActive !== undefined) collection.isActive = isActive;
-    if (schemaMode !== undefined && ['strict', 'flexible'].includes(String(schemaMode).toLowerCase())) {
-      collection.schemaMode = String(schemaMode).toLowerCase();
+    const errors = validation.collect(
+      validation.required(finalName, 'Collection Name'),
+      validation.minLength(finalName, 'Collection Name', 2),
+      validation.required(finalKey, 'Collection Key'),
+      validation.minLength(finalKey, 'Collection Key', 2),
+      validation.required(finalTableName, 'Table Name'),
+      validation.minLength(finalTableName, 'Table Name', 2)
+    );
+
+    if (errors.length) {
+      return res.status(400).json({ success: false, message: errors.join(', ') });
     }
 
-    await collection.save();
+    const existing = await Collection.findOne({ where: { key: finalKey } });
+    if (existing && String(existing.id) !== String(item.id)) {
+      return res.status(400).json({ success: false, message: 'key already exists' });
+    }
 
-    return res.json(collection);
+    item.name = finalName;
+    item.key = finalKey;
+    item.tableName = finalTableName;
+
+    await item.save();
+    return res.json({ success: true, collection: item, message: 'Collection updated' });
   } catch (error) {
-    return res.status(500).json({
-      message: 'Failed to update collection',
-      error: error.message
-    });
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
 
 exports.remove = async (req, res) => {
   try {
-    const collection = await Collection.findOne({
-      where: { key: req.params.key }
-    });
-
-    if (!collection) {
-      return res.status(404).json({ message: 'Collection not found' });
-    }
-
-    await collection.destroy();
-
-    return res.json({ message: 'Collection deleted successfully' });
+    await Collection.destroy({ where: { id: req.params.id } });
+    return res.json({ success: true, message: 'Collection deleted' });
   } catch (error) {
-    return res.status(500).json({
-      message: 'Failed to delete collection',
-      error: error.message
-    });
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
