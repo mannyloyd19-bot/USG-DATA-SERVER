@@ -1,6 +1,6 @@
+window.__DISABLE_HEALTH_BANNER__ = true;
 requireAuth();
 USGShell.buildShell();
-window.__DISABLE_HEALTH_BANNER__ = true;
 
 function validateDomain(data) {
   return USGValidationKit.collect(
@@ -43,6 +43,7 @@ function openCreateDomainModal(onDone) {
 
   box.innerHTML = `
     <h2 style="margin-top:0">Create Domain</h2>
+
     <input id="d-name" placeholder="Domain (.usg)" style="width:100%;margin:8px 0;padding:14px;border-radius:14px;border:1px solid rgba(255,255,255,.14);background:#111827;color:#fff">
     <input id="d-service" placeholder="Service Name" style="width:100%;margin:8px 0;padding:14px;border-radius:14px;border:1px solid rgba(255,255,255,.14);background:#111827;color:#fff">
     <input id="d-route" placeholder="/website" style="width:100%;margin:8px 0;padding:14px;border-radius:14px;border:1px solid rgba(255,255,255,.14);background:#111827;color:#fff">
@@ -61,8 +62,8 @@ function openCreateDomainModal(onDone) {
     <textarea id="d-notes" placeholder="Notes" style="width:100%;margin:8px 0;padding:14px;border-radius:14px;border:1px solid rgba(255,255,255,.14);background:#111827;color:#fff;min-height:90px"></textarea>
 
     <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:14px">
-      <button id="cancel-domain-modal" class="ghost-btn">Cancel</button>
-      <button id="create-domain-submit" class="primary-btn">Create</button>
+      <button id="cancel-domain-modal" class="ghost-btn" type="button">Cancel</button>
+      <button id="create-domain-submit" class="primary-btn" type="button">Create</button>
     </div>
   `;
 
@@ -180,15 +181,15 @@ async function openBindingModal(domainId) {
         <h2>Copy to Project</h2>
         <pre>${block}</pre>
         <div class="actions">
-          <button class="ghost-btn" id="copy-binding-config">Copy Config</button>
-          <button class="ghost-btn" id="copy-domain-key">Copy Domain Key</button>
-          <button class="ghost-btn" id="copy-app-token">Copy App Token</button>
+          <button class="ghost-btn" id="copy-binding-config" type="button">Copy Config</button>
+          <button class="ghost-btn" id="copy-domain-key" type="button">Copy Domain Key</button>
+          <button class="ghost-btn" id="copy-app-token" type="button">Copy App Token</button>
           ${binding.publicAddress ? `<a href="${binding.publicAddress}" target="_blank" class="primary-btn">Open Public URL</a>` : ''}
         </div>
       </section>
 
       <div class="actions" style="margin-top:18px;justify-content:flex-end">
-        <button class="ghost-btn" id="close-binding-modal">Close</button>
+        <button class="ghost-btn" id="close-binding-modal" type="button">Close</button>
       </div>
     `;
 
@@ -218,6 +219,61 @@ async function openBindingModal(domainId) {
   }
 }
 
+async function renderDomainList(content, rows) {
+  const listHost = document.createElement('section');
+  listHost.style.marginTop = '18px';
+
+  listHost.innerHTML = rows.length ? rows.map(d => `
+    <div class="list-card">
+      <strong>${d.name}</strong><br>
+      <span class="muted">Service: ${d.serviceName || '-'}</span><br>
+      <span class="muted">Route: ${d.routePath || '-'}</span><br>
+      <span class="muted">Public Address: ${d.publicAddress || 'Internal Only'}</span>
+      <div class="actions">
+        ${USGPageKit.statusBadge(d.status || 'active')}
+        ${d.publicAddress ? USGPageKit.copyButton(d.publicAddress, 'Copy URL') : ''}
+        <button class="ghost-btn" data-binding="${d.id}" type="button">Binding</button>
+        ${d.publicAddress && d.publicAddress !== 'Internal Only' ? `<a href="${d.publicAddress}" target="_blank" class="ghost-btn">Open</a>` : ''}
+        <button class="danger-btn" data-delete="${d.id}" type="button">Delete</button>
+      </div>
+    </div>
+  `).join('') : USGPageKit.emptyState({
+    title: 'No domains yet',
+    message: 'Create your first public or internal domain.'
+  });
+
+  content.appendChild(listHost);
+
+  USGPageKit.wireCopyButtons(content);
+  USGPageKit.attachBasicSearch({});
+
+  document.querySelectorAll('[data-binding]').forEach(btn => {
+    btn.onclick = () => openBindingModal(btn.dataset.binding);
+  });
+
+  document.querySelectorAll('[data-delete]').forEach(btn => {
+    btn.onclick = async () => {
+      const ok = await USGConfirm('Delete this domain?');
+      if (!ok) return;
+
+      const res = await apiFetch(`/api/domains/${btn.dataset.delete}`, { method: 'DELETE' });
+      const result = await res.json();
+
+      if (!res.ok) {
+        USGIOSAlert.show({
+          title: 'Delete Failed',
+          message: result.message || 'Failed to delete domain',
+          type: 'error'
+        });
+        return;
+      }
+
+      USGIOSAlert.show({ title: 'Deleted', message: 'Domain removed successfully.' });
+      loadDomains();
+    };
+  });
+}
+
 async function loadDomains() {
   const content = document.getElementById('page-content');
   content.innerHTML = '';
@@ -235,71 +291,31 @@ async function loadDomains() {
     ]
   });
 
-  content.innerHTML += USGPageKit.searchToolbar({
+  const toolbarWrap = document.createElement('div');
+  toolbarWrap.innerHTML = USGPageKit.searchToolbar({
     placeholder: 'Search domains...'
   });
+  content.appendChild(toolbarWrap);
+
+  const loadingWrap = document.createElement('div');
+  loadingWrap.innerHTML = USGPageKit.loadingState({ label: 'Loading domains...' });
+  content.appendChild(loadingWrap);
 
   try {
     const res = await apiFetch('/api/domains');
     const data = await res.json();
     const rows = data.domains || [];
 
-    content.innerHTML += `
-      <section style="margin-top:18px">
-        ${rows.length ? rows.map(d => `
-          <div class="list-card">
-            <strong>${d.name}</strong><br>
-            <span class="muted">Service: ${d.serviceName || '-'}</span><br>
-            <span class="muted">Route: ${d.routePath || '-'}</span><br>
-            <span class="muted">Public Address: ${d.publicAddress || 'Internal Only'}</span>
-            <div class="actions">
-              ${USGPageKit.statusBadge(d.status || 'active')}
-              ${d.publicAddress ? USGPageKit.copyButton(d.publicAddress, 'Copy URL') : ''}
-              <button class="ghost-btn" data-binding="${d.id}">Binding</button>
-              ${d.publicAddress && d.publicAddress !== 'Internal Only' ? `<a href="${d.publicAddress}" target="_blank" class="ghost-btn">Open</a>` : ''}
-              <button class="danger-btn" data-delete="${d.id}">Delete</button>
-            </div>
-          </div>
-        `).join('') : USGPageKit.emptyState({
-          title: 'No domains yet',
-          message: 'Create your first public or internal domain.'
-        })}
-      </section>
-    `;
-
-    USGPageKit.wireCopyButtons(content);
-    USGPageKit.attachBasicSearch({});
-
-    document.querySelectorAll('[data-binding]').forEach(btn => {
-      btn.onclick = () => openBindingModal(btn.dataset.binding);
-    });
-
-    document.querySelectorAll('[data-delete]').forEach(btn => {
-      btn.onclick = async () => {
-        const ok = await USGConfirm('Delete this domain?');
-        if (!ok) return;
-
-        const res = await apiFetch(`/api/domains/${btn.dataset.delete}`, { method: 'DELETE' });
-        const result = await res.json();
-
-        if (!res.ok) {
-          USGIOSAlert.show({
-            title: 'Delete Failed',
-            message: result.message || 'Failed to delete domain',
-            type: 'error'
-          });
-          return;
-        }
-
-        USGIOSAlert.show({ title: 'Deleted', message: 'Domain removed successfully.' });
-        loadDomains();
-      };
-    });
+    loadingWrap.remove();
+    await renderDomainList(content, rows);
   } catch (err) {
-    content.innerHTML += USGPageKit.emptyState({
+    loadingWrap.remove();
+    const errWrap = document.createElement('div');
+    errWrap.innerHTML = USGPageKit.emptyState({
       title: 'Domain page failed to load',
       message: err.message || 'Unknown error'
     });
+    content.appendChild(errWrap);
 
     USGIOSAlert.show({
       title: 'Domain Error',
