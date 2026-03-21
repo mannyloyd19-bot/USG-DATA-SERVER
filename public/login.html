@@ -8,7 +8,7 @@
     :root{
       --panel:#ffffffd9;
       --text:#1f2a44;
-      --muted:#7b8498;
+      --muted:#c8d2e6;
       --line:#d6dbe6;
       --blue:#2f6fda;
       --blue-soft:#e7eefc;
@@ -24,13 +24,13 @@
       place-items:center;
       padding:24px;
       font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Arial,sans-serif;
-      background:linear-gradient(180deg,#eef1f7 0%,#e8ecf4 100%);
-      color:var(--text);
+      background:linear-gradient(180deg,#081327 0%,#0b1a36 100%);
+      color:#f4f7ff;
     }
     .login-shell{
       width:min(100%,780px);
-      background:var(--panel);
-      border:1px solid var(--line);
+      background:rgba(10,24,52,.92);
+      border:1px solid rgba(255,255,255,.10);
       border-radius:36px;
       padding:34px;
       box-shadow:var(--shadow);
@@ -58,7 +58,7 @@
     .small{
       font-size:12px;
       letter-spacing:.18em;
-      color:var(--muted);
+      color:#d7e2ff;
       font-weight:700;
       text-transform:uppercase;
     }
@@ -76,15 +76,15 @@
     .tab-btn{
       padding:14px 16px;
       border-radius:18px;
-      border:1px solid var(--line);
-      background:#fff;
-      color:var(--text);
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.08);
+      color:#f4f7ff;
       font-weight:700;
       cursor:pointer;
     }
     .tab-btn.active{
-      background:var(--blue-soft);
-      color:var(--blue);
+      background:rgba(79,128,255,.22);
+      color:#9fc0ff;
     }
     .form-grid{
       display:grid;
@@ -94,8 +94,8 @@
     }
     .form-panel,
     .side-panel{
-      background:rgba(255,255,255,.72);
-      border:1px solid var(--line);
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.10);
       border-radius:26px;
       padding:22px;
     }
@@ -109,11 +109,11 @@
       width:100%;
       padding:16px 18px;
       border-radius:20px;
-      border:1px solid var(--line);
-      background:#fff;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.08);
       margin-bottom:14px;
       font-size:16px;
-      color:var(--text);
+      color:#f4f7ff;
     }
     button.primary{
       width:100%;
@@ -135,17 +135,21 @@
     .message[data-state="success"]{color:var(--success)}
     .hint{
       margin-top:14px;
-      color:var(--muted);
+      color:#d7e2ff;
       font-size:14px;
       line-height:1.6;
     }
     .feature-list{
       margin:0;
       padding-left:18px;
-      color:var(--muted);
+      color:#d7e2ff;
       line-height:1.7;
     }
     .feature-list li{margin-bottom:6px}
+    input::placeholder{
+      color:#d7e2ff;
+      opacity:.75;
+    }
     @media (max-width: 760px){
       .login-shell{padding:24px}
       .form-grid{grid-template-columns:1fr}
