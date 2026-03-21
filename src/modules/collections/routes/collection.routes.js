@@ -12,4 +12,7 @@ router.get('/:key', controller.findOne);
 router.patch('/:key', controller.update);
 router.delete('/:key', controller.remove);
 
+router.put('/:id', controller.update);
+router.delete('/:id', controller.remove);
+
 module.exports = router;

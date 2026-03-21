@@ -14,4 +14,7 @@ router.get('/:userId', controller.findOne);
 router.patch('/:userId', controller.update);
 router.delete('/:userId', controller.remove);
 
+router.put('/:id', controller.update);
+router.delete('/:id', controller.remove);
+
 module.exports = router;

@@ -216,3 +216,34 @@ exports.remove = async (req, res) => {
     });
   }
 };
+
+
+exports.update = async (req, res) => {
+  try {
+    const ApiKey = require('../models/api-key.model');
+    const item = await ApiKey.findByPk(req.params.id);
+    if (!item) {
+      return res.status(404).json({ success: false, message: 'API key not found' });
+    }
+
+    const payload = req.body || {};
+    if (payload.name !== undefined) item.name = payload.name;
+    if (payload.scope !== undefined) item.scope = payload.scope;
+    if (payload.status !== undefined) item.status = payload.status;
+
+    await item.save();
+    return res.json({ success: true, key: item });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+exports.remove = async (req, res) => {
+  try {
+    const ApiKey = require('../models/api-key.model');
+    await ApiKey.destroy({ where: { id: req.params.id } });
+    return res.json({ success: true, message: 'API key deleted' });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
