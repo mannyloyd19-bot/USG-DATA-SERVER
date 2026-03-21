@@ -1,3 +1,5 @@
+const envManagerRoutes = require('./modules/envManager/routes/env-manager.routes');
+const sslCenterRoutes = require('./modules/sslCenter/routes/ssl-center.routes');
 const envRoutes = require('./modules/productionCore/routes/env.routes');
 const domainHealthRoutes = require('./modules/productionCore/routes/domain-health.routes');
 const backupRestoreRoutes = require('./modules/productionCore/routes/backup-restore.routes');
@@ -163,6 +165,8 @@ app.use('/api/realtime-insights', realtimeInsightsRoutes);
 app.use('/api/backup-restore', backupRestoreRoutes);
 app.use('/api/domain-health', domainHealthRoutes);
 app.use('/api/env', envRoutes);
+app.use('/api/ssl-center', sslCenterRoutes);
+app.use('/api/env-manager', envManagerRoutes);
 app.use(notFoundHandler);
 app.use(errorHandler);
 
