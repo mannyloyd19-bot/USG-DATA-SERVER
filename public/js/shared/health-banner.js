@@ -1,6 +1,8 @@
 window.USGHealthBanner = {
   async render() {
     try {
+      if (window.__DISABLE_HEALTH_BANNER__ === true) return;
+
       const res = await apiFetch('/api/live-readiness/status');
       const data = await res.json();
       const content = document.getElementById('page-content');

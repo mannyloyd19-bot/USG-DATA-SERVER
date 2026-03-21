@@ -1,5 +1,6 @@
 requireAuth();
 USGShell.buildShell();
+window.__DISABLE_HEALTH_BANNER__ = true;
 
 function validateDomain(data) {
   return USGValidationKit.collect(
@@ -19,6 +20,110 @@ APP_ROUTE=${cfg.APP_ROUTE || '/'}
 USG_DOMAIN_KEY=${cfg.USG_DOMAIN_KEY || ''}
 USG_API_BASE_URL=${cfg.USG_API_BASE_URL || ''}
 USG_APP_TOKEN=${cfg.USG_APP_TOKEN || ''}`;
+}
+
+function openCreateDomainModal(onDone) {
+  const overlay = document.createElement('div');
+  overlay.style.position = 'fixed';
+  overlay.style.inset = '0';
+  overlay.style.background = 'rgba(0,0,0,0.6)';
+  overlay.style.display = 'flex';
+  overlay.style.alignItems = 'center';
+  overlay.style.justifyContent = 'center';
+  overlay.style.zIndex = '99999';
+  overlay.style.padding = '20px';
+
+  const box = document.createElement('div');
+  box.style.width = 'min(460px, 95vw)';
+  box.style.background = '#0f172a';
+  box.style.borderRadius = '22px';
+  box.style.padding = '22px';
+  box.style.color = '#fff';
+  box.style.border = '1px solid rgba(255,255,255,.10)';
+
+  box.innerHTML = `
+    <h2 style="margin-top:0">Create Domain</h2>
+    <input id="d-name" placeholder="Domain (.usg)" style="width:100%;margin:8px 0;padding:14px;border-radius:14px;border:1px solid rgba(255,255,255,.14);background:#111827;color:#fff">
+    <input id="d-service" placeholder="Service Name" style="width:100%;margin:8px 0;padding:14px;border-radius:14px;border:1px solid rgba(255,255,255,.14);background:#111827;color:#fff">
+    <input id="d-route" placeholder="/website" style="width:100%;margin:8px 0;padding:14px;border-radius:14px;border:1px solid rgba(255,255,255,.14);background:#111827;color:#fff">
+
+    <select id="d-access" style="width:100%;margin:8px 0;padding:14px;border-radius:14px;border:1px solid rgba(255,255,255,.14);background:#111827;color:#fff">
+      <option value="public">Public</option>
+      <option value="internal">Internal</option>
+    </select>
+
+    <select id="d-env" style="width:100%;margin:8px 0;padding:14px;border-radius:14px;border:1px solid rgba(255,255,255,.14);background:#111827;color:#fff">
+      <option value="production">Production</option>
+      <option value="staging">Staging</option>
+      <option value="development">Development</option>
+    </select>
+
+    <textarea id="d-notes" placeholder="Notes" style="width:100%;margin:8px 0;padding:14px;border-radius:14px;border:1px solid rgba(255,255,255,.14);background:#111827;color:#fff;min-height:90px"></textarea>
+
+    <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:14px">
+      <button id="cancel-domain-modal" class="ghost-btn">Cancel</button>
+      <button id="create-domain-submit" class="primary-btn">Create</button>
+    </div>
+  `;
+
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+
+  document.getElementById('cancel-domain-modal').onclick = () => overlay.remove();
+
+  document.getElementById('create-domain-submit').onclick = async () => {
+    const payload = {
+      name: document.getElementById('d-name').value.trim(),
+      serviceName: document.getElementById('d-service').value.trim(),
+      routePath: document.getElementById('d-route').value.trim(),
+      accessMode: document.getElementById('d-access').value,
+      environment: document.getElementById('d-env').value,
+      notes: document.getElementById('d-notes').value.trim()
+    };
+
+    const errors = validateDomain(payload);
+    if (errors.length) {
+      USGIOSAlert.show({
+        title: 'Validation Error',
+        message: errors.join('\n'),
+        type: 'error'
+      });
+      return;
+    }
+
+    try {
+      const res = await apiFetch('/api/domains', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      const result = await res.json();
+
+      if (!res.ok) {
+        USGIOSAlert.show({
+          title: 'Create Domain Failed',
+          message: result.message || 'Failed to create domain',
+          type: 'error'
+        });
+        return;
+      }
+
+      overlay.remove();
+      USGIOSAlert.show({
+        title: 'Domain Created',
+        message: result.domain?.name || 'Domain created successfully'
+      });
+
+      if (typeof onDone === 'function') onDone();
+    } catch (error) {
+      USGIOSAlert.show({
+        title: 'Create Domain Failed',
+        message: error.message,
+        type: 'error'
+      });
+    }
+  };
 }
 
 async function openBindingModal(domainId) {
@@ -58,31 +163,16 @@ async function openBindingModal(domainId) {
       <h2 style="margin-top:8px">${binding.domain || 'Domain'}</h2>
 
       <div class="grid-3" style="margin-top:18px">
-        <div class="info-card">
-          <div class="info-title">Service</div>
-          <div class="info-value" style="font-size:18px">${binding.serviceName || '-'}</div>
-        </div>
-        <div class="info-card">
-          <div class="info-title">Bind Status</div>
-          <div class="info-value" style="font-size:18px">${binding.bindStatus || 'unbound'}</div>
-        </div>
-        <div class="info-card">
-          <div class="info-title">Route</div>
-          <div class="info-value" style="font-size:18px">${binding.routePath || '/'}</div>
-        </div>
+        <div class="info-card"><div class="info-title">Service</div><div class="info-value" style="font-size:18px">${binding.serviceName || '-'}</div></div>
+        <div class="info-card"><div class="info-title">Bind Status</div><div class="info-value" style="font-size:18px">${binding.bindStatus || 'unbound'}</div></div>
+        <div class="info-card"><div class="info-title">Route</div><div class="info-value" style="font-size:18px">${binding.routePath || '/'}</div></div>
       </div>
 
       <section class="card" style="margin-top:18px">
         <div class="kicker">IDENTITY</div>
         <h2>Binding Keys</h2>
-        <div class="list-card">
-          <strong>Domain Key</strong><br>
-          <span class="muted">${binding.domainKey || '-'}</span>
-        </div>
-        <div class="list-card">
-          <strong>App Token</strong><br>
-          <span class="muted">${binding.appToken || '-'}</span>
-        </div>
+        <div class="list-card"><strong>Domain Key</strong><br><span class="muted">${binding.domainKey || '-'}</span></div>
+        <div class="list-card"><strong>App Token</strong><br><span class="muted">${binding.appToken || '-'}</span></div>
       </section>
 
       <section class="card" style="margin-top:18px">
@@ -130,15 +220,31 @@ async function openBindingModal(domainId) {
 
 async function loadDomains() {
   const content = document.getElementById('page-content');
-  content.innerHTML = USGPageKit.loadingState({ label: 'Loading domains...' });
+  content.innerHTML = '';
+
+  USGPageKit.setPageHeader({
+    kicker: 'DOMAIN',
+    title: 'Domain Registry',
+    subtitle: 'Create and manage domain bindings for live app access',
+    actions: [
+      {
+        label: '+ Create Domain',
+        primary: true,
+        onClick: () => openCreateDomainModal(() => loadDomains())
+      }
+    ]
+  });
+
+  content.innerHTML += USGPageKit.searchToolbar({
+    placeholder: 'Search domains...'
+  });
 
   try {
     const res = await apiFetch('/api/domains');
     const data = await res.json();
     const rows = data.domains || [];
 
-    const bodyHtml = `
-      ${USGPageKit.searchToolbar({ placeholder: 'Search domains...' })}
+    content.innerHTML += `
       <section style="margin-top:18px">
         ${rows.length ? rows.map(d => `
           <div class="list-card">
@@ -160,33 +266,6 @@ async function loadDomains() {
         })}
       </section>
     `;
-
-    content.innerHTML = bodyHtml;
-
-    USGPageKit.setPageHeader({
-      kicker: 'DOMAIN',
-      title: 'Domain Registry',
-      subtitle: 'Create and manage domain bindings for live app access',
-      actions: [
-        {
-          label: '+ Create Domain',
-          primary: true,
-          onClick: () => {
-            USGCrudKit.create({
-              title: 'Create Domain',
-              endpoint: '/api/domains',
-              validate: validateDomain,
-              fields: [
-                { name: 'name', label: 'Domain (.usg)' },
-                { name: 'serviceName', label: 'Service Name' },
-                { name: 'routePath', label: 'Route Path (/website)' }
-              ],
-              onDone: () => loadDomains()
-            });
-          }
-        }
-      ]
-    });
 
     USGPageKit.wireCopyButtons(content);
     USGPageKit.attachBasicSearch({});
@@ -212,25 +291,16 @@ async function loadDomains() {
           return;
         }
 
-        USGIOSAlert.show({
-          title: 'Deleted',
-          message: 'Domain removed successfully.'
-        });
-
+        USGIOSAlert.show({ title: 'Deleted', message: 'Domain removed successfully.' });
         loadDomains();
       };
     });
   } catch (err) {
-    content.innerHTML = '';
-    USGPageKit.setPageHeader({
-      kicker: 'DOMAIN',
-      title: 'Domain Registry',
-      subtitle: 'Create and manage domain bindings for live app access'
-    });
     content.innerHTML += USGPageKit.emptyState({
       title: 'Domain page failed to load',
       message: err.message || 'Unknown error'
     });
+
     USGIOSAlert.show({
       title: 'Domain Error',
       message: err.message,
