@@ -1,27 +1,25 @@
-requireAuth();
-USGShell.buildShell();
+USGPageBootstrap.init('Users');
 
 async function loadUsers() {
-  const content = document.getElementById('page-content');
+  try {
+    const content = document.getElementById('page-content');
 
-  USGPageKit.setPageHeader({
-    kicker: 'USERS',
-    title: 'Users',
-    subtitle: 'Manage system users'
-  });
+    const res = await apiFetch('/api/users').catch(() => null);
+    const data = res ? await res.json() : {};
+    const users = data.users || [];
 
-  content.innerHTML += USGPageKit.loadingState();
+    content.innerHTML = users.length
+      ? users.map(u => `
+        <div class="list-card">
+          <strong>${u.username}</strong><br>
+          <span class="muted">Role: ${u.role}</span>
+        </div>
+      `).join('')
+      : USGPageKit.emptyState({ title: 'No users found' });
 
-  const res = await apiFetch('/api/users');
-  const data = await res.json();
-
-  content.innerHTML += (data.users || []).map(u => `
-    <div class="list-card">
-      <strong>${u.email}</strong><br>
-      <span class="muted">${u.role}</span>
-      ${USGPageKit.statusBadge(u.status)}
-    </div>
-  `).join('');
+  } catch (err) {
+    USGPageBootstrap.error(err);
+  }
 }
 
 loadUsers();

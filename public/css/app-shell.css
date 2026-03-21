@@ -489,3 +489,11 @@ pre,.code-block{
   }
 }
 
+
+.list-card{
+  border:1px solid rgba(140,175,255,.1);
+  border-radius:18px;
+  padding:16px;
+  margin-bottom:12px;
+  background:rgba(255,255,255,.02);
+}
