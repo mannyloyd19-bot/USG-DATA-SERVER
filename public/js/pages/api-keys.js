@@ -4,29 +4,34 @@ USGShell.buildShell();
 async function loadKeys() {
   const content = document.getElementById('page-content');
 
-  USGPageKit.setPageHeader({
-    kicker: 'API',
-    title: 'API Keys',
-    subtitle: 'Manage API access keys'
-  });
-
-  content.innerHTML += USGPageKit.loadingState();
-
   const res = await apiFetch('/api/api-keys');
   const data = await res.json();
 
-  content.innerHTML += (data.keys || []).map(k => `
+  content.innerHTML = (data.keys || []).map(k => `
     <div class="list-card">
-      <strong>${k.name}</strong><br>
-      <span class="muted">Last Used: ${k.lastUsed || 'Never'}</span>
-      ${USGPageKit.statusBadge(k.status)}
+      <strong>${k.name}</strong>
       <div class="actions">
-        ${USGPageKit.copyButton(k.key)}
+        <button data-rotate="${k.id}">Rotate</button>
+        <button data-delete="${k.id}">Revoke</button>
       </div>
     </div>
   `).join('');
 
-  USGPageKit.wireCopyButtons();
+  document.querySelectorAll('[data-rotate]').forEach(btn => {
+    btn.onclick = async () => {
+      await apiFetch(`/api/api-keys/${btn.dataset.rotate}/rotate`, { method: 'POST' });
+      loadKeys();
+    };
+  });
+
+  document.querySelectorAll('[data-delete]').forEach(btn => {
+    btn.onclick = async () => {
+      const ok = await USGConfirm('Revoke key?');
+      if (!ok) return;
+      await apiFetch(`/api/api-keys/${btn.dataset.delete}`, { method: 'DELETE' });
+      loadKeys();
+    };
+  });
 }
 
 loadKeys();
