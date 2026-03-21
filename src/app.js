@@ -1,3 +1,4 @@
+const finalReadinessRoutes = require('./modules/finalReadiness/routes/final-readiness.routes');
 const envManagerRoutes = require('./modules/envManager/routes/env-manager.routes');
 const sslCenterRoutes = require('./modules/sslCenter/routes/ssl-center.routes');
 const envRoutes = require('./modules/productionCore/routes/env.routes');
@@ -167,6 +168,7 @@ app.use('/api/domain-health', domainHealthRoutes);
 app.use('/api/env', envRoutes);
 app.use('/api/ssl-center', sslCenterRoutes);
 app.use('/api/env-manager', envManagerRoutes);
+app.use('/api/final-readiness', finalReadinessRoutes);
 app.use(notFoundHandler);
 app.use(errorHandler);
 
