@@ -497,3 +497,15 @@ pre,.code-block{
   margin-bottom:12px;
   background:rgba(255,255,255,.02);
 }
+
+
+.mini-line{
+  margin-top:12px;
+  color:#76a7ff;
+}
+.mini-line svg{
+  width:100%;
+  height:80px;
+  display:block;
+}
+

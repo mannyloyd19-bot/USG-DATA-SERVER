@@ -1,149 +1,131 @@
 requireAuth();
+USGShell.buildShell();
 
-function formatNumber(value) {
-  return Number(value || 0).toLocaleString();
-}
-
-function buildTrendSeries(current) {
-  const base = Number(current || 0);
-  if (base <= 0) return [0, 0, 0, 0, 0, 0, 0];
-
-  const p1 = Math.max(0, Math.round(base * 0.42));
-  const p2 = Math.max(0, Math.round(base * 0.55));
-  const p3 = Math.max(0, Math.round(base * 0.61));
-  const p4 = Math.max(0, Math.round(base * 0.73));
-  const p5 = Math.max(0, Math.round(base * 0.84));
-  const p6 = Math.max(0, Math.round(base * 0.92));
-  const p7 = base;
-
-  return [p1, p2, p3, p4, p5, p6, p7];
-}
-
-function renderMiniLine(container, values) {
+function lineSvg(values = []) {
+  const width = 320, height = 72;
   const max = Math.max(...values, 1);
+  const step = values.length > 1 ? width / (values.length - 1) : width;
   const points = values.map((v, i) => {
-    const x = (i / (values.length - 1)) * 100;
-    const y = 100 - ((v / max) * 82 + 8);
+    const x = i * step;
+    const y = height - (v / max) * (height - 12) - 6;
     return `${x},${y}`;
   }).join(' ');
-
-  container.innerHTML = `
-    <svg viewBox="0 0 100 100" preserveAspectRatio="none" class="mini-line-svg">
-      <polyline fill="none" stroke="currentColor" stroke-width="3" points="${points}" />
-    </svg>
+  return `
+    <div class="mini-line">
+      <svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="none">
+        <polyline fill="none" stroke="currentColor" stroke-width="3" points="${points}" />
+      </svg>
+    </div>
   `;
 }
 
-async function loadDashboard() {
-  const modeEl = document.getElementById('stat-mode');
-  const usersEl = document.getElementById('stat-users');
-  const collectionsEl = document.getElementById('stat-collections');
-  const recordsEl = document.getElementById('stat-records');
-  const filesEl = document.getElementById('stat-files');
-  const tablesEl = document.getElementById('stat-tables');
-  const relationsEl = document.getElementById('stat-relations');
-  const healthBox = document.getElementById('health-box');
-  const userLabel = document.getElementById('current-user');
-  const chartBox = document.getElementById('chart-box');
-  const insightBox = document.getElementById('insight-box');
-
-  const currentUser = getUser();
-  if (currentUser && userLabel) {
-    userLabel.textContent = `${currentUser.username} · ${currentUser.role}`;
+async function safeJson(url) {
+  try {
+    const res = await apiFetch(url);
+    const data = await res.json();
+    return data;
+  } catch {
+    return {};
   }
+}
+
+async function loadDashboard() {
+  const content = document.getElementById('page-content');
+  content.innerHTML = '';
+
+  USGPageKit.setPageHeader({
+    kicker: 'CONTROL CENTER',
+    title: 'USG Operations Dashboard',
+    subtitle: 'Platform health, service status, domain access, and system readiness'
+  });
 
   try {
-    const [healthRes, statsRes] = await Promise.all([
-      fetch('/health/details'),
-      apiFetch('/api/dashboard/stats')
+    const [dash, readiness, polish, analytics] = await Promise.all([
+      safeJson('/api/dashboard'),
+      safeJson('/api/live-readiness/status'),
+      safeJson('/api/final-polish/summary'),
+      safeJson('/api/platform-analytics/summary')
     ]);
 
-    let health = {};
-    let stats = {};
+    const stats = dash.stats || {};
+    const app = polish.app || {};
+    const readinessPercent = readiness.readinessPercent || 0;
+    const summary = analytics.summary || {};
+    const charts = analytics.charts || {
+      requests: [12,18,17,26,31,28,36],
+      errors: [1,0,2,1,1,0,1],
+      backups: [0,1,0,1,1,0,1]
+    };
 
-    try { health = await healthRes.json(); } catch {}
-    try { stats = await statsRes.json(); } catch {}
+    content.innerHTML = `
+      <div class="grid-4">
+        ${USGPageKit.infoCard('Users', stats.users || 0, 'Registered accounts')}
+        ${USGPageKit.infoCard('Collections', stats.collections || 0, 'Data structures')}
+        ${USGPageKit.infoCard('Files', stats.files || 0, 'Stored assets')}
+        ${USGPageKit.infoCard('Readiness', `${readinessPercent}%`, 'Install health')}
+      </div>
 
-    if (!stats || !stats.data) {
-      if (healthBox) {
-        healthBox.textContent = JSON.stringify({
-          success: false,
-          message: 'Dashboard stats not available'
-        }, null, 2);
-      }
-      return;
-    }
-
-    const data = stats.data || {};
-
-    if (modeEl) modeEl.textContent = String(data.mode || 'sqlite').toUpperCase();
-    if (usersEl) usersEl.textContent = formatNumber(data.users);
-    if (collectionsEl) collectionsEl.textContent = formatNumber(data.collections);
-    if (recordsEl) recordsEl.textContent = formatNumber(data.records);
-    if (filesEl) filesEl.textContent = formatNumber(data.files);
-    if (tablesEl) tablesEl.textContent = formatNumber(data.tables);
-    if (relationsEl) relationsEl.textContent = formatNumber(data.relationships);
-
-    if (chartBox) {
-      const bars = [
-        ['Users', data.users || 0],
-        ['Collections', data.collections || 0],
-        ['Records', data.records || 0],
-        ['Files', data.files || 0],
-        ['Tables', data.tables || 0],
-        ['Relations', data.relationships || 0]
-      ];
-
-      const max = Math.max(...bars.map(x => x[1]), 1);
-
-      chartBox.innerHTML = bars.map(([label, value]) => `
-        <div class="bar-row">
-          <div class="bar-label">${label}</div>
-          <div class="bar-track">
-            <div class="bar-fill" style="width:${(value / max) * 100}%"></div>
+      <div class="grid-3" style="margin-top:24px">
+        <section class="card">
+          <div class="kicker">PLATFORM STATUS</div>
+          <h2>Runtime</h2>
+          <div class="actions">${USGPageKit.statusBadge('online')}</div>
+          <div class="muted" style="margin-top:12px">
+            Environment: ${app.env || 'development'}<br>
+            Version: ${app.version || '1.0.0'}<br>
+            Database: ${app.dbPath || './database.sqlite'}
           </div>
-          <div class="bar-value">${formatNumber(value)}</div>
-        </div>
-      `).join('');
-    }
+        </section>
 
-    if (insightBox) {
-      const cards = [
-        { title: 'Users', value: data.users || 0, cls: 'users' },
-        { title: 'Collections', value: data.collections || 0, cls: 'collections' },
-        { title: 'Records', value: data.records || 0, cls: 'records' },
-        { title: 'Files', value: data.files || 0, cls: 'files' }
-      ];
+        <section class="card">
+          <div class="kicker">NETWORK ACCESS</div>
+          <h2>Gateway</h2>
+          <div class="muted">
+            Public Domain: ${app.duckdnsDomain || 'not configured'}<br>
+            Domains: ${summary.domains || 0}<br>
+            API Keys: ${summary.apiKeys || 0}
+          </div>
+          <div class="actions" style="margin-top:12px;flex-wrap:wrap">
+            <a href="/pages/domains.html" class="ghost-btn">Domain Center</a>
+            <a href="/pages/ssl-center.html" class="ghost-btn">SSL Center</a>
+          </div>
+        </section>
 
-      insightBox.innerHTML = cards.map((card, index) => `
-        <div class="insight-card ${card.cls}">
-          <div class="insight-label">${card.title}</div>
-          <div class="insight-value">${formatNumber(card.value)}</div>
-          <div class="insight-sub">Last 7-point trend</div>
-          <div class="mini-line" id="mini-line-${index}"></div>
-        </div>
-      `).join('');
+        <section class="card">
+          <div class="kicker">OPERATIONS</div>
+          <h2>Quick Actions</h2>
+          <div class="actions" style="flex-wrap:wrap">
+            <a href="/pages/boot-diagnostics.html" class="ghost-btn">Boot Diagnostics</a>
+            <a href="/pages/install-wizard.html" class="ghost-btn">Install Wizard</a>
+            <a href="/pages/backup-restore.html" class="ghost-btn">Restore</a>
+            <a href="/pages/env-manager.html" class="primary-btn">Env Manager</a>
+          </div>
+        </section>
+      </div>
 
-      cards.forEach((card, index) => {
-        const el = document.getElementById(`mini-line-${index}`);
-        if (el) {
-          renderMiniLine(el, buildTrendSeries(card.value));
-        }
-      });
-    }
+      <div class="grid-3" style="margin-top:24px">
+        <section class="card">
+          <div class="kicker">REQUESTS</div>
+          <h2>Traffic Trend</h2>
+          ${lineSvg(charts.requests || [])}
+        </section>
 
-    if (healthBox) {
-      healthBox.textContent = JSON.stringify({
-        health,
-        stats
-      }, null, 2);
-    }
-  } catch (error) {
-    if (healthBox) {
-      healthBox.textContent = JSON.stringify({
-        success: false,
-        message: error.message
-      }, null, 2);
+        <section class="card">
+          <div class="kicker">ERRORS</div>
+          <h2>Error Trend</h2>
+          ${lineSvg(charts.errors || [])}
+        </section>
+
+        <section class="card">
+          <div class="kicker">BACKUPS</div>
+          <h2>Backup Activity</h2>
+          ${lineSvg(charts.backups || [])}
+        </section>
+      </div>
+    `;
+  } catch (err) {
+    if (window.USGIOSAlert) {
+      USGIOSAlert.show({ title: 'Dashboard Error', message: err.message, type: 'error' });
     }
   }
 }

@@ -9,7 +9,10 @@
     "start": "node src/server.js",
     "backup": "node scripts/manual-backup.js",
     "safe:stop": "bash scripts/safe-stop.sh",
-    "safe:start": "bash scripts/safe-start.sh"
+    "safe:start": "bash scripts/safe-start.sh",
+    "desktop": "electron .",
+    "desktop:dev": "concurrently \"node src/server.js\" \"wait-on http://127.0.0.1:3000/login.html && electron .\"",
+    "desktop:build": "electron-builder"
   },
   "repository": {
     "type": "git",
@@ -42,6 +45,25 @@
     "uuid": "^13.0.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.14"
+    "concurrently": "^9.2.1",
+    "electron": "^41.0.3",
+    "electron-builder": "^26.8.1",
+    "nodemon": "^3.1.14",
+    "wait-on": "^9.0.4"
+  },
+  "build": {
+    "appId": "com.usg.dataserver",
+    "productName": "USG DATA SERVER",
+    "files": [
+      "public/**/*",
+      "src/**/*",
+      "electron-main.js",
+      "package.json",
+      "database.sqlite",
+      "storage/**/*"
+    ],
+    "directories": {
+      "buildResources": "public/assets"
+    }
   }
 }
