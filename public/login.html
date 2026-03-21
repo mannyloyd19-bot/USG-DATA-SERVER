@@ -14,8 +14,8 @@
       --blue-soft:#e7eefc;
       --danger:#c0392b;
       --success:#1f7a3d;
-      --shadow:0 12px 30px rgba(31,42,68,.08);
-      --radius:32px;
+      --shadow:0 18px 45px rgba(31,42,68,.10);
+      --radius:36px;
     }
     *{box-sizing:border-box}
     body{
@@ -28,48 +28,72 @@
       background:linear-gradient(180deg,#eef1f7 0%,#e8ecf4 100%);
       color:var(--text);
     }
-    .card{
-      width:min(100%,500px);
+    .login-shell{
+      width:min(100%,760px);
       background:var(--panel);
       border:1px solid var(--line);
-      border-radius:32px;
-      padding:28px;
+      border-radius:36px;
+      padding:34px;
       box-shadow:var(--shadow);
       backdrop-filter:blur(16px);
     }
-    .brand{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+    .brand{display:flex;align-items:center;gap:16px;margin-bottom:22px}
     .logo{
-      width:70px;height:70px;border-radius:22px;display:grid;place-items:center;
-      background:linear-gradient(180deg,#3d82ee,#2f6fda);color:#fff;font-size:34px;font-weight:800;overflow:hidden;
+      width:86px;height:86px;border-radius:24px;display:grid;place-items:center;
+      background:linear-gradient(180deg,#3d82ee,#2f6fda);color:#fff;font-size:34px;font-weight:800;overflow:hidden;flex:0 0 auto;
     }
     .small{font-size:12px;letter-spacing:.18em;color:var(--muted);font-weight:700}
-    h1{margin:6px 0 0;font-size:34px;line-height:1}
-    .tabs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:18px 0}
+    h1{margin:6px 0 0;font-size:40px;line-height:1}
+    .tabs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:22px 0}
     .tab-btn{
-      padding:12px 14px;border-radius:16px;border:1px solid var(--line);
+      padding:14px 16px;border-radius:18px;border:1px solid var(--line);
       background:#fff;color:var(--text);font-weight:700;cursor:pointer
     }
     .tab-btn.active{background:var(--blue-soft);color:var(--blue)}
+    .form-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:16px;
+      align-items:start;
+    }
+    .form-panel,
+    .side-panel{
+      background:rgba(255,255,255,.72);
+      border:1px solid var(--line);
+      border-radius:26px;
+      padding:22px;
+    }
+    .side-panel{
+      min-height:100%;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+    }
     input,select{
-      width:100%;padding:15px 16px;border-radius:18px;border:1px solid var(--line);
+      width:100%;padding:16px 18px;border-radius:20px;border:1px solid var(--line);
       background:#fff;margin-bottom:14px;font-size:16px
     }
     button.primary{
-      width:100%;padding:15px 18px;border:none;border-radius:18px;background:var(--blue);
+      width:100%;padding:16px 18px;border:none;border-radius:20px;background:var(--blue);
       color:#fff;font-size:16px;font-weight:700;cursor:pointer
     }
     .message{min-height:20px;margin:4px 0 12px;font-size:14px}
     .message[data-state="error"]{color:var(--danger)}
     .message[data-state="success"]{color:var(--success)}
-    .hint{margin-top:14px;color:var(--muted);font-size:14px;line-height:1.5}
+    .hint{margin-top:14px;color:var(--muted);font-size:14px;line-height:1.6}
+    .feature-list{margin:0;padding-left:18px;color:var(--muted);line-height:1.7}
+    @media (max-width: 760px){
+      .login-shell{padding:24px}
+      .form-grid{grid-template-columns:1fr}
+      h1{font-size:34px}
+      .tabs{grid-template-columns:1fr}
+    }
   </style>
   <link rel="stylesheet" href="/css/pro-ui.css">
   <link rel="stylesheet" href="/css/theme-pro.css">
-  <link rel="stylesheet" href="/css/sidebar-pro.css">
-  <link rel="stylesheet" href="/css/page-shell-fix.css">
 </head>
 <body>
-  <div 
+  <div class="login-shell">
     <div class="brand">
       <div class="logo">
         <img src="/assets/company-logo.png" alt="UNI-SOGOOD" style="width:100%;height:100%;object-fit:contain;border-radius:18px"
@@ -87,34 +111,51 @@
       <button class="tab-btn" data-open="forgot" type="button">Reset Password</button>
     </div>
 
-    <div class="message" id="message-box" data-state="error"></div>
+    <div class="form-grid">
+      <div class="form-panel">
+        <div class="message" id="message-box" data-state="error"></div>
 
-    <form id="login-form" data-tab="login">
-      <input id="login-username" placeholder="Username" autocomplete="username" required>
-      <input id="login-password" type="password" placeholder="Password" autocomplete="current-password" required>
-      <button class="primary" type="submit">Sign In</button>
-    </form>
+        <form id="login-form" data-tab="login">
+          <input id="login-username" placeholder="Username" autocomplete="username" required>
+          <input id="login-password" type="password" placeholder="Password" autocomplete="current-password" required>
+          <button class="primary" type="submit">Sign In</button>
+        </form>
 
-    <form id="create-form" data-tab="create" style="display:none">
-      <input id="create-masterkey" type="password" placeholder="Master Setup Key" autocomplete="off" required>
-      <input id="create-username" placeholder="New Username" required>
-      <input id="create-password" type="password" placeholder="New Password" required>
-      <select id="create-role">
-        <option value="admin">admin</option>
-        <option value="super_admin">super_admin</option>
-      </select>
-      <button class="primary" type="submit">Create Account</button>
-    </form>
+        <form id="create-form" data-tab="create" style="display:none">
+          <input id="create-masterkey" type="password" placeholder="Master Setup Key" autocomplete="off" required>
+          <input id="create-username" placeholder="New Username" required>
+          <input id="create-password" type="password" placeholder="New Password" required>
+          <select id="create-role">
+            <option value="admin">admin</option>
+            <option value="super_admin">super_admin</option>
+          </select>
+          <button class="primary" type="submit">Create Account</button>
+        </form>
 
-    <form id="forgot-form" data-tab="forgot" style="display:none">
-      <input id="forgot-masterkey" type="password" placeholder="Master Setup Key" autocomplete="off" required>
-      <input id="forgot-username" placeholder="Username" required>
-      <input id="forgot-password" type="password" placeholder="New Password" required>
-      <button class="primary" type="submit">Reset Password</button>
-    </form>
+        <form id="forgot-form" data-tab="forgot" style="display:none">
+          <input id="forgot-masterkey" type="password" placeholder="Master Setup Key" autocomplete="off" required>
+          <input id="forgot-username" placeholder="Username" required>
+          <input id="forgot-password" type="password" placeholder="New Password" required>
+          <button class="primary" type="submit">Reset Password</button>
+        </form>
+      </div>
 
-    <div class="hint">
-      Administrative account actions require the configured master setup key.
+      <aside class="side-panel">
+        <div>
+          <div class="small">LIVE ACCESS</div>
+          <h2 style="margin:8px 0 14px">Wider iPhone-style login</h2>
+          <ul class="feature-list">
+            <li>Built for PC and tablet browser access</li>
+            <li>Private admin authentication</li>
+            <li>Works with always-on USG server runtime</li>
+            <li>Supports create account and reset flows</li>
+          </ul>
+        </div>
+
+        <div class="hint">
+          Administrative account actions require the configured master setup key.
+        </div>
+      </aside>
     </div>
   </div>
 
@@ -123,6 +164,5 @@
   <script src="/js/pro-ui.js"></script>
   <script src="/js/theme-pro.js"></script>
   <script src="/js/company-brand.js"></script>
-  <script src="/js/sidebar-pro.js"></script>
 </body>
 </html>
