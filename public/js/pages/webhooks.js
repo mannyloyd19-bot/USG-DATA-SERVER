@@ -41,7 +41,7 @@ async function loadWebhooks() {
   try {
     const res = await apiFetch('/api/webhooks');
     const data = await res.json();
-    const rows = data.webhooks || data.data || [];
+    const rows = Array.isArray(data) ? data : (data.webhooks || data.data || []);
 
     const listWrap = document.createElement('section');
     listWrap.innerHTML = rows.length ? rows.map(item => `

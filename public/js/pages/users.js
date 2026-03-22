@@ -63,7 +63,7 @@ function bootUsersPage() {
     try {
       const res = await apiFetch('/api/users');
       const data = await res.json();
-      const users = data.users || [];
+      const users = Array.isArray(data) ? data : (data.users || []);
 
       const listWrap = document.createElement('section');
       listWrap.innerHTML = users.length ? users.map(u => `

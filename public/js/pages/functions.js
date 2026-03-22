@@ -32,7 +32,7 @@ async function loadFunctions() {
   try {
     const res = await apiFetch('/api/functions');
     const data = await res.json();
-    const rows = data.functions || data.data || [];
+    const rows = Array.isArray(data) ? data : (data.functions || data.data || []);
 
     const listWrap = document.createElement('section');
     listWrap.style.marginTop = '18px';

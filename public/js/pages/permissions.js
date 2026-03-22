@@ -36,7 +36,7 @@ async function loadPermissions() {
   try {
     const res = await apiFetch('/api/permissions');
     const data = await res.json();
-    const rows = data.permissions || data.roles || [];
+    const rows = Array.isArray(data) ? data : (data.permissions || data.roles || []);
 
     const listWrap = document.createElement('section');
     listWrap.style.marginTop = '18px';

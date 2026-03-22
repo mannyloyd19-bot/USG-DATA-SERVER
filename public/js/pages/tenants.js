@@ -54,7 +54,7 @@ async function loadTenants() {
   try {
     const res = await apiFetch('/api/tenants');
     const data = await res.json();
-    const rows = data.tenants || [];
+    const rows = Array.isArray(data) ? data : (data.tenants || []);
 
     const listWrap = document.createElement('section');
     listWrap.style.marginTop = '18px';

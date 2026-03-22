@@ -56,7 +56,7 @@ async function loadSettings() {
     safeJson('/api/final-polish/summary')
   ]);
 
-  const rows = settingsData.settings || settingsData.data || [];
+  const rows = Array.isArray(settingsData) ? settingsData : (settingsData.settings || settingsData.data || []);
   const health = healthData.data || {};
   const app = polishData.app || {};
 

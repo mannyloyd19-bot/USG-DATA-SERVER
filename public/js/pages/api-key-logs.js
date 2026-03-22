@@ -37,7 +37,7 @@ async function loadApiKeyLogs() {
   try {
     const res = await apiFetch('/api/api-key-logs');
     const data = await res.json();
-    const rows = data.logs || data.apiKeyLogs || data.data || [];
+    const rows = Array.isArray(data) ? data : (data.logs || data.apiKeyLogs || data.data || []);
 
     const listWrap = document.createElement('section');
     listWrap.innerHTML = rows.length ? rows.map(item => `
