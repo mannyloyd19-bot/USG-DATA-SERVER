@@ -1514,3 +1514,11 @@ a.danger-btn{
     top:auto !important;
   }
 }
+
+html, body{
+  scroll-behavior: auto !important;
+}
+
+body{
+  overflow-y: auto !important;
+}
