@@ -1,57 +1,84 @@
 requireAuth();
 USGShell.buildShell();
 
-function lineSvg(values = []) {
-  const width = 300, height = 60;
-  const max = Math.max(...values, 1);
-  const step = values.length > 1 ? width / (values.length - 1) : width;
-  const points = values.map((v, i) => {
-    const x = i * step;
-    const y = height - (v / max) * (height - 8) - 4;
-    return `${x},${y}`;
-  }).join(' ');
-  return `<div class="mini-line"><svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="none"><polyline fill="none" stroke="currentColor" stroke-width="3" points="${points}" /></svg></div>`;
+async function safeJson(url) {
+  try {
+    const res = await apiFetch(url);
+    return await res.json();
+  } catch {
+    return {};
+  }
 }
 
-async function loadAnalytics() {
+function metricCard(title, value, subtitle = '') {
+  return `
+    <section class="card">
+      <div class="kicker">${title.toUpperCase()}</div>
+      <h2 style="margin:8px 0 6px">${value}</h2>
+      <div class="muted">${subtitle}</div>
+    </section>
+  `;
+}
+
+async function loadSystemAnalytics() {
   const content = document.getElementById('page-content');
   content.innerHTML = '';
 
   USGPageKit.setPageHeader({
-    kicker: 'SYSTEM',
+    kicker: 'SYSTEM ANALYTICS',
     title: 'System Analytics',
-    subtitle: 'Real platform analytics and health trends'
+    subtitle: 'Platform metrics, traffic, and infrastructure insights'
   });
 
-  try {
-    const res = await apiFetch('/api/platform-analytics/summary');
-    const data = await res.json();
-    const s = data.summary || {};
-    const c = data.charts || {};
-
-    content.innerHTML = `
-      <div class="grid-4">
-        ${USGPageKit.infoCard('Domains', s.domains || 0)}
-        ${USGPageKit.infoCard('Backups', s.backups || 0)}
-        ${USGPageKit.infoCard('API Keys', s.apiKeys || 0)}
-        ${USGPageKit.infoCard('Tenants', s.tenants || 0)}
+  const actionsCard = document.createElement('section');
+  actionsCard.className = 'card';
+  actionsCard.style.marginTop = '18px';
+  actionsCard.innerHTML = `
+    <div class="usg-page-head-row">
+      <div>
+        <div class="kicker">ACTIONS</div>
+        <h2 style="margin:8px 0 0">Analytics Controls</h2>
       </div>
-
-      <div class="grid-3" style="margin-top:24px">
-        <section class="card"><div class="kicker">REQUESTS</div><h2>Traffic</h2>${lineSvg(c.requests || [])}</section>
-        <section class="card"><div class="kicker">ERRORS</div><h2>Error Trend</h2>${lineSvg(c.errors || [])}</section>
-        <section class="card"><div class="kicker">BACKUPS</div><h2>Backup Activity</h2>${lineSvg(c.backups || [])}</section>
+      <div class="actions">
+        <button id="refresh-system-analytics-btn" class="ghost-btn" type="button">Refresh</button>
       </div>
+    </div>
+  `;
+  content.appendChild(actionsCard);
 
-      <section class="card" style="margin-top:24px">
-        <div class="kicker">SUMMARY</div>
-        <h2>Platform Snapshot</h2>
-        <pre>${JSON.stringify(data, null, 2)}</pre>
+  document.getElementById('refresh-system-analytics-btn').onclick = () => loadSystemAnalytics();
+
+  const data = await safeJson('/api/platform-analytics/summary');
+  const summary = data.summary || {};
+  const charts = data.charts || {};
+
+  const wrap = document.createElement('div');
+  wrap.innerHTML = `
+    <div class="grid-4" style="margin-top:18px">
+      ${metricCard('Requests', summary.requests || 0, 'Platform requests')}
+      ${metricCard('Errors', summary.errors || 0, 'System failures')}
+      ${metricCard('Domains', summary.domains || 0, 'Registered domains')}
+      ${metricCard('API Keys', summary.apiKeys || 0, 'Access keys')}
+    </div>
+
+    <div class="grid-3" style="margin-top:18px">
+      <section class="card">
+        <div class="kicker">REQUEST TREND</div>
+        <h2>Requests</h2>
+        <div class="muted">${JSON.stringify(charts.requests || [])}</div>
       </section>
-    `;
-  } catch (err) {
-    USGIOSAlert.show({ title: 'Analytics Error', message: err.message, type: 'error' });
-  }
+      <section class="card">
+        <div class="kicker">ERROR TREND</div>
+        <h2>Errors</h2>
+        <div class="muted">${JSON.stringify(charts.errors || [])}</div>
+      </section>
+      <section class="card">
+        <div class="kicker">BACKUP TREND</div>
+        <h2>Backups</h2>
+        <div class="muted">${JSON.stringify(charts.backups || [])}</div>
+      </section>
+    </div>
+  `;
+  content.appendChild(wrap);
 }
-
-loadAnalytics();
+loadSystemAnalytics();

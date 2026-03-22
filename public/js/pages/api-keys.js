@@ -9,6 +9,15 @@ function validateApiKey(data) {
   );
 }
 
+async function copyText(value, title = 'Copied') {
+  try {
+    await navigator.clipboard.writeText(value || '');
+    USGIOSAlert.show({ title: 'Copied', message: title });
+  } catch {
+    USGIOSAlert.show({ title: 'Copy Failed', message: title, type: 'error' });
+  }
+}
+
 async function loadKeys() {
   const content = document.getElementById('page-content');
   content.innerHTML = '';
@@ -16,46 +25,70 @@ async function loadKeys() {
   USGPageKit.setPageHeader({
     kicker: 'API',
     title: 'API Keys',
-    subtitle: 'Create, rotate, and revoke access keys',
-    actions: [
-      {
-        label: '+ Create Key',
-        primary: true,
-        onClick: () => USGCrudKit.create({
-          title: 'Create API Key',
-          endpoint: '/api/api-keys',
-          validate: validateApiKey,
-          fields: [
-            { name: 'name', label: 'Key Name' },
-            { name: 'scope', label: 'Scope' },
-            { name: 'status', label: 'Status' }
-          ],
-          onDone: () => loadKeys()
-        })
-      }
-    ]
+    subtitle: 'Create, rotate, and manage integration access keys'
   });
+
+  const actionsCard = document.createElement('section');
+  actionsCard.className = 'card';
+  actionsCard.style.marginTop = '18px';
+  actionsCard.innerHTML = `
+    <div class="usg-page-head-row">
+      <div>
+        <div class="kicker">ACTIONS</div>
+        <h2 style="margin:8px 0 0">Key Controls</h2>
+      </div>
+      <div class="actions">
+        <button id="create-key-btn" class="primary-btn" type="button">+ Create Key</button>
+        <a href="/pages/api-key-logs.html" class="ghost-btn">Logs</a>
+        <a href="/pages/api-key-analytics.html" class="ghost-btn">Analytics</a>
+      </div>
+    </div>
+  `;
+  content.appendChild(actionsCard);
+
+  document.getElementById('create-key-btn').onclick = () => USGCrudKit.create({
+    title: 'Create API Key',
+    endpoint: '/api/api-keys',
+    validate: validateApiKey,
+    fields: [
+      { name: 'name', label: 'Key Name' },
+      { name: 'scope', label: 'Scope' },
+      { name: 'status', label: 'Status' }
+    ],
+    onDone: () => loadKeys()
+  });
+
+  const searchWrap = document.createElement('div');
+  searchWrap.innerHTML = USGPageKit.searchToolbar({ placeholder: 'Search API keys...' });
+  content.appendChild(searchWrap);
 
   try {
     const res = await apiFetch('/api/api-keys');
     const data = await res.json();
-    const rows = data.keys || [];
+    const rows = data.keys || data.apiKeys || [];
 
-    content.innerHTML += rows.length ? rows.map(k => `
+    const listWrap = document.createElement('section');
+    listWrap.style.marginTop = '18px';
+    listWrap.innerHTML = rows.length ? rows.map(k => `
       <div class="list-card">
-        <strong>${k.name}</strong><br>
+        <strong>${k.name || 'API Key'}</strong><br>
         <span class="muted">Scope: ${k.scope || '-'}</span><br>
         <span class="muted">Last Used: ${k.lastUsed || 'Never'}</span>
         <div class="actions">
           ${USGPageKit.statusBadge(k.status || 'active')}
-          ${k.key ? USGPageKit.copyButton(k.key, 'Copy Key') : ''}
-          <button class="ghost-btn" data-edit="${k.id}">Edit</button>
-          <button class="danger-btn" data-delete="${k.id}">Delete</button>
+          ${k.key ? `<button class="ghost-btn" data-copy-key="${k.key}" type="button">Copy Key</button>` : ''}
+          <button class="ghost-btn" data-edit="${k.id}" type="button">Edit</button>
+          <button class="danger-btn" data-delete="${k.id}" type="button">Delete</button>
         </div>
       </div>
     `).join('') : USGPageKit.emptyState({ title: 'No API keys found' });
 
-    USGPageKit.wireCopyButtons();
+    content.appendChild(listWrap);
+    USGPageKit.attachBasicSearch({});
+
+    document.querySelectorAll('[data-copy-key]').forEach(btn => {
+      btn.onclick = () => copyText(btn.dataset.copyKey, 'API key copied');
+    });
 
     rows.forEach(k => {
       const editBtn = document.querySelector(`[data-edit="${k.id}"]`);
