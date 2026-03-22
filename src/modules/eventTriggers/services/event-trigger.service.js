@@ -1,25 +1,39 @@
-const { emitEvent } = require('../../realtimeCore/services/realtime-bus.service');
+const { pushEvent } = require('../../realtimeCore/services/realtime.service');
+const webhookService = require('../../webhookAdvanced/services/webhook.service');
+const auditService = require('../../audit/services/audit.service');
 
-let deliverToMatchingWebhooks = async () => [];
-try {
-  ({ deliverToMatchingWebhooks } = require('../../webhookAdvanced/services/webhook-delivery.service'));
-} catch {}
-
-async function emitCrudEvent({ module, action, recordId, data }) {
-  const payload = {
-    type: `${module}.${action}`,
+async function emitCrudEvent({ module, action, recordId, data, req = null }) {
+  const event = {
+    type: `crud.${action}`,
     module,
     action,
-    recordId: recordId || null,
-    data: data || {}
+    recordId,
+    data,
+    emittedAt: new Date().toISOString()
   };
 
-  emitEvent(payload);
-
   try {
-    await deliverToMatchingWebhooks(payload);
-  } catch (error) {
-    console.error('[webhookDelivery] error:', error.message);
+    // 1. realtime
+    pushEvent(event);
+
+    // 2. webhook
+    await webhookService.dispatch(event);
+
+    // 3. audit
+    if (req) {
+      await auditService.writeLog({
+        req,
+        module,
+        action,
+        entityType: module,
+        entityId: recordId,
+        status: 'success',
+        afterData: data
+      });
+    }
+
+  } catch (err) {
+    console.error('[emitCrudEvent] failed:', err.message);
   }
 }
 
