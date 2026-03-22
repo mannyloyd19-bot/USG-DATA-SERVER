@@ -1,3 +1,5 @@
+const { enforceUsage, commitUsageFromRequest } = require('./middleware/usage-quota.middleware');
+const billingRoutes = require('./modules/billing/routes/billing.routes');
 const rowLevelSecurityMiddleware = require('./middleware/row-level-security.middleware');
 const rbacRoutes = require('./modules/rbac/routes/rbac.routes');
 const authProviderRoutes = require('./modules/authProviders/routes/auth-provider.routes');
@@ -107,6 +109,7 @@ app.use(morgan(env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 app.use(express.json({ limit: '10mb' }));
 app.use(tenantContextMiddleware);
 app.use(rowLevelSecurityMiddleware);
+app.use('/api', enforceUsage('requests', 1));
 app.use(multiTenantEnforcerMiddleware);
 app.use(tenantIsolationMiddleware);
 app.use(advancedRateLimitMiddleware);
@@ -207,6 +210,16 @@ app.use('/api/storage-buckets', storageBucketRoutes);
 app.use('/api/sessions', sessionRoutes);
 app.use('/api/auth-providers', authProviderRoutes);
 app.use('/api/rbac', rbacRoutes);
+app.use('/api/billing', billingRoutes);
+app.use((req, res, next) => {
+  res.on('finish', async () => {
+    if (res.statusCode < 400) {
+      await commitUsageFromRequest(req);
+    }
+  });
+  next();
+});
+
 app.use(notFoundHandler);
 app.use(errorHandler);
 

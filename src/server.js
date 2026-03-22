@@ -198,3 +198,6 @@ require('./modules/rbac/models/role.model');
 require('./modules/rbac/models/permission.model');
 require('./modules/rbac/models/role-permission.model');
 require('./modules/rbac/models/user-role.model');
+require('./modules/billing/models/billing-plan.model');
+require('./modules/billing/models/tenant-subscription.model');
+require('./modules/billing/models/usage-counter.model');
