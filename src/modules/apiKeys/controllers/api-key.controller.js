@@ -19,7 +19,9 @@ function safeJsonParse(value, fallback) {
 
 function inferKeyMeta(fullKey = '') {
   const m = /^usg_(pk|sk)_(live|test)_(.+)$/i.exec(fullKey);
-  if (!m) return { keyType: 'sk', environment: 'live' };
+  if (!m) {
+    return { keyType: 'sk', environment: 'live' };
+  }
   return {
     keyType: m[1].toLowerCase(),
     environment: m[2].toLowerCase()
@@ -59,7 +61,21 @@ exports.create = async (req, res) => {
       return res.status(400).json({ success: false, message: errors.join(', ') });
     }
 
-    const rawKey = buildFormattedKey(payload);
+    const finalKeyType = (payload.keyType || 'sk').toLowerCase();
+    const finalEnv = (payload.environment || 'live').toLowerCase();
+
+    if (!['pk', 'sk'].includes(finalKeyType)) {
+      return res.status(400).json({ success: false, message: 'Invalid keyType' });
+    }
+
+    if (!['live', 'test'].includes(finalEnv)) {
+      return res.status(400).json({ success: false, message: 'Invalid environment' });
+    }
+
+    const rawKey = buildFormattedKey({
+      keyType: finalKeyType,
+      environment: finalEnv
+    });
 
     const item = await ApiKey.create({
       tenantId: getTenantId(req),
@@ -68,10 +84,10 @@ exports.create = async (req, res) => {
       purpose: payload.purpose || null,
       owner: payload.owner || null,
       expiresAt: payload.expiresAt || null,
-      status: 'active',
+      status: payload.status || 'active',
       key: rawKey,
-      scopes: JSON.stringify(payload.scopes || []),
-      ipWhitelist: JSON.stringify(payload.ipWhitelist || []),
+      scopes: JSON.stringify(Array.isArray(payload.scopes) ? payload.scopes : []),
+      ipWhitelist: JSON.stringify(Array.isArray(payload.ipWhitelist) ? payload.ipWhitelist : []),
       usageCount: 0
     });
 
@@ -82,39 +98,141 @@ exports.create = async (req, res) => {
       data: item.toJSON()
     });
 
-    return res.json({ success: true, key: toPayload(item), rawKey });
-
+    return res.status(201).json({
+      success: true,
+      key: toPayload(item),
+      rawKey
+    });
   } catch (error) {
-    return res.status(500).json({ success: false, message: error.message });
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to create API key',
+      error: error.message
+    });
   }
 };
 
 exports.findAll = async (req, res) => {
   try {
     const tenantId = getTenantId(req);
+    const where = tenantId ? { tenantId } : { tenantId: null };
+
     const items = await ApiKey.findAll({
-      where: tenantId ? { tenantId } : { tenantId: null },
+      where,
       order: [['createdAt', 'DESC']]
     });
 
-    return res.json({ success: true, keys: items.map(toPayload) });
-
+    return res.json({
+      success: true,
+      keys: items.map(toPayload)
+    });
   } catch (error) {
-    return res.status(500).json({ success: false, message: error.message });
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to fetch API keys',
+      error: error.message
+    });
+  }
+};
+
+exports.updateStatus = async (req, res) => {
+  try {
+    const tenantId = getTenantId(req);
+    const where = { id: req.params.id, ...(tenantId ? { tenantId } : { tenantId: null }) };
+
+    const item = await ApiKey.findOne({ where });
+    if (!item) {
+      return res.status(404).json({ success: false, message: 'API key not found' });
+    }
+
+    const { status } = req.body || {};
+    if (!['active', 'disabled', 'revoked'].includes(status)) {
+      return res.status(400).json({ success: false, message: 'Invalid status' });
+    }
+
+    item.status = status;
+    await item.save();
+
+    emitCrudEvent({
+      module: 'apiKeys',
+      action: 'statusUpdated',
+      recordId: item.id,
+      data: item.toJSON()
+    });
+
+    return res.json({
+      success: true,
+      message: 'API key status updated',
+      key: toPayload(item)
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to update API key status',
+      error: error.message
+    });
+  }
+};
+
+exports.rotate = async (req, res) => {
+  try {
+    const tenantId = getTenantId(req);
+    const where = { id: req.params.id, ...(tenantId ? { tenantId } : { tenantId: null }) };
+
+    const item = await ApiKey.findOne({ where });
+    if (!item) {
+      return res.status(404).json({ success: false, message: 'API key not found' });
+    }
+
+    const meta = inferKeyMeta(item.key);
+    const newRawKey = buildFormattedKey(meta);
+
+    item.key = newRawKey;
+    item.status = 'active';
+    await item.save();
+
+    emitCrudEvent({
+      module: 'apiKeys',
+      action: 'rotated',
+      recordId: item.id,
+      data: item.toJSON()
+    });
+
+    return res.json({
+      success: true,
+      message: 'API key rotated successfully',
+      key: toPayload(item),
+      rawKey: newRawKey
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to rotate API key',
+      error: error.message
+    });
   }
 };
 
 exports.update = async (req, res) => {
   try {
     const tenantId = getTenantId(req);
+    const where = { id: req.params.id, ...(tenantId ? { tenantId } : { tenantId: null }) };
 
-    const item = await ApiKey.findOne({
-      where: { id: req.params.id, ...(tenantId ? { tenantId } : { tenantId: null }) }
-    });
+    const item = await ApiKey.findOne({ where });
+    if (!item) {
+      return res.status(404).json({ success: false, message: 'API key not found' });
+    }
 
-    if (!item) return res.status(404).json({ success: false, message: 'Not found' });
+    const payload = req.body || {};
+    if (payload.name !== undefined) item.name = payload.name;
+    if (payload.status !== undefined) item.status = payload.status;
+    if (payload.role !== undefined) item.role = payload.role;
+    if (payload.purpose !== undefined) item.purpose = payload.purpose;
+    if (payload.owner !== undefined) item.owner = payload.owner;
+    if (payload.expiresAt !== undefined) item.expiresAt = payload.expiresAt;
+    if (payload.scopes !== undefined) item.scopes = JSON.stringify(Array.isArray(payload.scopes) ? payload.scopes : []);
+    if (payload.ipWhitelist !== undefined) item.ipWhitelist = JSON.stringify(Array.isArray(payload.ipWhitelist) ? payload.ipWhitelist : []);
 
-    Object.assign(item, req.body);
     await item.save();
 
     emitCrudEvent({
@@ -125,21 +243,20 @@ exports.update = async (req, res) => {
     });
 
     return res.json({ success: true, key: toPayload(item) });
-
-  } catch (e) {
-    return res.status(500).json({ success: false, message: e.message });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
 
 exports.remove = async (req, res) => {
   try {
     const tenantId = getTenantId(req);
+    const where = { id: req.params.id, ...(tenantId ? { tenantId } : { tenantId: null }) };
 
-    const item = await ApiKey.findOne({
-      where: { id: req.params.id, ...(tenantId ? { tenantId } : { tenantId: null }) }
-    });
-
-    if (!item) return res.status(404).json({ success: false, message: 'Not found' });
+    const item = await ApiKey.findOne({ where });
+    if (!item) {
+      return res.status(404).json({ success: false, message: 'API key not found' });
+    }
 
     await item.destroy();
 
@@ -150,9 +267,8 @@ exports.remove = async (req, res) => {
       data: { id: req.params.id }
     });
 
-    return res.json({ success: true });
-
-  } catch (e) {
-    return res.status(500).json({ success: false, message: e.message });
+    return res.json({ success: true, message: 'API key deleted' });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
