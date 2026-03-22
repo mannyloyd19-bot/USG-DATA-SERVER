@@ -1,3 +1,4 @@
+window.__DISABLE_HEALTH_BANNER__ = true;
 requireAuth();
 USGShell.buildShell();
 
@@ -14,7 +15,7 @@ function metricCard(title, value, subtitle = '') {
   return `
     <section class="card">
       <div class="kicker">${title.toUpperCase()}</div>
-      <h2 style="margin:8px 0 6px">${value}</h2>
+      <h2>${value}</h2>
       <div class="muted">${subtitle}</div>
     </section>
   `;
@@ -32,12 +33,11 @@ async function loadEnterpriseDb() {
 
   const actionsCard = document.createElement('section');
   actionsCard.className = 'card';
-  actionsCard.style.marginTop = '18px';
   actionsCard.innerHTML = `
     <div class="usg-page-head-row">
       <div>
         <div class="kicker">ACTIONS</div>
-        <h2 style="margin:8px 0 0">Database Controls</h2>
+        <h2>Database Controls</h2>
       </div>
       <div class="actions">
         <a href="/pages/db-migration.html" class="ghost-btn">Migrations</a>
@@ -52,14 +52,14 @@ async function loadEnterpriseDb() {
 
   const wrap = document.createElement('div');
   wrap.innerHTML = `
-    <div class="grid-4" style="margin-top:18px">
+    <div class="grid-4">
       ${metricCard('Collections', summary.collections || 0, 'Registered collections')}
       ${metricCard('Indexes', summary.indexes || 0, 'Database indexes')}
       ${metricCard('Records', summary.records || 0, 'Stored records')}
       ${metricCard('Backups', summary.backups || 0, 'Available backups')}
     </div>
 
-    <div class="grid-2" style="margin-top:18px">
+    <div class="grid-2">
       <section class="card">
         <div class="kicker">STORAGE</div>
         <h2>Database Overview</h2>

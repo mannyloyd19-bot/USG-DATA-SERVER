@@ -1,3 +1,4 @@
+window.__DISABLE_HEALTH_BANNER__ = true;
 requireAuth();
 USGShell.buildShell();
 
@@ -13,12 +14,11 @@ async function loadBackups() {
 
   const actions = document.createElement('section');
   actions.className = 'card';
-  actions.style.marginTop = '18px';
   actions.innerHTML = `
     <div class="usg-page-head-row">
       <div>
         <div class="kicker">ACTIONS</div>
-        <h2 style="margin:8px 0 0">Backup Controls</h2>
+        <h2>Backup Controls</h2>
       </div>
       <div class="actions">
         <button id="create-backup-btn" class="primary-btn">+ Create Backup</button>
@@ -46,7 +46,6 @@ async function loadBackups() {
     const rows = data.backups || [];
 
     const wrap = document.createElement('section');
-    wrap.style.marginTop = '18px';
     wrap.innerHTML = rows.length ? rows.map(b => `
       <div class="list-card">
         <strong>${b.name || 'Backup'}</strong><br>

@@ -1,3 +1,4 @@
+window.__DISABLE_HEALTH_BANNER__ = true;
 requireAuth();
 USGShell.buildShell();
 
@@ -14,7 +15,7 @@ function metricCard(title, value, subtitle = '') {
   return `
     <section class="card">
       <div class="kicker">${title.toUpperCase()}</div>
-      <h2 style="margin:8px 0 6px">${value}</h2>
+      <h2>${value}</h2>
       <div class="muted">${subtitle}</div>
     </section>
   `;
@@ -42,14 +43,14 @@ async function loadAdvancedSystem() {
   const topDomains = usageData.topDomains || [];
 
   content.innerHTML = `
-    <div class="grid-4" style="margin-top:18px">
+    <div class="grid-4">
       ${metricCard('Usage Events', overview.usageCount || 0, 'Tracked requests')}
       ${metricCard('Pending Jobs', overview.pendingJobs || 0, 'Awaiting execution')}
       ${metricCard('Failed Jobs', overview.failedJobs || 0, 'Need review')}
       ${metricCard('Completed Jobs', overview.completedJobs || 0, 'Processed tasks')}
     </div>
 
-    <div class="grid-3" style="margin-top:18px">
+    <div class="grid-3">
       <section class="card">
         <div class="kicker">PROTECTION</div>
         <h2>Guards</h2>
@@ -81,7 +82,7 @@ async function loadAdvancedSystem() {
       </section>
     </div>
 
-    <section class="card" style="margin-top:18px">
+    <section class="card">
       <div class="kicker">JOB QUEUE</div>
       <h2>Queued Jobs</h2>
       ${
@@ -92,5 +93,4 @@ async function loadAdvancedSystem() {
     </section>
   `;
 }
-
 loadAdvancedSystem();

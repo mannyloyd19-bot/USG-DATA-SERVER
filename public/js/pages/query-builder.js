@@ -1,3 +1,4 @@
+window.__DISABLE_HEALTH_BANNER__ = true;
 requireAuth();
 USGShell.buildShell();
 
@@ -13,14 +14,13 @@ async function loadQueryBuilder() {
 
   const card = document.createElement('section');
   card.className = 'card';
-  card.style.marginTop = '18px';
 
   card.innerHTML = `
     <div class="kicker">REQUEST</div>
     <h2>Test API</h2>
 
-    <input id="qb-url" placeholder="/api/collections" style="width:100%;margin:10px 0;padding:12px;border-radius:12px">
-    <select id="qb-method" style="width:100%;margin:10px 0;padding:12px;border-radius:12px">
+    <input id="qb-url" placeholder="/api/collections" style="width:100%;margin:10px 0;">
+    <select id="qb-method" style="width:100%;margin:10px 0;">
       <option>GET</option>
       <option>POST</option>
     </select>

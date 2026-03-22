@@ -938,3 +938,40 @@ pre{
 #page-content .grid-2 > .card{
   margin-top: 0 !important;
 }
+
+/* =========================================
+   GLOBAL PAGE UNIFORMITY PASS 3
+   ========================================= */
+
+#page-content .card h2{
+  letter-spacing: -0.01em;
+}
+
+#page-content .list-card + .list-card{
+  margin-top: 10px !important;
+}
+
+#page-content .card .kicker{
+  opacity: .88;
+}
+
+#page-content .card .muted{
+  opacity: .92;
+}
+
+#page-content .actions .primary-btn,
+#page-content .actions .ghost-btn,
+#page-content .actions .danger-btn{
+  white-space: nowrap;
+}
+
+#page-content .grid-4 .card,
+#page-content .grid-3 .card,
+#page-content .grid-2 .card{
+  height: 100%;
+}
+
+#page-content pre{
+  background: rgba(255,255,255,.03);
+  border: 1px solid rgba(255,255,255,.06);
+}

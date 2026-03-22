@@ -1,3 +1,4 @@
+window.__DISABLE_HEALTH_BANNER__ = true;
 requireAuth();
 USGShell.buildShell();
 
@@ -13,12 +14,11 @@ async function loadApiKeyLogs() {
 
   const actionsCard = document.createElement('section');
   actionsCard.className = 'card';
-  actionsCard.style.marginTop = '18px';
   actionsCard.innerHTML = `
     <div class="usg-page-head-row">
       <div>
         <div class="kicker">ACTIONS</div>
-        <h2 style="margin:8px 0 0">Log Controls</h2>
+        <h2>Log Controls</h2>
       </div>
       <div class="actions">
         <button id="refresh-key-logs-btn" class="ghost-btn" type="button">Refresh</button>
@@ -40,7 +40,6 @@ async function loadApiKeyLogs() {
     const rows = data.logs || data.apiKeyLogs || data.data || [];
 
     const listWrap = document.createElement('section');
-    listWrap.style.marginTop = '18px';
     listWrap.innerHTML = rows.length ? rows.map(item => `
       <div class="list-card">
         <strong>${item.keyName || item.name || 'API Request'}</strong><br>
