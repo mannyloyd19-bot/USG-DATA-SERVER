@@ -1,6 +1,7 @@
 const validation = require('../../../core/utils/validation');
 const bcrypt = require('bcrypt');
 const User = require('../models/user.model');
+const { emitCrudEvent } = require('../../eventTriggers/services/event-trigger.service');
 
 exports.create = async (req, res) => {
   try {

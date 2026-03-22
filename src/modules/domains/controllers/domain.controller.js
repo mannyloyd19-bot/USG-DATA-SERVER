@@ -38,6 +38,7 @@ function createDomainKey(name) {
 }
 
 function formatError(error) {
+const { emitCrudEvent } = require('../../eventTriggers/services/event-trigger.service');
   if (!error) return 'Unknown error';
 
   if (error.name === 'SequelizeValidationError' && Array.isArray(error.errors)) {
@@ -129,6 +130,10 @@ exports.create = async (req, res) => {
 
     const item = await Domain.create(payload);
 
+    emitCrudEvent({ module: 'domains', action: 'created', recordId: item.id, data: item.toJSON ? item.toJSON() : item });
+    emitCrudEvent({ module: 'domains', action: 'updated', recordId: item.id, data: item.toJSON ? item.toJSON() : item });
+    emitCrudEvent({ module: 'domains', action: 'created', recordId: item.id, data: item.toJSON ? item.toJSON() : item });
+    emitCrudEvent({ module: 'domains', action: 'updated', recordId: item.id, data: item.toJSON ? item.toJSON() : item });
     return res.json({ success: true, domain: item });
   } catch (error) {
     console.error('[domains.create] error:', error);
@@ -174,6 +179,10 @@ exports.update = async (req, res) => {
     item.sslStatus = item.accessMode === 'public' ? (item.sslStatus || 'pending') : 'not_required';
 
     await item.save();
+    emitCrudEvent({ module: 'domains', action: 'created', recordId: item.id, data: item.toJSON ? item.toJSON() : item });
+    emitCrudEvent({ module: 'domains', action: 'updated', recordId: item.id, data: item.toJSON ? item.toJSON() : item });
+    emitCrudEvent({ module: 'domains', action: 'created', recordId: item.id, data: item.toJSON ? item.toJSON() : item });
+    emitCrudEvent({ module: 'domains', action: 'updated', recordId: item.id, data: item.toJSON ? item.toJSON() : item });
     return res.json({ success: true, domain: item });
   } catch (error) {
     console.error('[domains.update] error:', error);
@@ -184,6 +193,8 @@ exports.update = async (req, res) => {
 exports.remove = async (req, res) => {
   try {
     await Domain.destroy({ where: { id: req.params.id } });
+    emitCrudEvent({ module: 'domains', action: 'deleted', recordId: req.params.id, data: { id: req.params.id } });
+    emitCrudEvent({ module: 'domains', action: 'deleted', recordId: req.params.id, data: { id: req.params.id } });
     return res.json({ success: true });
   } catch (error) {
     console.error('[domains.remove] error:', error);

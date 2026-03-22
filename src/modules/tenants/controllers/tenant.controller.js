@@ -2,6 +2,7 @@ const validation = require('../../../core/utils/validation');
 const Tenant = require('../models/tenant.model');
 
 function slugify(value = '') {
+const { emitCrudEvent } = require('../../eventTriggers/services/event-trigger.service');
   return String(value)
     .toLowerCase()
     .trim()
