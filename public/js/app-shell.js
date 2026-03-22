@@ -43,6 +43,7 @@ try {
     ['/pages/collections.html','📦','Collections'],
     ['/pages/fields.html','📄','Fields'],
     ['/pages/files.html','📁','Files'],
+    ['/pages/storage-buckets.html','🪣','Storage Buckets'],
     ['/pages/api-keys.html','🔑','API Keys'],
     ['/pages/api-key-logs.html','🧠','API Key Logs'],
     ['/pages/api-key-analytics.html','📈','API Key Analytics'],

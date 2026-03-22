@@ -1,3 +1,6 @@
+const storageBucketRoutes = require('./modules/storageBuckets/routes/storage-bucket.routes');
+const webhookAdvancedRoutes = require('./modules/webhookAdvanced/routes/webhook-advanced.routes');
+const realtimeCoreRoutes = require('./modules/realtimeCore/routes/realtime-core.routes');
 const enterpriseDbRoutes = require('./modules/enterpriseDb/routes/enterprise-db.routes');
 const apiKeyAnalyticsRoutes = require('./modules/apiKeyAnalytics/routes/api-key-analytics.routes');
 const multiTenantRoutes = require('./modules/multiTenant/routes/multi-tenant.routes');
@@ -193,6 +196,9 @@ app.use('/api/advanced-system', advancedSystemRoutes);
 app.use('/api/multi-tenant', multiTenantRoutes);
 app.use('/api/api-key-analytics', apiKeyAnalyticsRoutes);
 app.use('/api/enterprise-db', enterpriseDbRoutes);
+app.use('/api/realtime-core', realtimeCoreRoutes);
+app.use('/api/webhook-advanced', webhookAdvancedRoutes);
+app.use('/api/storage-buckets', storageBucketRoutes);
 app.use(notFoundHandler);
 app.use(errorHandler);
 

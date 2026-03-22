@@ -47,6 +47,15 @@ const FileEntry = sequelize.define('FileEntry', {
   metadata: {
     type: DataTypes.JSON,
     allowNull: true
+  },
+  bucketId: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  visibility: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    defaultValue: 'private'
   }
 }, {
   indexes: [
