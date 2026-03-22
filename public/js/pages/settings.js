@@ -52,7 +52,7 @@ async function loadSettings() {
 
   const [settingsData, healthData, polishData] = await Promise.all([
     safeJson('/api/settings'),
-    safeJson('/api/health/details'),
+    safeJson('/health/details'),
     safeJson('/api/final-polish/summary')
   ]);
 
