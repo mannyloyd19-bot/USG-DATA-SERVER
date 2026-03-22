@@ -10,6 +10,27 @@ function validatePayment(data) {
   );
 }
 
+async function openCheckout(paymentId, provider) {
+  const res = await apiFetch('/api/payment-gateway/checkout', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ paymentId, provider })
+  });
+  const out = await res.json();
+
+  if (!out.success) {
+    USGIOSAlert.show({ title: 'Checkout Failed', message: out.message || 'Failed', type: 'error' });
+    return;
+  }
+
+  const url = out.checkout?.checkoutUrl;
+  if (url) {
+    window.open(url, '_blank');
+  } else {
+    USGIOSAlert.show({ title: 'Checkout Ready', message: 'Checkout session created.' });
+  }
+}
+
 async function loadPayments() {
   const content = document.getElementById('page-content');
   content.innerHTML = '';
@@ -67,6 +88,7 @@ async function loadPayments() {
         <span class="muted">Amount: ${item.amount} ${item.currency || 'PHP'}</span>
         <div class="actions">
           ${USGPageKit.statusBadge(item.status || 'pending')}
+          <button class="ghost-btn" data-checkout="${item.id}" data-provider="${item.provider || 'manual'}" type="button">Checkout</button>
           <button class="ghost-btn" data-mark-paid="${item.id}" type="button">Mark Paid</button>
           <button class="danger-btn" data-mark-failed="${item.id}" type="button">Mark Failed</button>
         </div>
@@ -74,6 +96,10 @@ async function loadPayments() {
     `).join('') : USGPageKit.emptyState({ title: 'No payments found' });
 
     content.appendChild(listWrap);
+
+    document.querySelectorAll('[data-checkout]').forEach(btn => {
+      btn.onclick = () => openCheckout(btn.dataset.checkout, btn.dataset.provider);
+    });
 
     document.querySelectorAll('[data-mark-paid]').forEach(btn => {
       btn.onclick = async () => {

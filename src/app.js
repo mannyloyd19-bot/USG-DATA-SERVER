@@ -1,3 +1,4 @@
+const paymentGatewayRoutes = require('./modules/paymentGateway/routes/payment-gateway.routes');
 const invoiceRoutes = require('./modules/invoices/routes/invoice.routes');
 const paymentRoutes = require('./modules/payments/routes/payment.routes');
 const { enforceUsage, commitUsageFromRequest } = require('./middleware/usage-quota.middleware');
@@ -224,6 +225,7 @@ app.use((req, res, next) => {
 
 app.use('/api/payments', paymentRoutes);
 app.use('/api/invoices', invoiceRoutes);
+app.use('/api/payment-gateway', paymentGatewayRoutes);
 app.use(notFoundHandler);
 app.use(errorHandler);
 
