@@ -2,19 +2,28 @@ const Role = require('../models/role.model');
 const Permission = require('../models/permission.model');
 const RolePermission = require('../models/role-permission.model');
 const UserRole = require('../models/user-role.model');
+const User = require('../../users/models/user.model');
 
 async function getUserRoles(userId) {
-  const userRoles = await UserRole.findAll({ where: { userId: String(userId) } });
-  if (!userRoles.length) return [];
-  const roleIds = userRoles.map(r => r.roleId);
-  return Role.findAll({ where: { id: roleIds } });
+  const directAssignments = await UserRole.findAll({ where: { userId: String(userId) } });
+
+  if (directAssignments.length) {
+    const roleIds = directAssignments.map(r => r.roleId);
+    return Role.findAll({ where: { id: roleIds } });
+  }
+
+  const user = await User.findByPk(userId);
+  if (!user || !user.role) return [];
+
+  const fallbackRole = await Role.findOne({ where: { key: String(user.role).toLowerCase() } });
+  return fallbackRole ? [fallbackRole] : [];
 }
 
 async function getUserPermissionKeys(userId) {
   const roles = await getUserRoles(userId);
   if (!roles.length) return [];
 
-  if (roles.some(r => r.key === 'admin')) {
+  if (roles.some(r => String(r.key).toLowerCase() === 'admin')) {
     return ['*'];
   }
 
