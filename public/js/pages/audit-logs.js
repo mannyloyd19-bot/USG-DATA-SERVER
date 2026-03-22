@@ -12,21 +12,20 @@ async function loadAuditLogs() {
     subtitle: 'Track actions and changes across the platform'
   });
 
-  const actionsCard = document.createElement('section');
-  actionsCard.className = 'card';
-  actionsCard.style.marginTop = '18px';
-  actionsCard.innerHTML = `
+  const actionWrap = document.createElement('section');
+  actionWrap.className = 'card';
+  actionWrap.innerHTML = `
     <div class="usg-page-head-row">
       <div>
         <div class="kicker">ACTIONS</div>
-        <h2 style="margin:8px 0 0">Audit Controls</h2>
+        <h2>Audit Controls</h2>
       </div>
       <div class="actions">
         <button id="refresh-audit-btn" class="ghost-btn" type="button">Refresh</button>
       </div>
     </div>
   `;
-  content.appendChild(actionsCard);
+  content.appendChild(actionWrap);
 
   document.getElementById('refresh-audit-btn').onclick = () => loadAuditLogs();
 
@@ -40,7 +39,6 @@ async function loadAuditLogs() {
     const rows = data.logs || data.auditLogs || data.data || [];
 
     const listWrap = document.createElement('section');
-    listWrap.style.marginTop = '18px';
     listWrap.innerHTML = rows.length ? rows.map(item => `
       <div class="list-card">
         <strong>${item.action || item.event || 'Event'}</strong><br>

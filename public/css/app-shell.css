@@ -742,3 +742,120 @@ pre{
     width:auto;
   }
 }
+
+/* =========================================
+   GLOBAL LAYOUT STABILIZATION PASS
+   ========================================= */
+
+/* keep shell tighter */
+#app-shell.shell,
+#app-shell{
+  min-height: 100vh;
+}
+
+/* normalize page content top flow */
+#page-content{
+  padding-top: 6px !important;
+  padding-bottom: 24px !important;
+}
+
+/* tighter first visible blocks */
+#page-content > *:first-child{
+  margin-top: 8px !important;
+}
+
+/* unify cards on top area */
+#page-content .card{
+  box-sizing: border-box;
+}
+
+/* action header cards */
+#page-content .usg-page-head-row{
+  align-items: center !important;
+}
+
+#page-content .usg-page-head-row h2{
+  margin: 4px 0 0 !important;
+  font-size: 17px !important;
+}
+
+/* compact action sections */
+#page-content .actions{
+  gap: 8px !important;
+}
+
+/* compact section spacing */
+#page-content section,
+#page-content div{
+  box-sizing: border-box;
+}
+
+/* search toolbar tighter */
+#page-content .search-toolbar,
+#page-content .usg-search-toolbar{
+  margin-top: 10px !important;
+  margin-bottom: 4px !important;
+}
+
+/* page headings more compact */
+.kicker{
+  margin-bottom: 3px !important;
+}
+
+.usg-page-subtitle{
+  max-width: 760px;
+}
+
+/* compact lists */
+#page-content .list-card{
+  margin-top: 0 !important;
+}
+
+/* prevent huge empty top feel */
+#page-content .grid-4,
+#page-content .grid-3,
+#page-content .grid-2{
+  margin-top: 14px !important;
+}
+
+/* topbar/action cards compact */
+#page-content > section.card:first-of-type{
+  margin-top: 10px !important;
+}
+
+/* banners smaller */
+#usg-health-banner{
+  margin-top: 8px !important;
+  margin-bottom: 10px !important;
+}
+
+/* pre blocks less oversized */
+pre{
+  margin-top: 10px !important;
+  margin-bottom: 0 !important;
+}
+
+/* make anchor buttons align with buttons */
+a.primary-btn,
+a.ghost-btn,
+a.danger-btn{
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-decoration: none !important;
+}
+
+/* mobile compactness */
+@media (max-width: 720px){
+  #page-content{
+    padding-top: 4px !important;
+  }
+
+  #page-content .usg-page-head-row{
+    align-items: flex-start !important;
+  }
+
+  #page-content .actions{
+    width: 100%;
+  }
+}

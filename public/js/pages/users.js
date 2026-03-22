@@ -21,21 +21,20 @@ async function loadUsers() {
     subtitle: 'Manage platform accounts and roles'
   });
 
-  const actionsCard = document.createElement('section');
-  actionsCard.className = 'card';
-  actionsCard.style.marginTop = '18px';
-  actionsCard.innerHTML = `
+  const actionWrap = document.createElement('section');
+  actionWrap.className = 'card';
+  actionWrap.innerHTML = `
     <div class="usg-page-head-row">
       <div>
         <div class="kicker">ACTIONS</div>
-        <h2 style="margin:8px 0 0">User Controls</h2>
+        <h2>User Controls</h2>
       </div>
       <div class="actions">
         <button id="create-user-btn" class="primary-btn" type="button">+ Create User</button>
       </div>
     </div>
   `;
-  content.appendChild(actionsCard);
+  content.appendChild(actionWrap);
 
   document.getElementById('create-user-btn').onclick = () => USGCrudKit.create({
     title: 'Create User',
@@ -60,7 +59,6 @@ async function loadUsers() {
     const users = data.users || [];
 
     const listWrap = document.createElement('section');
-    listWrap.style.marginTop = '18px';
     listWrap.innerHTML = users.length ? users.map(u => `
       <div class="list-card">
         <strong>${u.username || u.email}</strong><br>

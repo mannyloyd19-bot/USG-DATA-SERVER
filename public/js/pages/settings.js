@@ -15,7 +15,7 @@ function metricCard(title, value, subtitle = '') {
   return `
     <section class="card">
       <div class="kicker">${title.toUpperCase()}</div>
-      <h2 style="margin:8px 0 6px">${value}</h2>
+      <h2>${value}</h2>
       <div class="muted">${subtitle}</div>
     </section>
   `;
@@ -31,14 +31,13 @@ async function loadSettings() {
     subtitle: 'Manage platform configuration, environment, and security preferences'
   });
 
-  const actionsCard = document.createElement('section');
-  actionsCard.className = 'card';
-  actionsCard.style.marginTop = '18px';
-  actionsCard.innerHTML = `
+  const actionWrap = document.createElement('section');
+  actionWrap.className = 'card';
+  actionWrap.innerHTML = `
     <div class="usg-page-head-row">
       <div>
         <div class="kicker">ACTIONS</div>
-        <h2 style="margin:8px 0 0">Settings Controls</h2>
+        <h2>Settings Controls</h2>
       </div>
       <div class="actions">
         <button id="refresh-settings-btn" class="ghost-btn" type="button">Refresh</button>
@@ -47,7 +46,7 @@ async function loadSettings() {
       </div>
     </div>
   `;
-  content.appendChild(actionsCard);
+  content.appendChild(actionWrap);
 
   document.getElementById('refresh-settings-btn').onclick = () => loadSettings();
 
@@ -63,7 +62,7 @@ async function loadSettings() {
 
   const metrics = document.createElement('div');
   metrics.innerHTML = `
-    <div class="grid-4" style="margin-top:18px">
+    <div class="grid-4">
       ${metricCard('Environment', app.env || 'development', 'Runtime mode')}
       ${metricCard('Database', app.dbPath || './database.sqlite', 'Storage path')}
       ${metricCard('JWT', health.jwtConfigured ? 'Ready' : 'Missing', 'Authentication secret')}
@@ -74,7 +73,7 @@ async function loadSettings() {
 
   const grouped = document.createElement('div');
   grouped.innerHTML = `
-    <div class="grid-2" style="margin-top:18px">
+    <div class="grid-2">
       <section class="card">
         <div class="kicker">APPLICATION</div>
         <h2>Runtime Configuration</h2>
@@ -104,7 +103,6 @@ async function loadSettings() {
   content.appendChild(searchWrap);
 
   const listWrap = document.createElement('section');
-  listWrap.style.marginTop = '18px';
   listWrap.innerHTML = rows.length ? rows.map(item => `
     <div class="list-card">
       <strong>${item.label || item.key}</strong><br>
