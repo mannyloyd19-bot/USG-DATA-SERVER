@@ -975,3 +975,405 @@ pre{
   background: rgba(255,255,255,.03);
   border: 1px solid rgba(255,255,255,.06);
 }
+
+/* =========================================
+   FINAL UI AUDIT + FIX PACK
+   ========================================= */
+
+/* HARD RESET FOR PAGE FLOW */
+#app-shell,
+.shell{
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* CRITICAL: prevent content dropping */
+#page-content{
+  display: block !important;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* prevent nested overflow bugs */
+.card,
+.list-card,
+section,
+div{
+  max-width: 100%;
+}
+
+/* normalize ALL spacing rhythm */
+#page-content > *{
+  margin-top: 12px !important;
+}
+
+#page-content > *:first-child{
+  margin-top: 6px !important;
+}
+
+/* unify ALL typography */
+body{
+  font-size: 14px;
+}
+
+h1,h2,h3{
+  letter-spacing: -0.01em;
+}
+
+/* FINAL CARD CONSISTENCY */
+.card{
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+/* remove random deep spacing bugs */
+#page-content .grid-4,
+#page-content .grid-3,
+#page-content .grid-2{
+  align-items: stretch;
+}
+
+/* force equal height cards */
+.grid-4 .card,
+.grid-3 .card,
+.grid-2 .card{
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+/* fix action alignment everywhere */
+.actions{
+  margin-top: 8px;
+}
+
+/* fix long pages pushing layout */
+html, body{
+  overflow-x: hidden;
+}
+
+/* fix weird bottom gaps */
+#page-content{
+  padding-bottom: 40px !important;
+}
+
+/* FINAL MOBILE POLISH */
+@media (max-width: 720px){
+  #page-content{
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+}
+
+
+/* FINAL BUTTON ALIGNMENT */
+.actions{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+}
+
+/* prevent stretched buttons */
+.actions button,
+.actions a{
+  flex: 0 0 auto;
+}
+
+/* consistent spacing for list actions */
+.list-card .actions{
+  margin-top: 8px;
+}
+
+/* FINAL HEADER FIX */
+.usg-page-header{
+  margin-bottom: 6px;
+}
+
+
+/* =========================================
+   PREMIUM UI LAYER
+   ========================================= */
+
+:root{
+  --usg-bg-1:#07111f;
+  --usg-bg-2:#0b1830;
+  --usg-panel:rgba(255,255,255,.055);
+  --usg-panel-strong:rgba(255,255,255,.08);
+  --usg-line-soft:rgba(255,255,255,.08);
+  --usg-line-mid:rgba(255,255,255,.12);
+  --usg-text-strong:#f5f8ff;
+  --usg-text:#d7e3ff;
+  --usg-text-soft:#9fb2d9;
+  --usg-blue:#4d84ff;
+  --usg-blue-2:#76a7ff;
+  --usg-green:#44c28d;
+  --usg-red:#ff6b6b;
+  --usg-shadow-soft:0 14px 34px rgba(0,0,0,.20);
+  --usg-shadow-card:0 18px 45px rgba(0,0,0,.22);
+  --usg-blur:16px;
+}
+
+/* base */
+body{
+  background:
+    radial-gradient(circle at top left, rgba(77,132,255,.12), transparent 26%),
+    radial-gradient(circle at top right, rgba(68,194,141,.08), transparent 22%),
+    linear-gradient(180deg,var(--usg-bg-1) 0%, var(--usg-bg-2) 100%) !important;
+  color: var(--usg-text) !important;
+}
+
+/* shell */
+.shell{
+  position: relative;
+}
+
+#app-shell{
+  position: relative;
+}
+
+/* subtle page fade-in */
+#page-content{
+  animation: usgFadeIn .28s ease;
+}
+
+@keyframes usgFadeIn{
+  from{
+    opacity:0;
+    transform:translateY(6px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+/* cards */
+.card,
+.list-card,
+.info-card{
+  background: var(--usg-panel) !important;
+  border: 1px solid var(--usg-line-soft) !important;
+  box-shadow: var(--usg-shadow-card) !important;
+  backdrop-filter: blur(var(--usg-blur));
+  -webkit-backdrop-filter: blur(var(--usg-blur));
+}
+
+.card:hover,
+.list-card:hover,
+.info-card:hover{
+  border-color: var(--usg-line-mid) !important;
+  transform: translateY(-1px);
+  transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+}
+
+/* stronger feature cards */
+.info-card{
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03)) !important;
+}
+
+/* text */
+.usg-page-title,
+h1.usg-page-title,
+.card h2,
+.list-card strong,
+.info-value{
+  color: var(--usg-text-strong) !important;
+}
+
+.muted,
+.usg-page-subtitle,
+.info-title{
+  color: var(--usg-text-soft) !important;
+}
+
+.kicker{
+  color: var(--usg-blue-2) !important;
+}
+
+/* buttons */
+.primary-btn,
+.ghost-btn,
+.danger-btn,
+button{
+  transition:
+    transform .16s ease,
+    box-shadow .18s ease,
+    border-color .18s ease,
+    background .18s ease,
+    color .18s ease !important;
+}
+
+.primary-btn{
+  background: linear-gradient(180deg, #4d84ff 0%, #2d67e6 100%) !important;
+  border: 1px solid rgba(255,255,255,.10) !important;
+  color: #fff !important;
+  box-shadow: 0 10px 24px rgba(77,132,255,.28) !important;
+}
+
+.primary-btn:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 14px 28px rgba(77,132,255,.35) !important;
+}
+
+.ghost-btn{
+  background: rgba(255,255,255,.04) !important;
+  color: var(--usg-text-strong) !important;
+  border: 1px solid var(--usg-line-soft) !important;
+}
+
+.ghost-btn:hover{
+  background: rgba(255,255,255,.07) !important;
+  border-color: var(--usg-line-mid) !important;
+  transform: translateY(-1px);
+}
+
+.danger-btn{
+  background: rgba(255,107,107,.12) !important;
+  color: #ffd1d1 !important;
+  border: 1px solid rgba(255,107,107,.22) !important;
+}
+
+.danger-btn:hover{
+  background: rgba(255,107,107,.18) !important;
+  transform: translateY(-1px);
+}
+
+/* status badges */
+.status-badge,
+[class*="status-badge"]{
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+}
+
+/* inputs */
+input,
+select,
+textarea{
+  background: rgba(255,255,255,.045) !important;
+  color: var(--usg-text-strong) !important;
+  border: 1px solid var(--usg-line-soft) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
+  transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+  outline: none !important;
+  border-color: rgba(118,167,255,.55) !important;
+  box-shadow: 0 0 0 3px rgba(77,132,255,.14) !important;
+  background: rgba(255,255,255,.06) !important;
+}
+
+input::placeholder,
+textarea::placeholder{
+  color: rgba(215,227,255,.60) !important;
+}
+
+/* pre blocks */
+pre{
+  background: rgba(3,10,20,.55) !important;
+  color: #dfe8ff !important;
+  border: 1px solid var(--usg-line-soft) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
+}
+
+/* tables if any */
+table{
+  border-collapse: collapse;
+  width: 100%;
+}
+
+table td,
+table th{
+  border-color: var(--usg-line-soft);
+}
+
+/* sidebar / nav polish */
+.sidebar,
+.usg-sidebar,
+nav{
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.sidebar a,
+.usg-sidebar a,
+nav a{
+  transition: background .16s ease, color .16s ease, transform .16s ease;
+}
+
+.sidebar a:hover,
+.usg-sidebar a:hover,
+nav a:hover{
+  transform: translateX(1px);
+}
+
+/* subtle card separators */
+.card hr,
+.list-card hr{
+  border: 0;
+  border-top: 1px solid var(--usg-line-soft);
+}
+
+/* loading skeleton */
+.usg-skeleton{
+  position: relative;
+  overflow: hidden;
+  background: rgba(255,255,255,.04);
+  border-radius: 14px;
+  min-height: 16px;
+}
+
+.usg-skeleton::after{
+  content:"";
+  position:absolute;
+  top:0;
+  left:-150%;
+  width:120%;
+  height:100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.08), transparent);
+  animation: usgShimmer 1.2s infinite linear;
+}
+
+@keyframes usgShimmer{
+  from{ left:-150%; }
+  to{ left:150%; }
+}
+
+/* compact top utility cards */
+.usg-page-header,
+.usg-page-head-row{
+  position: relative;
+  z-index: 1;
+}
+
+/* modals */
+.usg-modal,
+[role="dialog"]{
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* keep link buttons premium */
+a.primary-btn,
+a.ghost-btn,
+a.danger-btn{
+  text-decoration: none !important;
+}
+
+/* small UI niceties */
+.card .actions,
+.list-card .actions{
+  padding-top: 2px;
+}
+
+/* mobile */
+@media (max-width: 720px){
+  .card:hover,
+  .list-card:hover,
+  .info-card:hover{
+    transform:none;
+  }
+}

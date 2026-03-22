@@ -31,6 +31,8 @@ async function loadDashboard() {
     subtitle: 'Platform overview, activity, and quick actions'
   });
 
+  const skeleton = window.USGPremiumUI?.addSkeleton(content, 4);
+
   const [dash, readiness, analytics, polish] = await Promise.all([
     safeJson('/api/dashboard'),
     safeJson('/api/live-readiness/status'),
@@ -38,12 +40,14 @@ async function loadDashboard() {
     safeJson('/api/final-polish/summary')
   ]);
 
+  if (skeleton) skeleton.remove();
+
   const stats = dash.stats || {};
   const summary = analytics.summary || {};
   const app = polish.app || {};
   const readinessPercent = readiness.readinessPercent || 0;
 
-  content.innerHTML = `
+  content.innerHTML += `
     <div class="grid-4">
       ${card('Users', stats.users || 0, 'Registered accounts')}
       ${card('Collections', stats.collections || 0, 'Data structures')}
@@ -112,6 +116,8 @@ async function loadDashboard() {
       </section>
     </div>
   `;
+
+  window.USGPremiumUI?.pulseButton('.primary-btn');
 }
 
 loadDashboard();
