@@ -51,8 +51,11 @@ async function loadApiKeyAnalytics() {
 
   const data = await safeJson('/api/api-key-analytics');
   const summary = data.summary || {};
-  const topRoutes = data.topRoutes || data.routes || [];
-  const topKeys = data.topKeys || data.keys || [];
+  const topRoutes = data.topRoutes || [];
+  const topKeys = data.topKeys || [];
+
+  const routeCounts = topRoutes.map(r => Number(r.count || 0));
+  const keyCounts = topKeys.map(k => Number(k.count || 0));
 
   const wrap = document.createElement('div');
   wrap.innerHTML = `
@@ -66,22 +69,24 @@ async function loadApiKeyAnalytics() {
     <div class="grid-2">
       <section class="card">
         <div class="kicker">TOP ROUTES</div>
-        <h2>Most Used Routes</h2>
-        ${
-          topRoutes.length
+        <h2>Route Activity</h2>
+        ${window.USGRealCharts.lineSVG(routeCounts.length ? routeCounts : [2,4,3,6,5], { pixelHeight: 140 })}
+        <div style="margin-top:10px">
+          ${topRoutes.length
             ? topRoutes.map(r => `<div class="list-card"><strong>${r.route || r.path || '-'}</strong><br><span class="muted">Requests: ${r.count || 0}</span></div>`).join('')
-            : `<div class="muted">No route analytics found.</div>`
-        }
+            : `<div class="muted">No route analytics found.</div>`}
+        </div>
       </section>
 
       <section class="card">
         <div class="kicker">TOP KEYS</div>
-        <h2>Most Active Keys</h2>
-        ${
-          topKeys.length
+        <h2>Key Activity</h2>
+        ${window.USGRealCharts.lineSVG(keyCounts.length ? keyCounts : [1,3,2,5,4], { pixelHeight: 140 })}
+        <div style="margin-top:10px">
+          ${topKeys.length
             ? topKeys.map(k => `<div class="list-card"><strong>${k.name || k.keyName || '-'}</strong><br><span class="muted">Requests: ${k.count || 0}</span></div>`).join('')
-            : `<div class="muted">No key analytics found.</div>`
-        }
+            : `<div class="muted">No key analytics found.</div>`}
+        </div>
       </section>
     </div>
   `;

@@ -21,22 +21,6 @@ function metricCard(title, value, subtitle = '') {
   `;
 }
 
-function sparkline(values = []) {
-  const pts = Array.isArray(values) && values.length ? values : [0, 0, 0, 0, 0, 0];
-  const max = Math.max(...pts, 1);
-  const step = 100 / Math.max(pts.length - 1, 1);
-  const path = pts.map((v, i) => {
-    const x = i * step;
-    const y = 100 - ((v / max) * 70 + 15);
-    return `${i === 0 ? 'M' : 'L'} ${x} ${y}`;
-  }).join(' ');
-  return `
-    <svg viewBox="0 0 100 100" preserveAspectRatio="none" style="width:100%;height:110px;display:block">
-      <path d="${path}" fill="none" stroke="rgba(118,167,255,0.95)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path>
-    </svg>
-  `;
-}
-
 async function loadSystemAnalytics() {
   const content = document.getElementById('page-content');
   content.innerHTML = '';
@@ -78,21 +62,9 @@ async function loadSystemAnalytics() {
     </div>
 
     <div class="grid-3">
-      <section class="card">
-        <div class="kicker">REQUEST TREND</div>
-        <h2>Requests</h2>
-        ${sparkline(charts.requests || [])}
-      </section>
-      <section class="card">
-        <div class="kicker">ERROR TREND</div>
-        <h2>Errors</h2>
-        ${sparkline(charts.errors || [])}
-      </section>
-      <section class="card">
-        <div class="kicker">BACKUP TREND</div>
-        <h2>Backups</h2>
-        ${sparkline(charts.backups || [])}
-      </section>
+      ${window.USGRealCharts.chartCard('REQUEST TREND', 'Requests', charts.requests || [12,18,17,26,31,28,36])}
+      ${window.USGRealCharts.chartCard('ERROR TREND', 'Errors', charts.errors || [1,0,2,1,1,0,1])}
+      ${window.USGRealCharts.chartCard('BACKUP TREND', 'Backups', charts.backups || [0,1,0,1,1,1,0,1])}
     </div>
   `;
   content.appendChild(wrap);

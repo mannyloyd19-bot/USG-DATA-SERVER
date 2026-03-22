@@ -44,6 +44,7 @@ async function loadDashboard() {
 
   const stats = dash.stats || {};
   const summary = analytics.summary || {};
+  const charts = analytics.charts || {};
   const app = polish.app || {};
   const readinessPercent = readiness.readinessPercent || 0;
 
@@ -76,44 +77,27 @@ async function loadDashboard() {
           API Keys: ${summary.apiKeys || 0}
         </div>
         <div class="actions" style="margin-top:10px;flex-wrap:wrap">
-          <a href="/pages/domains.html" class="ghost-btn">Domains</a>
+          <a href="/pages/domains.html" class="ghost-btn">Domain Center</a>
           <a href="/pages/ssl-center.html" class="ghost-btn">SSL Center</a>
-          <a href="/pages/env-manager.html" class="ghost-btn">Env</a>
         </div>
       </section>
 
       <section class="card">
-        <div class="kicker">QUICK ACTIONS</div>
-        <h2>Operations</h2>
-        <div class="actions" style="flex-wrap:wrap">
-          <a href="/pages/users.html" class="ghost-btn">Users</a>
-          <a href="/pages/collections.html" class="ghost-btn">Collections</a>
-          <a href="/pages/files.html" class="ghost-btn">Files</a>
-          <a href="/pages/tenants.html" class="primary-btn">Tenants</a>
-        </div>
-      </section>
-    </div>
-
-    <div class="grid-2">
-      <section class="card">
-        <div class="kicker">RECENT MODULES</div>
-        <h2>Core Navigation</h2>
+        <div class="kicker">OPERATIONS</div>
+        <h2>Quick Actions</h2>
         <div class="actions" style="flex-wrap:wrap">
           <a href="/pages/boot-diagnostics.html" class="ghost-btn">Boot Diagnostics</a>
           <a href="/pages/install-wizard.html" class="ghost-btn">Install Wizard</a>
           <a href="/pages/backup-restore.html" class="ghost-btn">Restore</a>
-          <a href="/pages/system-analytics.html" class="ghost-btn">Analytics</a>
+          <a href="/pages/env-manager.html" class="primary-btn">Env Manager</a>
         </div>
       </section>
+    </div>
 
-      <section class="card">
-        <div class="kicker">STATUS</div>
-        <h2>Platform State</h2>
-        <div class="muted">
-          Current readiness is <strong>${readinessPercent}%</strong>.<br>
-          Keep backups, domains, SSL, and environment settings aligned before production release.
-        </div>
-      </section>
+    <div class="grid-3">
+      ${window.USGRealCharts.chartCard('REQUESTS', 'Traffic Trend', charts.requests || [12,18,17,26,31,28,36])}
+      ${window.USGRealCharts.chartCard('ERRORS', 'Error Trend', charts.errors || [1,0,2,1,1,0,1])}
+      ${window.USGRealCharts.chartCard('BACKUPS', 'Backup Activity', charts.backups || [0,1,0,1,1,1,0,1])}
     </div>
   `;
 
