@@ -34,12 +34,10 @@ USG_API_KEY=your_api_key_here`;
   }
 });`;
 
-  const nodeBlock = `const config = {
-  baseURL: 'https://usgdataserver.duckdns.org',
-  domainKey: 'dom_your_domain_key',
-  appToken: 'appreg_your_app_token',
-  apiKey: 'your_api_key_here'
-};`;
+  const curlBlock = `curl -X GET "https://usgdataserver.duckdns.org/api/collections" \\
+  -H "x-domain-key: dom_your_domain_key" \\
+  -H "x-app-token: appreg_your_app_token" \\
+  -H "x-api-key: your_api_key_here"`;
 
   const wrap = document.createElement('div');
   wrap.innerHTML = `
@@ -62,22 +60,23 @@ USG_API_KEY=your_api_key_here`;
     </section>
 
     <section class="card" style="margin-top:18px">
-      <div class="kicker">NODE / JS</div>
-      <h2>Client Config</h2>
-      <pre>${nodeBlock}</pre>
+      <div class="kicker">CURL EXAMPLE</div>
+      <h2>Command Line Request</h2>
+      <pre>${curlBlock}</pre>
       <div class="actions">
-        <button class="ghost-btn" id="copy-sdk-node" type="button">Copy Node Example</button>
+        <button class="ghost-btn" id="copy-sdk-curl" type="button">Copy Curl Example</button>
       </div>
     </section>
 
     <section class="card" style="margin-top:18px">
-      <div class="kicker">NOTES</div>
-      <h2>Integration Flow</h2>
+      <div class="kicker">INTEGRATION FLOW</div>
+      <h2>How to Connect</h2>
       <div class="muted">
         1. Create a domain in Domain Registry.<br>
-        2. Open the Binding panel.<br>
+        2. Open the Binding panel for that domain.<br>
         3. Copy Domain Key and App Token.<br>
-        4. Use your API key for authenticated requests.
+        4. Use an API key for authenticated requests.<br>
+        5. Connect your app through USG API Base URL.
       </div>
     </section>
   `;
@@ -85,7 +84,7 @@ USG_API_KEY=your_api_key_here`;
 
   document.getElementById('copy-sdk-env').onclick = () => copyText(envBlock, 'Env block copied');
   document.getElementById('copy-sdk-fetch').onclick = () => copyText(fetchBlock, 'Fetch example copied');
-  document.getElementById('copy-sdk-node').onclick = () => copyText(nodeBlock, 'Node example copied');
+  document.getElementById('copy-sdk-curl').onclick = () => copyText(curlBlock, 'Curl example copied');
 }
 
 loadSdk();
