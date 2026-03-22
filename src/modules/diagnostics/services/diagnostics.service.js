@@ -1,6 +1,6 @@
 const os = require('os');
 const { getLogs } = require('./log-buffer.service');
-const sequelize = require('../../../src/core/database');
+const sequelize = require('../../../core/database');
 
 function bytesToMb(value = 0) {
   return Math.round((Number(value || 0) / 1024 / 1024) * 100) / 100;

@@ -1,5 +1,5 @@
 const os = require('os');
-const sequelize = require('../../../src/core/database');
+const sequelize = require('../../../core/database');
 
 async function getDbHealth() {
   try {
