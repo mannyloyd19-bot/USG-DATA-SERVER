@@ -1,3 +1,4 @@
+window.__DISABLE_HEALTH_BANNER__ = true;
 requireAuth();
 USGShell.buildShell();
 
@@ -13,12 +14,11 @@ async function loadFields() {
 
   const actionsCard = document.createElement('section');
   actionsCard.className = 'card';
-  actionsCard.style.marginTop = '18px';
   actionsCard.innerHTML = `
     <div class="usg-page-head-row">
       <div>
         <div class="kicker">ACTIONS</div>
-        <h2 style="margin:8px 0 0">Field Controls</h2>
+        <h2>Field Controls</h2>
       </div>
       <div class="actions">
         <a href="/pages/collections.html" class="ghost-btn">Open Collections</a>
@@ -29,7 +29,6 @@ async function loadFields() {
 
   const infoWrap = document.createElement('section');
   infoWrap.className = 'card';
-  infoWrap.style.marginTop = '18px';
   infoWrap.innerHTML = `
     <div class="kicker">FIELD MANAGEMENT</div>
     <h2>Collection-based Fields</h2>
