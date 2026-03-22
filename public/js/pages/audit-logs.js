@@ -1,3 +1,4 @@
+window.__DISABLE_HEALTH_BANNER__ = true;
 requireAuth();
 USGShell.buildShell();
 

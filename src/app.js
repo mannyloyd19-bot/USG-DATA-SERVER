@@ -1,3 +1,5 @@
+const multiTenantRoutes = require('./modules/multiTenant/routes/multi-tenant.routes');
+const multiTenantEnforcerMiddleware = require('./middleware/multi-tenant-enforcer.middleware');
 const advancedSystemRoutes = require('./modules/advancedSystem/routes/advanced-system.routes');
 const jobQueueRoutes = require('./modules/jobQueue/routes/job-queue.routes');
 const usageTrackingRoutes = require('./modules/usageTracking/routes/usage-tracking.routes');
@@ -95,6 +97,7 @@ if (env.HELMET_ENABLED) {
 app.use(morgan(env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 app.use(express.json({ limit: '10mb' }));
 app.use(tenantContextMiddleware);
+app.use(multiTenantEnforcerMiddleware);
 app.use(tenantIsolationMiddleware);
 app.use(advancedRateLimitMiddleware);
 app.use(usageTrackerMiddleware);
@@ -185,6 +188,7 @@ app.use('/api/domain-bindings', domainBindingRoutes);
 app.use('/api/usage-tracking', usageTrackingRoutes);
 app.use('/api/job-queue', jobQueueRoutes);
 app.use('/api/advanced-system', advancedSystemRoutes);
+app.use('/api/multi-tenant', multiTenantRoutes);
 app.use(notFoundHandler);
 app.use(errorHandler);
 
