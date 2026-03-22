@@ -21,6 +21,22 @@ function metricCard(title, value, subtitle = '') {
   `;
 }
 
+function sparkline(values = []) {
+  const pts = Array.isArray(values) && values.length ? values : [0, 0, 0, 0, 0, 0];
+  const max = Math.max(...pts, 1);
+  const step = 100 / Math.max(pts.length - 1, 1);
+  const path = pts.map((v, i) => {
+    const x = i * step;
+    const y = 100 - ((v / max) * 70 + 15);
+    return `${i === 0 ? 'M' : 'L'} ${x} ${y}`;
+  }).join(' ');
+  return `
+    <svg viewBox="0 0 100 100" preserveAspectRatio="none" style="width:100%;height:110px;display:block">
+      <path d="${path}" fill="none" stroke="rgba(118,167,255,0.95)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg>
+  `;
+}
+
 async function loadSystemAnalytics() {
   const content = document.getElementById('page-content');
   content.innerHTML = '';
@@ -65,17 +81,17 @@ async function loadSystemAnalytics() {
       <section class="card">
         <div class="kicker">REQUEST TREND</div>
         <h2>Requests</h2>
-        <div class="muted">${JSON.stringify(charts.requests || [])}</div>
+        ${sparkline(charts.requests || [])}
       </section>
       <section class="card">
         <div class="kicker">ERROR TREND</div>
         <h2>Errors</h2>
-        <div class="muted">${JSON.stringify(charts.errors || [])}</div>
+        ${sparkline(charts.errors || [])}
       </section>
       <section class="card">
         <div class="kicker">BACKUP TREND</div>
         <h2>Backups</h2>
-        <div class="muted">${JSON.stringify(charts.backups || [])}</div>
+        ${sparkline(charts.backups || [])}
       </section>
     </div>
   `;

@@ -194,7 +194,7 @@ setTimeout(() => {
 
 setTimeout(() => {
   try {
-    if (window.USGHealthBanner && document.getElementById('page-content')) {
+    if (!window.__DISABLE_HEALTH_BANNER__ && window.USGHealthBanner && document.getElementById('page-content')) {
       USGHealthBanner.render();
     }
   } catch {}
