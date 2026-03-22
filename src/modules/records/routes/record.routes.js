@@ -1,17 +1,11 @@
 const express = require('express');
+const router = express.Router();
 const controller = require('../controllers/record.controller');
-const authMiddleware = require('../../../middleware/auth.middleware');
+const { requirePermission } = require('../../../middleware/rbac.middleware');
 
-const router = express.Router({ mergeParams: true });
-
-router.use(authMiddleware);
-
-router.post('/', controller.create);
-router.get('/', controller.findAll);
-router.get('/:recordId', controller.findOne);
-router.patch('/:recordId', controller.update);
-router.delete('/:recordId', controller.remove);
-router.post('/:recordId/restore', controller.restore);
-router.delete('/:recordId/hard', controller.hardDelete);
+router.get('/', requirePermission('collections.read'), controller.list);
+router.post('/', requirePermission('collections.write'), controller.create);
+router.put('/:id', requirePermission('collections.write'), controller.update);
+router.delete('/:id', requirePermission('collections.write'), controller.remove);
 
 module.exports = router;

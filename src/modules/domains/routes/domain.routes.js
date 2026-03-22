@@ -1,14 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const controller = require('../controllers/domain.controller');
-const auth = require('../../../middleware/auth.middleware');
+const { requirePermission } = require('../../../middleware/rbac.middleware');
 
-router.use(auth);
-
-router.get('/', controller.list);
-router.post('/', controller.create);
-router.put('/:id', controller.update);
-router.get('/:id/details', controller.details);
-router.delete('/:id', controller.remove);
+router.get('/', requirePermission('domains.read'), controller.list);
+router.post('/', requirePermission('domains.write'), controller.create);
+router.get('/:id', requirePermission('domains.read'), controller.details);
+router.put('/:id', requirePermission('domains.write'), controller.update);
+router.delete('/:id', requirePermission('domains.write'), controller.remove);
 
 module.exports = router;

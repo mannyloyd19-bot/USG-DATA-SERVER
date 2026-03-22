@@ -1,190 +1,83 @@
-const recordService = require('../services/record.service');
-const webhookService = require('../../webhooks/services/webhook.service');
+const Record = require('../models/record.model');
 
-function handleError(res, error, fallbackMessage) {
-  const msg = error.message || fallbackMessage;
-
-  if (msg === 'Collection not found') {
-    return res.status(404).json({ message: msg });
-  }
-
-  if (msg === 'Record not found') {
-    return res.status(404).json({ message: msg });
-  }
-
-  if (
-    msg.includes('required') ||
-    msg.includes('must be') ||
-    msg.includes('unique') ||
-    msg.includes('Unknown field')
-  ) {
-    return res.status(400).json({ message: msg });
-  }
-
-  return res.status(500).json({ message: fallbackMessage, error: msg });
+function normalizePayload(payload = {}) {
+  return payload && typeof payload === 'object' ? payload : {};
 }
+
+exports.list = async (req, res) => {
+  try {
+    const rows = await Record.findAll({
+      order: [['createdAt', 'DESC']]
+    });
+
+    const filtered = req.rls?.applyTenantFilter ? req.rls.applyTenantFilter(rows) : rows;
+    return res.json({ success: true, records: filtered });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
 
 exports.create = async (req, res) => {
   try {
-    const record = await recordService.createRecord({
-      collectionKey: req.params.collectionKey,
-      inputData: req.body.data || {},
-      user: req.user
+    const payload = normalizePayload(req.body || {});
+    const data = normalizePayload(payload.data || {});
+    const securedData = req.rls?.applyTenantPayload ? req.rls.applyTenantPayload(data) : data;
+
+    const item = await Record.create({
+      ...payload,
+      data: securedData
     });
 
-    await webhookService.trigger('record.created', {
-      collectionKey: req.params.collectionKey,
-      recordId: record.id,
-      record: record.toJSON ? record.toJSON() : record,
-      actor: req.user || null
-    });
-
-    return res.status(201).json(record);
+    return res.json({ success: true, record: item });
   } catch (error) {
-    return handleError(res, error, 'Failed to create record');
-  }
-};
-
-exports.findAll = async (req, res) => {
-  try {
-    const result = await recordService.listRecords({
-      collectionKey: req.params.collectionKey,
-      query: req.query
-    });
-
-    return res.json(result);
-  } catch (error) {
-    return handleError(res, error, 'Failed to fetch records');
-  }
-};
-
-exports.findOne = async (req, res) => {
-  try {
-    const record = await recordService.getRecord({
-      collectionKey: req.params.collectionKey,
-      recordId: req.params.recordId,
-      includeDeleted: String(req.query.includeDeleted || 'false') === 'true'
-    });
-
-    return res.json(record);
-  } catch (error) {
-    return handleError(res, error, 'Failed to fetch record');
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
 
 exports.update = async (req, res) => {
   try {
-    const beforeRecord = await recordService.getRecord({
-      collectionKey: req.params.collectionKey,
-      recordId: req.params.recordId,
-      includeDeleted: true
-    });
+    const item = await Record.findByPk(req.params.id);
+    if (!item) {
+      return res.status(404).json({ success: false, message: 'Record not found' });
+    }
 
-    const record = await recordService.updateRecord({
-      collectionKey: req.params.collectionKey,
-      recordId: req.params.recordId,
-      inputData: req.body.data || {},
-      user: req.user
-    });
+    const itemTenantId = item.tenantId ?? item.data?.tenantId ?? null;
+    if (req.rls?.tenantId && String(itemTenantId || '') !== String(req.rls.tenantId)) {
+      return res.status(403).json({ success: false, message: 'Tenant isolation blocked this update' });
+    }
 
-    await webhookService.trigger('record.updated', {
-      collectionKey: req.params.collectionKey,
-      recordId: record.id,
-      before: beforeRecord.toJSON ? beforeRecord.toJSON() : beforeRecord,
-      after: record.toJSON ? record.toJSON() : record,
-      actor: req.user || null
-    });
+    const payload = normalizePayload(req.body || {});
+    const nextData = normalizePayload(payload.data !== undefined ? payload.data : item.data || {});
+    const securedData = req.rls?.applyTenantPayload ? req.rls.applyTenantPayload(nextData) : nextData;
 
-    return res.json(record);
+    item.data = securedData;
+    if (payload.collectionId !== undefined) item.collectionId = payload.collectionId;
+    if (payload.isDeleted !== undefined) item.isDeleted = payload.isDeleted;
+    if (payload.deletedAt !== undefined) item.deletedAt = payload.deletedAt;
+    if (payload.meta !== undefined) item.meta = payload.meta;
+
+    await item.save();
+    return res.json({ success: true, record: item });
   } catch (error) {
-    return handleError(res, error, 'Failed to update record');
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
 
 exports.remove = async (req, res) => {
   try {
-    const beforeRecord = await recordService.getRecord({
-      collectionKey: req.params.collectionKey,
-      recordId: req.params.recordId,
-      includeDeleted: true
-    });
+    const item = await Record.findByPk(req.params.id);
+    if (!item) {
+      return res.status(404).json({ success: false, message: 'Record not found' });
+    }
 
-    const record = await recordService.deleteRecord({
-      collectionKey: req.params.collectionKey,
-      recordId: req.params.recordId,
-      user: req.user
-    });
+    const itemTenantId = item.tenantId ?? item.data?.tenantId ?? null;
+    if (req.rls?.tenantId && String(itemTenantId || '') !== String(req.rls.tenantId)) {
+      return res.status(403).json({ success: false, message: 'Tenant isolation blocked this delete' });
+    }
 
-    await webhookService.trigger('record.deleted', {
-      collectionKey: req.params.collectionKey,
-      recordId: req.params.recordId,
-      before: beforeRecord.toJSON ? beforeRecord.toJSON() : beforeRecord,
-      after: record.toJSON ? record.toJSON() : record,
-      actor: req.user || null
-    });
-
-    return res.json({
-      message: 'Record soft deleted successfully',
-      record
-    });
+    await item.destroy();
+    return res.json({ success: true });
   } catch (error) {
-    return handleError(res, error, 'Failed to delete record');
-  }
-};
-
-exports.restore = async (req, res) => {
-  try {
-    const beforeRecord = await recordService.getRecord({
-      collectionKey: req.params.collectionKey,
-      recordId: req.params.recordId,
-      includeDeleted: true
-    });
-
-    const record = await recordService.restoreRecord({
-      collectionKey: req.params.collectionKey,
-      recordId: req.params.recordId,
-      user: req.user
-    });
-
-    await webhookService.trigger('record.restored', {
-      collectionKey: req.params.collectionKey,
-      recordId: req.params.recordId,
-      before: beforeRecord.toJSON ? beforeRecord.toJSON() : beforeRecord,
-      after: record.toJSON ? record.toJSON() : record,
-      actor: req.user || null
-    });
-
-    return res.json({
-      message: 'Record restored successfully',
-      record
-    });
-  } catch (error) {
-    return handleError(res, error, 'Failed to restore record');
-  }
-};
-
-exports.hardDelete = async (req, res) => {
-  try {
-    const beforeRecord = await recordService.getRecord({
-      collectionKey: req.params.collectionKey,
-      recordId: req.params.recordId,
-      includeDeleted: true
-    });
-
-    await recordService.hardDeleteRecord({
-      collectionKey: req.params.collectionKey,
-      recordId: req.params.recordId
-    });
-
-    await webhookService.trigger('record.hard_deleted', {
-      collectionKey: req.params.collectionKey,
-      recordId: req.params.recordId,
-      before: beforeRecord.toJSON ? beforeRecord.toJSON() : beforeRecord,
-      actor: req.user || null
-    });
-
-    return res.json({ message: 'Record permanently deleted' });
-  } catch (error) {
-    return handleError(res, error, 'Failed to permanently delete record');
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
