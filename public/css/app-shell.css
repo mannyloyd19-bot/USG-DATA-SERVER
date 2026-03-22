@@ -1421,3 +1421,47 @@ a.danger-btn{
     padding-right: 4px !important;
   }
 }
+
+/* =========================================
+   FIX: MAIN CONTENT TOO NARROW / LEFT-STACKED
+   ========================================= */
+
+#page-content{
+  max-width: none !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+/* give content natural full shell width */
+.usg-main,
+.main-content,
+.shell-main,
+#shell-main,
+#app-main{
+  width: 100% !important;
+  max-width: none !important;
+}
+
+/* make top cards use full available width */
+#page-content > .card,
+#page-content > section.card,
+#page-content > div,
+#page-content > section{
+  width: 100%;
+}
+
+/* analytics and dashboard grids should stretch */
+#page-content .grid-4,
+#page-content .grid-3,
+#page-content .grid-2{
+  width: 100% !important;
+}
+
+/* tablet tuning */
+@media (min-width: 721px){
+  #page-content{
+    padding-right: 4px !important;
+  }
+}
