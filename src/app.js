@@ -1,3 +1,5 @@
+const invoiceRoutes = require('./modules/invoices/routes/invoice.routes');
+const paymentRoutes = require('./modules/payments/routes/payment.routes');
 const { enforceUsage, commitUsageFromRequest } = require('./middleware/usage-quota.middleware');
 const billingRoutes = require('./modules/billing/routes/billing.routes');
 const rowLevelSecurityMiddleware = require('./middleware/row-level-security.middleware');
@@ -220,6 +222,8 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use('/api/payments', paymentRoutes);
+app.use('/api/invoices', invoiceRoutes);
 app.use(notFoundHandler);
 app.use(errorHandler);
 

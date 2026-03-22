@@ -201,3 +201,5 @@ require('./modules/rbac/models/user-role.model');
 require('./modules/billing/models/billing-plan.model');
 require('./modules/billing/models/tenant-subscription.model');
 require('./modules/billing/models/usage-counter.model');
+require('./modules/payments/models/payment.model');
+require('./modules/invoices/models/invoice.model');
