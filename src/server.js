@@ -194,3 +194,7 @@ require('./modules/jobQueue/models/job-queue.model');
 startJobRunner();
 require('./modules/sessions/models/session.model');
 require('./modules/authProviders/models/auth-provider.model');
+require('./modules/rbac/models/role.model');
+require('./modules/rbac/models/permission.model');
+require('./modules/rbac/models/role-permission.model');
+require('./modules/rbac/models/user-role.model');

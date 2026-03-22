@@ -1,3 +1,5 @@
+const rowLevelSecurityMiddleware = require('./middleware/row-level-security.middleware');
+const rbacRoutes = require('./modules/rbac/routes/rbac.routes');
 const authProviderRoutes = require('./modules/authProviders/routes/auth-provider.routes');
 const sessionRoutes = require('./modules/sessions/routes/session.routes');
 const storageBucketRoutes = require('./modules/storageBuckets/routes/storage-bucket.routes');
@@ -104,6 +106,7 @@ if (env.HELMET_ENABLED) {
 app.use(morgan(env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 app.use(express.json({ limit: '10mb' }));
 app.use(tenantContextMiddleware);
+app.use(rowLevelSecurityMiddleware);
 app.use(multiTenantEnforcerMiddleware);
 app.use(tenantIsolationMiddleware);
 app.use(advancedRateLimitMiddleware);
@@ -203,6 +206,7 @@ app.use('/api/webhook-advanced', webhookAdvancedRoutes);
 app.use('/api/storage-buckets', storageBucketRoutes);
 app.use('/api/sessions', sessionRoutes);
 app.use('/api/auth-providers', authProviderRoutes);
+app.use('/api/rbac', rbacRoutes);
 app.use(notFoundHandler);
 app.use(errorHandler);
 
