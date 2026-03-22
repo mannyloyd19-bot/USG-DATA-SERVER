@@ -63,7 +63,9 @@ try {
     ['/pages/log-viewer.html','📜','Log Viewer'],
     ['/pages/diagnostics-console.html','🧪','Diagnostics Console'],
     ['/pages/queue-monitor.html','🧵','Queue Monitor'],
-    ['/pages/backup-monitor.html','🛟','Backup Monitor']
+    ['/pages/backup-monitor.html','🛟','Backup Monitor'],
+    ['/pages/app-logs.html','🪵','App Logs'],
+    ['/pages/deployment-diagnostics.html','🛰','Deployment Diagnostics']
   ];
 
   function getTheme() {
