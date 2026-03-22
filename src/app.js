@@ -1,3 +1,4 @@
+const systemMonitoringRoutes = require('./modules/systemMonitoring/routes/system-monitoring.routes');
 const paymentGatewayRoutes = require('./modules/paymentGateway/routes/payment-gateway.routes');
 const invoiceRoutes = require('./modules/invoices/routes/invoice.routes');
 const paymentRoutes = require('./modules/payments/routes/payment.routes');
@@ -226,6 +227,7 @@ app.use((req, res, next) => {
 app.use('/api/payments', paymentRoutes);
 app.use('/api/invoices', invoiceRoutes);
 app.use('/api/payment-gateway', paymentGatewayRoutes);
+app.use('/api/system-monitoring', systemMonitoringRoutes);
 app.use(notFoundHandler);
 app.use(errorHandler);
 

@@ -60,7 +60,8 @@ try {
     ['/pages/enterprise-db.html','🗄','Enterprise DB'],
     ['/pages/system-analytics.html','📊','System Analytics'],
 ['/pages/domains.html','🌐','Domains']
-  ];
+      ['/pages/system-health.html','🩺','System Health']
+];
 
   function getTheme() {
     return localStorage.getItem('usg_theme') || 'light';
@@ -96,7 +97,8 @@ try {
     try {
       const res = await window.apiFetch('/api/tenants');
       const rows = await res.json();
-      const list = Array.isArray(rows) ? rows : [];
+      const list = Array.isArray(rows) ? rows : [    ['/pages/system-health.html','🩺','System Health']
+];
       const current = getCurrentTenant();
 
       select.innerHTML =
@@ -108,7 +110,8 @@ try {
       }
 
       select.addEventListener('change', () => {
-        const option = select.options[select.selectedIndex];
+        const option = select.options[select.selectedIndex    ['/pages/system-health.html','🩺','System Health']
+];
         if (!select.value) {
           setCurrentTenant(null);
           return;
