@@ -12,6 +12,16 @@ function validateDomain(data) {
   );
 }
 
+function normalizeDomainInput(value = '') {
+  return String(value || '').trim().toLowerCase();
+}
+
+function normalizeRouteInput(value = '') {
+  let v = String(value || '').trim().toLowerCase();
+  if (!v.startsWith('/')) v = '/' + v;
+  return v;
+}
+
 function configBlock(binding) {
   const cfg = binding?.config || {};
   return `APP_NAME=${cfg.APP_NAME || ''}
@@ -74,9 +84,9 @@ function openCreateDomainModal(onDone) {
 
   document.getElementById('create-domain-submit').onclick = async () => {
     const payload = {
-      name: document.getElementById('d-name').value.trim(),
+      name: normalizeDomainInput(document.getElementById('d-name').value),
       serviceName: document.getElementById('d-service').value.trim(),
-      routePath: document.getElementById('d-route').value.trim(),
+      routePath: normalizeRouteInput(document.getElementById('d-route').value),
       accessMode: document.getElementById('d-access').value,
       environment: document.getElementById('d-env').value,
       notes: document.getElementById('d-notes').value.trim()
@@ -102,9 +112,17 @@ function openCreateDomainModal(onDone) {
       const result = await res.json();
 
       if (!res.ok) {
+        let msg = result.message || 'Failed to create domain';
+        if (msg === 'Domain already exists') {
+          msg = 'Domain already exists. Use a new .usg domain name.';
+        }
+        if (msg.includes('Route Path is already used')) {
+          msg = 'Route path already exists. Use a new route like /testapp.';
+        }
+
         USGIOSAlert.show({
           title: 'Create Domain Failed',
-          message: result.message || 'Failed to create domain',
+          message: msg,
           type: 'error'
         });
         return;
@@ -219,61 +237,6 @@ async function openBindingModal(domainId) {
   }
 }
 
-async function renderDomainList(content, rows) {
-  const listHost = document.createElement('section');
-  listHost.style.marginTop = '18px';
-
-  listHost.innerHTML = rows.length ? rows.map(d => `
-    <div class="list-card">
-      <strong>${d.name}</strong><br>
-      <span class="muted">Service: ${d.serviceName || '-'}</span><br>
-      <span class="muted">Route: ${d.routePath || '-'}</span><br>
-      <span class="muted">Public Address: ${d.publicAddress || 'Internal Only'}</span>
-      <div class="actions">
-        ${USGPageKit.statusBadge(d.status || 'active')}
-        ${d.publicAddress ? USGPageKit.copyButton(d.publicAddress, 'Copy URL') : ''}
-        <button class="ghost-btn" data-binding="${d.id}" type="button">Binding</button>
-        ${d.publicAddress && d.publicAddress !== 'Internal Only' ? `<a href="${d.publicAddress}" target="_blank" class="ghost-btn">Open</a>` : ''}
-        <button class="danger-btn" data-delete="${d.id}" type="button">Delete</button>
-      </div>
-    </div>
-  `).join('') : USGPageKit.emptyState({
-    title: 'No domains yet',
-    message: 'Create your first public or internal domain.'
-  });
-
-  content.appendChild(listHost);
-
-  USGPageKit.wireCopyButtons(content);
-  USGPageKit.attachBasicSearch({});
-
-  document.querySelectorAll('[data-binding]').forEach(btn => {
-    btn.onclick = () => openBindingModal(btn.dataset.binding);
-  });
-
-  document.querySelectorAll('[data-delete]').forEach(btn => {
-    btn.onclick = async () => {
-      const ok = await USGConfirm('Delete this domain?');
-      if (!ok) return;
-
-      const res = await apiFetch(`/api/domains/${btn.dataset.delete}`, { method: 'DELETE' });
-      const result = await res.json();
-
-      if (!res.ok) {
-        USGIOSAlert.show({
-          title: 'Delete Failed',
-          message: result.message || 'Failed to delete domain',
-          type: 'error'
-        });
-        return;
-      }
-
-      USGIOSAlert.show({ title: 'Deleted', message: 'Domain removed successfully.' });
-      loadDomains();
-    };
-  });
-}
-
 async function loadDomains() {
   const content = document.getElementById('page-content');
   content.innerHTML = '';
@@ -281,15 +244,28 @@ async function loadDomains() {
   USGPageKit.setPageHeader({
     kicker: 'DOMAIN',
     title: 'Domain Registry',
-    subtitle: 'Create and manage domain bindings for live app access',
-    actions: [
-      {
-        label: '+ Create Domain',
-        primary: true,
-        onClick: () => openCreateDomainModal(() => loadDomains())
-      }
-    ]
+    subtitle: 'Create and manage domain bindings for live app access'
   });
+
+  const topBar = document.createElement('section');
+  topBar.className = 'card';
+  topBar.style.marginTop = '18px';
+  topBar.innerHTML = `
+    <div class="usg-page-head-row">
+      <div>
+        <div class="kicker">ACTIONS</div>
+        <h2 style="margin:8px 0 0">Domain Controls</h2>
+      </div>
+      <div class="actions">
+        <button id="domain-create-inline-btn" class="primary-btn" type="button">+ Create Domain</button>
+      </div>
+    </div>
+  `;
+  content.appendChild(topBar);
+
+  document.getElementById('domain-create-inline-btn').onclick = () => {
+    openCreateDomainModal(() => loadDomains());
+  };
 
   const toolbarWrap = document.createElement('div');
   toolbarWrap.innerHTML = USGPageKit.searchToolbar({
@@ -305,9 +281,59 @@ async function loadDomains() {
     const res = await apiFetch('/api/domains');
     const data = await res.json();
     const rows = data.domains || [];
-
     loadingWrap.remove();
-    await renderDomainList(content, rows);
+
+    const listWrap = document.createElement('section');
+    listWrap.style.marginTop = '18px';
+    listWrap.innerHTML = rows.length ? rows.map(d => `
+      <div class="list-card">
+        <strong>${d.name}</strong><br>
+        <span class="muted">Service: ${d.serviceName || '-'}</span><br>
+        <span class="muted">Route: ${d.routePath || '-'}</span><br>
+        <span class="muted">Public Address: ${d.publicAddress || 'Internal Only'}</span>
+        <div class="actions">
+          ${USGPageKit.statusBadge(d.status || 'active')}
+          ${d.publicAddress ? USGPageKit.copyButton(d.publicAddress, 'Copy URL') : ''}
+          <button class="ghost-btn" data-binding="${d.id}" type="button">Binding</button>
+          ${d.publicAddress && d.publicAddress !== 'Internal Only' ? `<a href="${d.publicAddress}" target="_blank" class="ghost-btn">Open</a>` : ''}
+          <button class="danger-btn" data-delete="${d.id}" type="button">Delete</button>
+        </div>
+      </div>
+    `).join('') : USGPageKit.emptyState({
+      title: 'No domains yet',
+      message: 'Create your first public or internal domain.'
+    });
+
+    content.appendChild(listWrap);
+
+    USGPageKit.wireCopyButtons(content);
+    USGPageKit.attachBasicSearch({});
+
+    document.querySelectorAll('[data-binding]').forEach(btn => {
+      btn.onclick = () => openBindingModal(btn.dataset.binding);
+    });
+
+    document.querySelectorAll('[data-delete]').forEach(btn => {
+      btn.onclick = async () => {
+        const ok = await USGConfirm('Delete this domain?');
+        if (!ok) return;
+
+        const res = await apiFetch(`/api/domains/${btn.dataset.delete}`, { method: 'DELETE' });
+        const result = await res.json();
+
+        if (!res.ok) {
+          USGIOSAlert.show({
+            title: 'Delete Failed',
+            message: result.message || 'Failed to delete domain',
+            type: 'error'
+          });
+          return;
+        }
+
+        USGIOSAlert.show({ title: 'Deleted', message: 'Domain removed successfully.' });
+        loadDomains();
+      };
+    });
   } catch (err) {
     loadingWrap.remove();
     const errWrap = document.createElement('div');
