@@ -1,5 +1,6 @@
 const crypto = require('crypto');
 const Domain = require('../models/domain.model');
+const { emitCrudEvent } = require('../../eventTriggers/services/event-trigger.service');
 
 function normalizeName(value = '') {
   return String(value || '').trim().toLowerCase();
@@ -38,15 +39,14 @@ function createDomainKey(name) {
 }
 
 function formatError(error) {
-const { emitCrudEvent } = require('../../eventTriggers/services/event-trigger.service');
   if (!error) return 'Unknown error';
 
   if (error.name === 'SequelizeValidationError' && Array.isArray(error.errors)) {
-    return error.errors.map(e => e.message).join(', ');
+    return error.errors.map((e) => e.message).join(', ');
   }
 
   if (error.name === 'SequelizeUniqueConstraintError' && Array.isArray(error.errors)) {
-    return error.errors.map(e => e.message).join(', ');
+    return error.errors.map((e) => e.message).join(', ');
   }
 
   if (error.parent && error.parent.message) {
@@ -58,7 +58,7 @@ const { emitCrudEvent } = require('../../eventTriggers/services/event-trigger.se
 
 async function routeConflictExists(routePath, excludeId = null) {
   const rows = await Domain.findAll({ where: { routePath } });
-  return rows.some((r) => r.id !== excludeId && r.status === 'active');
+  return rows.some((r) => String(r.id) !== String(excludeId) && r.status === 'active');
 }
 
 exports.list = async (req, res) => {
@@ -73,8 +73,6 @@ exports.list = async (req, res) => {
 
 exports.create = async (req, res) => {
   try {
-    console.log('[domains.create] payload:', req.body);
-
     const { name, serviceName, routePath, accessMode, environment, notes } = req.body || {};
 
     const finalName = normalizeName(name);
@@ -126,14 +124,15 @@ exports.create = async (req, res) => {
       notes: notes || null
     };
 
-    console.log('[domains.create] normalized payload:', payload);
-
     const item = await Domain.create(payload);
 
-    emitCrudEvent({ module: 'domains', action: 'created', recordId: item.id, data: item.toJSON ? item.toJSON() : item });
-    emitCrudEvent({ module: 'domains', action: 'updated', recordId: item.id, data: item.toJSON ? item.toJSON() : item });
-    emitCrudEvent({ module: 'domains', action: 'created', recordId: item.id, data: item.toJSON ? item.toJSON() : item });
-    emitCrudEvent({ module: 'domains', action: 'updated', recordId: item.id, data: item.toJSON ? item.toJSON() : item });
+    emitCrudEvent({
+      module: 'domains',
+      action: 'created',
+      recordId: item.id,
+      data: item.toJSON()
+    });
+
     return res.json({ success: true, domain: item });
   } catch (error) {
     console.error('[domains.create] error:', error);
@@ -179,10 +178,14 @@ exports.update = async (req, res) => {
     item.sslStatus = item.accessMode === 'public' ? (item.sslStatus || 'pending') : 'not_required';
 
     await item.save();
-    emitCrudEvent({ module: 'domains', action: 'created', recordId: item.id, data: item.toJSON ? item.toJSON() : item });
-    emitCrudEvent({ module: 'domains', action: 'updated', recordId: item.id, data: item.toJSON ? item.toJSON() : item });
-    emitCrudEvent({ module: 'domains', action: 'created', recordId: item.id, data: item.toJSON ? item.toJSON() : item });
-    emitCrudEvent({ module: 'domains', action: 'updated', recordId: item.id, data: item.toJSON ? item.toJSON() : item });
+
+    emitCrudEvent({
+      module: 'domains',
+      action: 'updated',
+      recordId: item.id,
+      data: item.toJSON()
+    });
+
     return res.json({ success: true, domain: item });
   } catch (error) {
     console.error('[domains.update] error:', error);
@@ -192,9 +195,20 @@ exports.update = async (req, res) => {
 
 exports.remove = async (req, res) => {
   try {
-    await Domain.destroy({ where: { id: req.params.id } });
-    emitCrudEvent({ module: 'domains', action: 'deleted', recordId: req.params.id, data: { id: req.params.id } });
-    emitCrudEvent({ module: 'domains', action: 'deleted', recordId: req.params.id, data: { id: req.params.id } });
+    const item = await Domain.findByPk(req.params.id);
+    if (!item) {
+      return res.status(404).json({ success: false, message: 'Domain not found' });
+    }
+
+    await item.destroy();
+
+    emitCrudEvent({
+      module: 'domains',
+      action: 'deleted',
+      recordId: req.params.id,
+      data: { id: req.params.id }
+    });
+
     return res.json({ success: true });
   } catch (error) {
     console.error('[domains.remove] error:', error);
