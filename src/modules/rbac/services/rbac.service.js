@@ -6,7 +6,6 @@ const UserRole = require('../models/user-role.model');
 async function getUserRoles(userId) {
   const userRoles = await UserRole.findAll({ where: { userId: String(userId) } });
   if (!userRoles.length) return [];
-
   const roleIds = userRoles.map(r => r.roleId);
   return Role.findAll({ where: { id: roleIds } });
 }
@@ -14,6 +13,10 @@ async function getUserRoles(userId) {
 async function getUserPermissionKeys(userId) {
   const roles = await getUserRoles(userId);
   if (!roles.length) return [];
+
+  if (roles.some(r => r.key === 'admin')) {
+    return ['*'];
+  }
 
   const roleIds = roles.map(r => r.id);
   const rolePermissions = await RolePermission.findAll({ where: { roleId: roleIds } });
@@ -26,7 +29,7 @@ async function getUserPermissionKeys(userId) {
 
 async function userHasPermission(userId, permissionKey) {
   const keys = await getUserPermissionKeys(userId);
-  return keys.includes(permissionKey);
+  return keys.includes('*') || keys.includes(permissionKey);
 }
 
 async function seedDefaults() {
@@ -73,10 +76,12 @@ async function seedDefaults() {
     ['admin', 'domains.read'], ['admin', 'domains.write'],
     ['admin', 'settings.read'], ['admin', 'settings.write'],
     ['admin', 'audit.read'],
+
     ['editor', 'users.read'],
     ['editor', 'collections.read'], ['editor', 'collections.write'],
     ['editor', 'files.read'], ['editor', 'files.write'],
-    ['editor', 'domains.read'],
+    ['editor', 'domains.read'], ['editor', 'domains.write'],
+
     ['viewer', 'users.read'],
     ['viewer', 'collections.read'],
     ['viewer', 'files.read'],
