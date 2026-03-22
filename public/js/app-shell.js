@@ -1,4 +1,3 @@
-
 try {
   if ('scrollRestoration' in history) {
     history.scrollRestoration = 'manual';
@@ -59,11 +58,11 @@ try {
     ['/pages/query-builder.html','📊','Query Builder'],
     ['/pages/enterprise-db.html','🗄','Enterprise DB'],
     ['/pages/system-analytics.html','📊','System Analytics'],
-['/pages/domains.html','🌐','Domains']
-      ['/pages/system-health.html','🩺','System Health'],
+    ['/pages/domains.html','🌐','Domains'],
+    ['/pages/system-health.html','🩺','System Health'],
     ['/pages/log-viewer.html','📜','Log Viewer'],
     ['/pages/diagnostics-console.html','🧪','Diagnostics Console']
-];
+  ];
 
   function getTheme() {
     return localStorage.getItem('usg_theme') || 'light';
@@ -99,25 +98,19 @@ try {
     try {
       const res = await window.apiFetch('/api/tenants');
       const rows = await res.json();
-      const list = Array.isArray(rows) ? rows : [    ['/pages/system-health.html','🩺','System Health'],
-    ['/pages/log-viewer.html','📜','Log Viewer'],
-    ['/pages/diagnostics-console.html','🧪','Diagnostics Console']
-];
+      const list = Array.isArray(rows) ? rows : (rows.tenants || rows.data || []);
       const current = getCurrentTenant();
 
       select.innerHTML =
         '<option value="">No Tenant Selected</option>' +
-        list.map(t => `<option value="${t.id}" data-slug="${t.slug}">${t.name} (${t.slug})</option>`).join('');
+        list.map(t => `<option value="${t.id}" data-slug="${t.slug || ''}">${t.name || t.slug || t.id}</option>`).join('');
 
       if (current?.id) {
         select.value = current.id;
       }
 
       select.addEventListener('change', () => {
-        const option = select.options[select.selectedIndex    ['/pages/system-health.html','🩺','System Health'],
-    ['/pages/log-viewer.html','📜','Log Viewer'],
-    ['/pages/diagnostics-console.html','🧪','Diagnostics Console']
-];
+        const option = select.options[select.selectedIndex];
         if (!select.value) {
           setCurrentTenant(null);
           return;
@@ -230,7 +223,6 @@ try {
     setCurrentTenant
   };
 })();
-
 
 setTimeout(() => {
   try {
