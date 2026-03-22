@@ -1,3 +1,4 @@
+const { startJobRunner } = require('./modules/jobQueue/services/start-runner');
 const { ensureDomainsTable } = require('./modules/domains/services/domain-migrate');
 const { updateDuckDNSFull } = require('./core/domain/duckdns-ipv6');
 const { updateDuckDNS } = require('./core/domain/duckdns');
@@ -187,3 +188,7 @@ require('./modules/backupSystem/models/backup-config.model');
 require('./modules/indexes/models/index.model');
 
 require('./modules/queryBuilderPro/models/saved-query.model');
+
+require('./modules/usageTracking/models/usage-event.model');
+require('./modules/jobQueue/models/job-queue.model');
+startJobRunner();

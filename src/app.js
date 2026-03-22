@@ -1,3 +1,9 @@
+const advancedSystemRoutes = require('./modules/advancedSystem/routes/advanced-system.routes');
+const jobQueueRoutes = require('./modules/jobQueue/routes/job-queue.routes');
+const usageTrackingRoutes = require('./modules/usageTracking/routes/usage-tracking.routes');
+const advancedRateLimitMiddleware = require('./middleware/advanced-rate-limit.middleware');
+const usageTrackerMiddleware = require('./middleware/usage-tracker.middleware');
+const tenantIsolationMiddleware = require('./middleware/tenant-isolation.middleware');
 const domainBindingRoutes = require('./modules/domainBindings/routes/domain-binding.routes');
 const finalPolishRoutes = require('./modules/finalPolish/routes/final-polish.routes');
 const finalReadinessRoutes = require('./modules/finalReadiness/routes/final-readiness.routes');
@@ -89,6 +95,9 @@ if (env.HELMET_ENABLED) {
 app.use(morgan(env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 app.use(express.json({ limit: '10mb' }));
 app.use(tenantContextMiddleware);
+app.use(tenantIsolationMiddleware);
+app.use(advancedRateLimitMiddleware);
+app.use(usageTrackerMiddleware);
 
 app.get('/health', (req, res) => {
   res.json({
@@ -173,6 +182,9 @@ app.use('/api/env-manager', envManagerRoutes);
 app.use('/api/final-readiness', finalReadinessRoutes);
 app.use('/api/final-polish', finalPolishRoutes);
 app.use('/api/domain-bindings', domainBindingRoutes);
+app.use('/api/usage-tracking', usageTrackingRoutes);
+app.use('/api/job-queue', jobQueueRoutes);
+app.use('/api/advanced-system', advancedSystemRoutes);
 app.use(notFoundHandler);
 app.use(errorHandler);
 
