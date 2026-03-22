@@ -60,7 +60,9 @@ try {
     ['/pages/enterprise-db.html','🗄','Enterprise DB'],
     ['/pages/system-analytics.html','📊','System Analytics'],
 ['/pages/domains.html','🌐','Domains']
-      ['/pages/system-health.html','🩺','System Health']
+      ['/pages/system-health.html','🩺','System Health'],
+    ['/pages/log-viewer.html','📜','Log Viewer'],
+    ['/pages/diagnostics-console.html','🧪','Diagnostics Console']
 ];
 
   function getTheme() {
@@ -97,7 +99,9 @@ try {
     try {
       const res = await window.apiFetch('/api/tenants');
       const rows = await res.json();
-      const list = Array.isArray(rows) ? rows : [    ['/pages/system-health.html','🩺','System Health']
+      const list = Array.isArray(rows) ? rows : [    ['/pages/system-health.html','🩺','System Health'],
+    ['/pages/log-viewer.html','📜','Log Viewer'],
+    ['/pages/diagnostics-console.html','🧪','Diagnostics Console']
 ];
       const current = getCurrentTenant();
 
@@ -110,7 +114,9 @@ try {
       }
 
       select.addEventListener('change', () => {
-        const option = select.options[select.selectedIndex    ['/pages/system-health.html','🩺','System Health']
+        const option = select.options[select.selectedIndex    ['/pages/system-health.html','🩺','System Health'],
+    ['/pages/log-viewer.html','📜','Log Viewer'],
+    ['/pages/diagnostics-console.html','🧪','Diagnostics Console']
 ];
         if (!select.value) {
           setCurrentTenant(null);

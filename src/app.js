@@ -1,3 +1,5 @@
+const requestLogMiddleware = require('./middleware/request-log.middleware');
+const diagnosticsRoutes = require('./modules/diagnostics/routes/diagnostics.routes');
 const systemMonitoringRoutes = require('./modules/systemMonitoring/routes/system-monitoring.routes');
 const paymentGatewayRoutes = require('./modules/paymentGateway/routes/payment-gateway.routes');
 const invoiceRoutes = require('./modules/invoices/routes/invoice.routes');
@@ -228,6 +230,7 @@ app.use('/api/payments', paymentRoutes);
 app.use('/api/invoices', invoiceRoutes);
 app.use('/api/payment-gateway', paymentGatewayRoutes);
 app.use('/api/system-monitoring', systemMonitoringRoutes);
+app.use('/api/diagnostics', diagnosticsRoutes);
 app.use(notFoundHandler);
 app.use(errorHandler);
 
