@@ -17,44 +17,64 @@ async function loadUsers() {
   USGPageKit.setPageHeader({
     kicker: 'USERS',
     title: 'Users',
-    subtitle: 'Manage platform accounts',
-    actions: [
-      {
-        label: '+ Create User',
-        primary: true,
-        onClick: () => USGCrudKit.create({
-          title: 'Create User',
-          endpoint: '/api/users',
-          validate: validateUser,
-          fields: [
-            { name: 'username', label: 'Username' },
-            { name: 'email', label: 'Email' },
-            { name: 'password', label: 'Password' },
-            { name: 'role', label: 'Role' }
-          ],
-          onDone: () => loadUsers()
-        })
-      }
-    ]
+    subtitle: 'Manage platform accounts and roles'
   });
+
+  const actionsCard = document.createElement('section');
+  actionsCard.className = 'card';
+  actionsCard.style.marginTop = '18px';
+  actionsCard.innerHTML = `
+    <div class="usg-page-head-row">
+      <div>
+        <div class="kicker">ACTIONS</div>
+        <h2 style="margin:8px 0 0">User Controls</h2>
+      </div>
+      <div class="actions">
+        <button id="create-user-btn" class="primary-btn" type="button">+ Create User</button>
+      </div>
+    </div>
+  `;
+  content.appendChild(actionsCard);
+
+  document.getElementById('create-user-btn').onclick = () => USGCrudKit.create({
+    title: 'Create User',
+    endpoint: '/api/users',
+    validate: validateUser,
+    fields: [
+      { name: 'username', label: 'Username' },
+      { name: 'email', label: 'Email' },
+      { name: 'password', label: 'Password' },
+      { name: 'role', label: 'Role' }
+    ],
+    onDone: () => loadUsers()
+  });
+
+  const searchWrap = document.createElement('div');
+  searchWrap.innerHTML = USGPageKit.searchToolbar({ placeholder: 'Search users...' });
+  content.appendChild(searchWrap);
 
   try {
     const res = await apiFetch('/api/users');
     const data = await res.json();
     const users = data.users || [];
 
-    content.innerHTML += users.length ? users.map(u => `
+    const listWrap = document.createElement('section');
+    listWrap.style.marginTop = '18px';
+    listWrap.innerHTML = users.length ? users.map(u => `
       <div class="list-card">
         <strong>${u.username || u.email}</strong><br>
         <span class="muted">${u.email || ''}</span><br>
         <span class="muted">Role: ${u.role || '-'}</span>
         <div class="actions">
           ${USGPageKit.statusBadge(u.status || 'active')}
-          <button class="ghost-btn" data-edit="${u.id}">Edit</button>
-          <button class="danger-btn" data-delete="${u.id}">Delete</button>
+          <button class="ghost-btn" data-edit="${u.id}" type="button">Edit</button>
+          <button class="danger-btn" data-delete="${u.id}" type="button">Delete</button>
         </div>
       </div>
     `).join('') : USGPageKit.emptyState({ title: 'No users found' });
+
+    content.appendChild(listWrap);
+    USGPageKit.attachBasicSearch({});
 
     users.forEach(u => {
       const editBtn = document.querySelector(`[data-edit="${u.id}"]`);

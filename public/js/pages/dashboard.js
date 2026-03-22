@@ -1,93 +1,117 @@
+window.__DISABLE_HEALTH_BANNER__ = false;
 requireAuth();
 USGShell.buildShell();
+
+async function safeJson(url) {
+  try {
+    const res = await apiFetch(url);
+    return await res.json();
+  } catch {
+    return {};
+  }
+}
+
+function card(title, value, subtitle = '') {
+  return `
+    <section class="card">
+      <div class="kicker">${title.toUpperCase()}</div>
+      <h2 style="margin:8px 0 6px">${value}</h2>
+      <div class="muted">${subtitle}</div>
+    </section>
+  `;
+}
 
 async function loadDashboard() {
   const content = document.getElementById('page-content');
   content.innerHTML = '';
 
   USGPageKit.setPageHeader({
-    kicker: 'SYSTEM',
-    title: 'Dashboard',
-    subtitle: 'Overview of platform health, usage, and live readiness'
+    kicker: 'CONTROL CENTER',
+    title: 'USG Operations Dashboard',
+    subtitle: 'Platform overview, activity, and quick actions'
   });
 
-  content.innerHTML += USGPageKit.loadingState({ label: 'Loading dashboard...' });
+  const [dash, readiness, analytics, polish] = await Promise.all([
+    safeJson('/api/dashboard'),
+    safeJson('/api/live-readiness/status'),
+    safeJson('/api/platform-analytics/summary'),
+    safeJson('/api/final-polish/summary')
+  ]);
 
-  try {
-    const [dashRes, readinessRes, polishRes] = await Promise.all([
-      apiFetch('/api/dashboard').catch(() => null),
-      apiFetch('/api/live-readiness/status').catch(() => null),
-      apiFetch('/api/final-polish/summary').catch(() => null)
-    ]);
+  const stats = dash.stats || {};
+  const summary = analytics.summary || {};
+  const app = polish.app || {};
+  const readinessPercent = readiness.readinessPercent || 0;
 
-    let dashData = {};
-    let readinessData = {};
-    let polishData = {};
+  content.innerHTML = `
+    <div class="grid-4" style="margin-top:18px">
+      ${card('Users', stats.users || 0, 'Registered accounts')}
+      ${card('Collections', stats.collections || 0, 'Data structures')}
+      ${card('Files', stats.files || 0, 'Stored assets')}
+      ${card('Readiness', readinessPercent + '%', 'System readiness')}
+    </div>
 
-    if (dashRes) { try { dashData = await dashRes.json(); } catch {} }
-    if (readinessRes) { try { readinessData = await readinessRes.json(); } catch {} }
-    if (polishRes) { try { polishData = await polishRes.json(); } catch {} }
-
-    const stats = dashData.stats || {};
-    const readiness = readinessData.readinessPercent || 0;
-    const app = polishData.app || {};
-
-    content.innerHTML = `
-      <section class="hero card">
+    <div class="grid-3" style="margin-top:18px">
+      <section class="card">
         <div class="kicker">SYSTEM</div>
-        <div class="usg-page-head-row">
-          <div>
-            <h1 class="usg-page-title">Dashboard</h1>
-            <div class="muted usg-page-subtitle">Overview of platform health, usage, and live readiness</div>
-          </div>
-          <div class="actions">
-            <a href="/pages/live-readiness.html" class="ghost-btn">Live Readiness</a>
-            <a href="/pages/boot-diagnostics.html" class="primary-btn">Boot Diagnostics</a>
-          </div>
+        <h2>Runtime</h2>
+        <div class="actions">${USGPageKit.statusBadge('online')}</div>
+        <div class="muted" style="margin-top:12px">
+          Environment: ${app.env || 'development'}<br>
+          Version: ${app.version || '1.0.0'}<br>
+          Database: ${app.dbPath || './database.sqlite'}
         </div>
       </section>
 
-      <div class="grid-4" style="margin-top:18px">
-        ${USGPageKit.infoCard('Users', stats.users || 0)}
-        ${USGPageKit.infoCard('Collections', stats.collections || 0)}
-        ${USGPageKit.infoCard('Files', stats.files || 0)}
-        ${USGPageKit.infoCard('Readiness', `${readiness}%`)}
-      </div>
+      <section class="card">
+        <div class="kicker">NETWORK</div>
+        <h2>Gateway</h2>
+        <div class="muted">
+          Public Domain: ${app.duckdnsDomain || 'not configured'}<br>
+          Domains: ${summary.domains || 0}<br>
+          API Keys: ${summary.apiKeys || 0}
+        </div>
+        <div class="actions" style="margin-top:12px;flex-wrap:wrap">
+          <a href="/pages/domains.html" class="ghost-btn">Domains</a>
+          <a href="/pages/ssl-center.html" class="ghost-btn">SSL Center</a>
+          <a href="/pages/env-manager.html" class="ghost-btn">Env</a>
+        </div>
+      </section>
 
-      <div class="grid-3" style="margin-top:24px">
-        <section class="card">
-          <div class="kicker">SYSTEM STATUS</div>
-          <h2>Platform</h2>
-          <div class="actions">${USGPageKit.statusBadge('online')}</div>
-          <div class="muted" style="margin-top:12px">
-            Environment: ${app.env || 'development'}<br>
-            Version: ${app.version || '1.0.0'}<br>
-            Database: ${app.dbPath || './database.sqlite'}
-          </div>
-        </section>
+      <section class="card">
+        <div class="kicker">QUICK ACTIONS</div>
+        <h2>Operations</h2>
+        <div class="actions" style="flex-wrap:wrap">
+          <a href="/pages/users.html" class="ghost-btn">Users</a>
+          <a href="/pages/collections.html" class="ghost-btn">Collections</a>
+          <a href="/pages/files.html" class="ghost-btn">Files</a>
+          <a href="/pages/tenants.html" class="primary-btn">Tenants</a>
+        </div>
+      </section>
+    </div>
 
-        <section class="card">
-          <div class="kicker">QUICK ACCESS</div>
-          <h2>Core Panels</h2>
-          <div class="actions" style="flex-wrap:wrap">
-            <a href="/pages/domains.html" class="ghost-btn">Domains</a>
-            <a href="/pages/system-analytics.html" class="ghost-btn">Analytics</a>
-            <a href="/pages/backup-system.html" class="ghost-btn">Backups</a>
-            <a href="/pages/env-manager.html" class="ghost-btn">Env Manager</a>
-          </div>
-        </section>
+    <div class="grid-2" style="margin-top:18px">
+      <section class="card">
+        <div class="kicker">RECENT MODULES</div>
+        <h2>Core Navigation</h2>
+        <div class="actions" style="flex-wrap:wrap">
+          <a href="/pages/boot-diagnostics.html" class="ghost-btn">Boot Diagnostics</a>
+          <a href="/pages/install-wizard.html" class="ghost-btn">Install Wizard</a>
+          <a href="/pages/backup-restore.html" class="ghost-btn">Restore</a>
+          <a href="/pages/system-analytics.html" class="ghost-btn">Analytics</a>
+        </div>
+      </section>
 
-        <section class="card">
-          <div class="kicker">HEALTH</div>
-          <h2>Current Readiness</h2>
-          <div class="muted">Your current install readiness is <strong>${readiness}%</strong>.</div>
-          <div style="margin-top:12px">${USGPageKit.statusBadge(readiness >= 90 ? 'ready' : readiness >= 70 ? 'partial' : 'attention')}</div>
-        </section>
-      </div>
-    `;
-  } catch (err) {
-    USGIOSAlert.show({ title: 'Dashboard Error', message: err.message, type: 'error' });
-  }
+      <section class="card">
+        <div class="kicker">STATUS</div>
+        <h2>Platform State</h2>
+        <div class="muted">
+          Current readiness is <strong>${readinessPercent}%</strong>.<br>
+          Keep backups, domains, SSL, and environment settings aligned before production release.
+        </div>
+      </section>
+    </div>
+  `;
 }
 
 loadDashboard();
