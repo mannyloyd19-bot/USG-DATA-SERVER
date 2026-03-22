@@ -1,3 +1,5 @@
+const enterpriseDbRoutes = require('./modules/enterpriseDb/routes/enterprise-db.routes');
+const apiKeyAnalyticsRoutes = require('./modules/apiKeyAnalytics/routes/api-key-analytics.routes');
 const multiTenantRoutes = require('./modules/multiTenant/routes/multi-tenant.routes');
 const multiTenantEnforcerMiddleware = require('./middleware/multi-tenant-enforcer.middleware');
 const advancedSystemRoutes = require('./modules/advancedSystem/routes/advanced-system.routes');
@@ -189,6 +191,8 @@ app.use('/api/usage-tracking', usageTrackingRoutes);
 app.use('/api/job-queue', jobQueueRoutes);
 app.use('/api/advanced-system', advancedSystemRoutes);
 app.use('/api/multi-tenant', multiTenantRoutes);
+app.use('/api/api-key-analytics', apiKeyAnalyticsRoutes);
+app.use('/api/enterprise-db', enterpriseDbRoutes);
 app.use(notFoundHandler);
 app.use(errorHandler);
 
