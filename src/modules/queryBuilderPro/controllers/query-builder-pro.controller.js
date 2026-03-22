@@ -1,4 +1,5 @@
 const SavedQuery = require('../models/saved-query.model');
+const { executeQuery } = require('../../productionCore/services/query-executor.service');
 
 function safeJsonParse(v, fallback = {}) {
   try { return JSON.parse(v); } catch { return fallback; }
@@ -41,15 +42,15 @@ exports.save = async (req, res) => {
 exports.execute = async (req, res) => {
   try {
     const { collectionKey, query } = req.body || {};
+    const result = await executeQuery({ collectionKey, query: query || {} });
+
+    if (!result.success) {
+      return res.status(400).json(result);
+    }
+
     return res.json({
       success: true,
-      execution: {
-        collectionKey,
-        query: query || {},
-        resultCount: 0,
-        rows: [],
-        message: 'Execution endpoint wired. Connect real collection querying next.'
-      }
+      execution: result
     });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
