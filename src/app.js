@@ -1,3 +1,5 @@
+const backupMonitorRoutes = require('./modules/backupMonitor/routes/backup-monitor.routes');
+const queueMonitorRoutes = require('./modules/queueMonitor/routes/queue-monitor.routes');
 const requestLogMiddleware = require('./middleware/request-log.middleware');
 const diagnosticsRoutes = require('./modules/diagnostics/routes/diagnostics.routes');
 const systemMonitoringRoutes = require('./modules/systemMonitoring/routes/system-monitoring.routes');
@@ -231,6 +233,8 @@ app.use('/api/invoices', invoiceRoutes);
 app.use('/api/payment-gateway', paymentGatewayRoutes);
 app.use('/api/system-monitoring', systemMonitoringRoutes);
 app.use('/api/diagnostics', diagnosticsRoutes);
+app.use('/api/queue-monitor', queueMonitorRoutes);
+app.use('/api/backup-monitor', backupMonitorRoutes);
 app.use(notFoundHandler);
 app.use(errorHandler);
 

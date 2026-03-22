@@ -61,7 +61,9 @@ try {
     ['/pages/domains.html','🌐','Domains'],
     ['/pages/system-health.html','🩺','System Health'],
     ['/pages/log-viewer.html','📜','Log Viewer'],
-    ['/pages/diagnostics-console.html','🧪','Diagnostics Console']
+    ['/pages/diagnostics-console.html','🧪','Diagnostics Console'],
+    ['/pages/queue-monitor.html','🧵','Queue Monitor'],
+    ['/pages/backup-monitor.html','🛟','Backup Monitor']
   ];
 
   function getTheme() {
