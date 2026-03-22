@@ -1,3 +1,4 @@
+window.__DISABLE_HEALTH_BANNER__ = true;
 requireAuth();
 USGShell.buildShell();
 
@@ -30,12 +31,11 @@ async function loadKeys() {
 
   const actionsCard = document.createElement('section');
   actionsCard.className = 'card';
-  actionsCard.style.marginTop = '18px';
   actionsCard.innerHTML = `
     <div class="usg-page-head-row">
       <div>
         <div class="kicker">ACTIONS</div>
-        <h2 style="margin:8px 0 0">Key Controls</h2>
+        <h2>Key Controls</h2>
       </div>
       <div class="actions">
         <button id="create-key-btn" class="primary-btn" type="button">+ Create Key</button>
@@ -68,7 +68,6 @@ async function loadKeys() {
     const rows = data.keys || data.apiKeys || [];
 
     const listWrap = document.createElement('section');
-    listWrap.style.marginTop = '18px';
     listWrap.innerHTML = rows.length ? rows.map(k => `
       <div class="list-card">
         <strong>${k.name || 'API Key'}</strong><br>

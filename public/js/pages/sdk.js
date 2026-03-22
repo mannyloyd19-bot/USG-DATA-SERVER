@@ -41,7 +41,7 @@ USG_API_KEY=your_api_key_here`;
 
   const wrap = document.createElement('div');
   wrap.innerHTML = `
-    <section class="card" style="margin-top:18px">
+    <section class="card">
       <div class="kicker">PROJECT CONFIG</div>
       <h2>Environment Variables</h2>
       <pre>${envBlock}</pre>
@@ -50,7 +50,7 @@ USG_API_KEY=your_api_key_here`;
       </div>
     </section>
 
-    <section class="card" style="margin-top:18px">
+    <section class="card">
       <div class="kicker">FETCH EXAMPLE</div>
       <h2>Browser Request</h2>
       <pre>${fetchBlock}</pre>
@@ -59,7 +59,7 @@ USG_API_KEY=your_api_key_here`;
       </div>
     </section>
 
-    <section class="card" style="margin-top:18px">
+    <section class="card">
       <div class="kicker">CURL EXAMPLE</div>
       <h2>Command Line Request</h2>
       <pre>${curlBlock}</pre>
@@ -68,7 +68,7 @@ USG_API_KEY=your_api_key_here`;
       </div>
     </section>
 
-    <section class="card" style="margin-top:18px">
+    <section class="card">
       <div class="kicker">INTEGRATION FLOW</div>
       <h2>How to Connect</h2>
       <div class="muted">

@@ -15,7 +15,7 @@ function card(title, value, subtitle = '') {
   return `
     <section class="card">
       <div class="kicker">${title.toUpperCase()}</div>
-      <h2 style="margin:8px 0 6px">${value}</h2>
+      <h2>${value}</h2>
       <div class="muted">${subtitle}</div>
     </section>
   `;
@@ -44,19 +44,19 @@ async function loadDashboard() {
   const readinessPercent = readiness.readinessPercent || 0;
 
   content.innerHTML = `
-    <div class="grid-4" style="margin-top:18px">
+    <div class="grid-4">
       ${card('Users', stats.users || 0, 'Registered accounts')}
       ${card('Collections', stats.collections || 0, 'Data structures')}
       ${card('Files', stats.files || 0, 'Stored assets')}
       ${card('Readiness', readinessPercent + '%', 'System readiness')}
     </div>
 
-    <div class="grid-3" style="margin-top:18px">
+    <div class="grid-3">
       <section class="card">
         <div class="kicker">SYSTEM</div>
         <h2>Runtime</h2>
         <div class="actions">${USGPageKit.statusBadge('online')}</div>
-        <div class="muted" style="margin-top:12px">
+        <div class="muted" style="margin-top:10px">
           Environment: ${app.env || 'development'}<br>
           Version: ${app.version || '1.0.0'}<br>
           Database: ${app.dbPath || './database.sqlite'}
@@ -71,7 +71,7 @@ async function loadDashboard() {
           Domains: ${summary.domains || 0}<br>
           API Keys: ${summary.apiKeys || 0}
         </div>
-        <div class="actions" style="margin-top:12px;flex-wrap:wrap">
+        <div class="actions" style="margin-top:10px;flex-wrap:wrap">
           <a href="/pages/domains.html" class="ghost-btn">Domains</a>
           <a href="/pages/ssl-center.html" class="ghost-btn">SSL Center</a>
           <a href="/pages/env-manager.html" class="ghost-btn">Env</a>
@@ -90,7 +90,7 @@ async function loadDashboard() {
       </section>
     </div>
 
-    <div class="grid-2" style="margin-top:18px">
+    <div class="grid-2">
       <section class="card">
         <div class="kicker">RECENT MODULES</div>
         <h2>Core Navigation</h2>

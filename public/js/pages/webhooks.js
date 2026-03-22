@@ -23,12 +23,11 @@ async function loadWebhooks() {
 
   const actionsCard = document.createElement('section');
   actionsCard.className = 'card';
-  actionsCard.style.marginTop = '18px';
   actionsCard.innerHTML = `
     <div class="usg-page-head-row">
       <div>
         <div class="kicker">ACTIONS</div>
-        <h2 style="margin:8px 0 0">Webhook Controls</h2>
+        <h2>Webhook Controls</h2>
       </div>
       <div class="actions">
         <button id="refresh-webhooks-btn" class="ghost-btn" type="button">Refresh</button>
@@ -45,7 +44,6 @@ async function loadWebhooks() {
     const rows = data.webhooks || data.data || [];
 
     const listWrap = document.createElement('section');
-    listWrap.style.marginTop = '18px';
     listWrap.innerHTML = rows.length ? rows.map(item => `
       <div class="list-card">
         <strong>${item.name || item.event || 'Webhook'}</strong><br>

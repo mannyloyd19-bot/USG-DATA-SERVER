@@ -14,12 +14,11 @@ async function loadRealtime() {
 
   const actionsCard = document.createElement('section');
   actionsCard.className = 'card';
-  actionsCard.style.marginTop = '18px';
   actionsCard.innerHTML = `
     <div class="usg-page-head-row">
       <div>
         <div class="kicker">ACTIONS</div>
-        <h2 style="margin:8px 0 0">Realtime Controls</h2>
+        <h2>Realtime Controls</h2>
       </div>
       <div class="actions">
         <button id="refresh-realtime-btn" class="ghost-btn" type="button">Refresh</button>
@@ -36,7 +35,6 @@ async function loadRealtime() {
     const rows = data.realtime?.channels || [];
 
     const listWrap = document.createElement('section');
-    listWrap.style.marginTop = '18px';
     listWrap.innerHTML = rows.length ? rows.map(item => `
       <div class="list-card">
         <strong>${item.name}</strong><br>

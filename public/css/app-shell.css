@@ -859,3 +859,82 @@ a.danger-btn{
     width: 100%;
   }
 }
+
+/* =========================================
+   GLOBAL PAGE UNIFORMITY PASS 2
+   ========================================= */
+
+/* normalize title blocks */
+.usg-page-title,
+h1.usg-page-title{
+  font-size: 24px !important;
+  font-weight: 700 !important;
+  line-height: 1.15 !important;
+}
+
+.usg-page-subtitle{
+  font-size: 13px !important;
+  line-height: 1.45 !important;
+  max-width: 760px !important;
+}
+
+/* action cards / top utility cards */
+#page-content > section.card,
+#page-content > div > section.card{
+  margin-top: 12px !important;
+}
+
+#page-content .card .actions{
+  gap: 8px !important;
+}
+
+/* normalize headings inside cards */
+.card h2{
+  font-size: 17px !important;
+  margin: 4px 0 8px !important;
+}
+
+/* compact buttons and links */
+.primary-btn,
+.ghost-btn,
+.danger-btn,
+button{
+  min-height: 36px !important;
+  padding: 9px 13px !important;
+  font-size: 13px !important;
+}
+
+/* compact info/list cards */
+.info-card{
+  min-height: auto !important;
+}
+
+.list-card{
+  padding: 13px !important;
+}
+
+/* consistent search bar area */
+#page-content .search-toolbar,
+#page-content .usg-search-toolbar{
+  margin-top: 10px !important;
+  margin-bottom: 2px !important;
+}
+
+/* keep code blocks compact */
+pre{
+  font-size: 12px !important;
+  padding: 12px !important;
+}
+
+/* unify section rhythm */
+#page-content .grid-4,
+#page-content .grid-3,
+#page-content .grid-2{
+  margin-top: 12px !important;
+}
+
+#page-content .grid-4 > .card,
+#page-content .grid-3 > .card,
+#page-content .grid-2 > .card{
+  margin-top: 0 !important;
+}
