@@ -1,3 +1,39 @@
+
+try {
+  if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+  }
+} catch {}
+
+window.addEventListener('load', () => {
+  try {
+    window.scrollTo(0, 0);
+  } catch {}
+});
+
+document.addEventListener('click', (event) => {
+  const link = event.target.closest('a[href]');
+  if (!link) return;
+
+  const href = link.getAttribute('href') || '';
+  if (href.startsWith('/') || href.startsWith('./') || href.startsWith('../')) {
+    try {
+      sessionStorage.setItem('usg_reset_scroll', '1');
+    } catch {}
+  }
+});
+
+try {
+  if (sessionStorage.getItem('usg_reset_scroll') === '1') {
+    sessionStorage.removeItem('usg_reset_scroll');
+    setTimeout(() => {
+      try {
+        window.scrollTo(0, 0);
+      } catch {}
+    }, 0);
+  }
+} catch {}
+
 (function () {
   const NAV = [
     ['/index.html','🏠','Dashboard'],
