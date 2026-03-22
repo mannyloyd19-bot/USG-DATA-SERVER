@@ -981,11 +981,18 @@ pre{
    ========================================= */
 
 /* HARD RESET FOR PAGE FLOW */
-#app-shell,
+#app-shell.shell,
 .shell{
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
+  display:grid !important;
+  grid-template-columns:300px minmax(0,1fr) !important;
+  gap:24px !important;
+  min-height:100vh !important;
+  padding:28px !important;
+  align-items:start !important;
+}
+
+#app-shell{
+  display:grid !important;
 }
 
 /* CRITICAL: prevent content dropping */
@@ -1463,5 +1470,47 @@ a.danger-btn{
 @media (min-width: 721px){
   #page-content{
     padding-right: 4px !important;
+  }
+}
+
+
+/* =========================================
+   FIX: RESTORE 2-COLUMN APP SHELL
+   ========================================= */
+
+.sidebar{
+  align-self:start !important;
+  position:sticky;
+  top:28px;
+}
+
+.main{
+  display:flex !important;
+  flex-direction:column !important;
+  gap:24px !important;
+  align-self:start !important;
+  min-width:0 !important;
+  width:100% !important;
+}
+
+#page-content{
+  display:block !important;
+  width:100% !important;
+  max-width:none !important;
+  margin:0 !important;
+  padding-top:6px !important;
+  padding-bottom:40px !important;
+}
+
+@media (max-width: 980px){
+  #app-shell.shell,
+  .shell{
+    grid-template-columns:1fr !important;
+    padding:16px !important;
+  }
+
+  .sidebar{
+    position:relative !important;
+    top:auto !important;
   }
 }
