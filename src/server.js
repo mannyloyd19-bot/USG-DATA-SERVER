@@ -192,3 +192,5 @@ require('./modules/queryBuilderPro/models/saved-query.model');
 require('./modules/usageTracking/models/usage-event.model');
 require('./modules/jobQueue/models/job-queue.model');
 startJobRunner();
+require('./modules/sessions/models/session.model');
+require('./modules/authProviders/models/auth-provider.model');

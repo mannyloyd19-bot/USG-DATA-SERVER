@@ -1,3 +1,5 @@
+const authProviderRoutes = require('./modules/authProviders/routes/auth-provider.routes');
+const sessionRoutes = require('./modules/sessions/routes/session.routes');
 const storageBucketRoutes = require('./modules/storageBuckets/routes/storage-bucket.routes');
 const webhookAdvancedRoutes = require('./modules/webhookAdvanced/routes/webhook-advanced.routes');
 const realtimeCoreRoutes = require('./modules/realtimeCore/routes/realtime-core.routes');
@@ -199,6 +201,8 @@ app.use('/api/enterprise-db', enterpriseDbRoutes);
 app.use('/api/realtime-core', realtimeCoreRoutes);
 app.use('/api/webhook-advanced', webhookAdvancedRoutes);
 app.use('/api/storage-buckets', storageBucketRoutes);
+app.use('/api/sessions', sessionRoutes);
+app.use('/api/auth-providers', authProviderRoutes);
 app.use(notFoundHandler);
 app.use(errorHandler);
 
