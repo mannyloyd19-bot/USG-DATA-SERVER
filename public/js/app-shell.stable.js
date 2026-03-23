@@ -43,7 +43,6 @@ try {
     ['/pages/fields.html','📄','Fields'],
     ['/pages/files.html','📁','Files'],
     ['/pages/storage-buckets.html','🪣','Storage Buckets'],
-    ['/pages/storage-admin.html','📦','Storage Admin'],
     ['/pages/api-keys.html','🔑','API Keys'],
     ['/pages/api-key-logs.html','🧠','API Key Logs'],
     ['/pages/api-key-analytics.html','📈','API Key Analytics'],
@@ -52,7 +51,6 @@ try {
     ['/pages/webhooks.html','🪝','Webhooks'],
     ['/pages/realtime.html','📡','Realtime'],
     ['/pages/settings.html','⚙','Settings'],
-    ['/pages/auth-security.html','🔐','Auth Security'],
     ['/pages/audit-logs.html','🧾','Audit Logs'],
     ['/pages/backups.html','💾','Backups'],
     ['/pages/sdk.html','🧩','SDK'],
@@ -61,14 +59,9 @@ try {
     ['/pages/enterprise-db.html','🗄','Enterprise DB'],
     ['/pages/system-analytics.html','📊','System Analytics'],
     ['/pages/domains.html','🌐','Domains'],
-    ['/pages/domain-diagnostics.html','🛡️','Domain Diagnostics'],
     ['/pages/system-health.html','🩺','System Health'],
     ['/pages/log-viewer.html','📜','Log Viewer'],
-    ['/pages/diagnostics-console.html','🧪','Diagnostics Console'],
-    ['/pages/queue-monitor.html','🧵','Queue Monitor'],
-    ['/pages/backup-monitor.html','🛟','Backup Monitor'],
-    ['/pages/app-logs.html','🪵','App Logs'],
-    ['/pages/deployment-diagnostics.html','🛰','Deployment Diagnostics']
+    ['/pages/diagnostics-console.html','🧪','Diagnostics Console']
   ];
 
   function getTheme() {

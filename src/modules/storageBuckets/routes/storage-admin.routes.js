@@ -1,0 +1,14 @@
+const express = require('express');
+const router = express.Router();
+const authMiddleware = require('../../../middleware/auth.middleware');
+const { requirePermission } = require('../../../middleware/rbac.middleware');
+const controller = require('../controllers/storage-admin.controller');
+
+router.use(authMiddleware);
+
+router.get('/buckets', requirePermission('files.read'), controller.listBuckets);
+router.get('/buckets/:id/files', requirePermission('files.read'), controller.listFilesByBucket);
+router.post('/files/:fileId/sign', requirePermission('files.read'), controller.generateSignedUrl);
+router.get('/access/:fileId', controller.accessFile);
+
+module.exports = router;

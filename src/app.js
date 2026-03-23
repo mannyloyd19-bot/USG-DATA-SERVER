@@ -1,3 +1,4 @@
+const storageAdminRoutes = require('./modules/storageBuckets/routes/storage-admin.routes');
 const authSecurityRoutes = require('./modules/authSecurity/routes/auth-security.routes');
 const domainDiagnosticsRoutes = require('./modules/domainDiagnostics/routes/domain-diagnostics.routes');
 const deploymentDiagnosticsRoutes = require('./modules/deploymentDiagnostics/routes/deployment-diagnostics.routes');
@@ -243,6 +244,7 @@ app.use('/api/app-logs', appLogRoutes);
 app.use('/api/deployment-diagnostics', deploymentDiagnosticsRoutes);
 app.use('/api/domain-diagnostics', domainDiagnosticsRoutes);
 app.use('/api/auth-security', authSecurityRoutes);
+app.use('/api/storage-admin', storageAdminRoutes);
 app.use(notFoundHandler);
 app.use(errorHandler);
 
