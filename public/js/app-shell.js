@@ -59,6 +59,7 @@ try {
     ['/pages/enterprise-db.html','🗄','Enterprise DB'],
     ['/pages/system-analytics.html','📊','System Analytics'],
     ['/pages/domains.html','🌐','Domains'],
+    ['/pages/domain-diagnostics.html','🛡️','Domain Diagnostics'],
     ['/pages/system-health.html','🩺','System Health'],
     ['/pages/log-viewer.html','📜','Log Viewer'],
     ['/pages/diagnostics-console.html','🧪','Diagnostics Console'],
