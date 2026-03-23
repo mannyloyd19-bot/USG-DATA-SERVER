@@ -245,6 +245,7 @@ app.use('/api/deployment-diagnostics', deploymentDiagnosticsRoutes);
 app.use('/api/domain-diagnostics', domainDiagnosticsRoutes);
 app.use('/api/auth-security', authSecurityRoutes);
 app.use('/api/storage-admin', storageAdminRoutes);
+app.use('/api/records', recordRoutes);
 app.use(notFoundHandler);
 app.use(errorHandler);
 
