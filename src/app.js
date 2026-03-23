@@ -1,3 +1,4 @@
+const authSecurityRoutes = require('./modules/authSecurity/routes/auth-security.routes');
 const domainDiagnosticsRoutes = require('./modules/domainDiagnostics/routes/domain-diagnostics.routes');
 const deploymentDiagnosticsRoutes = require('./modules/deploymentDiagnostics/routes/deployment-diagnostics.routes');
 const appLogRoutes = require('./modules/appLogs/routes/app-log.routes');
@@ -241,6 +242,7 @@ app.use('/api/backup-monitor', backupMonitorRoutes);
 app.use('/api/app-logs', appLogRoutes);
 app.use('/api/deployment-diagnostics', deploymentDiagnosticsRoutes);
 app.use('/api/domain-diagnostics', domainDiagnosticsRoutes);
+app.use('/api/auth-security', authSecurityRoutes);
 app.use(notFoundHandler);
 app.use(errorHandler);
 

@@ -51,6 +51,7 @@ try {
     ['/pages/webhooks.html','🪝','Webhooks'],
     ['/pages/realtime.html','📡','Realtime'],
     ['/pages/settings.html','⚙','Settings'],
+    ['/pages/auth-security.html','🔐','Auth Security'],
     ['/pages/audit-logs.html','🧾','Audit Logs'],
     ['/pages/backups.html','💾','Backups'],
     ['/pages/sdk.html','🧩','SDK'],
