@@ -16,6 +16,7 @@ const User = require('./modules/users/models/user.model');
 const Permission = require('./modules/permissions/models/permission.model');
 const settingController = require('./modules/settings/controllers/setting.controller');
 const { startAutoBackup } = require('./modules/backups/services/auto-backup.service');
+const { init: initRealtime } = require('./modules/realtimeCore/services/realtime.service');
 
 require('./modules/collections/models/collection.model');
 require('./modules/fields/models/field.model');
@@ -136,6 +137,7 @@ async function start() {
 
     server = app.listen(env.PORT, () => {
       console.log(`USG DATA SERVER running on port ${env.PORT}`);
+      initRealtime(server);
       startAutoBackup();
     });
   } catch (error) {

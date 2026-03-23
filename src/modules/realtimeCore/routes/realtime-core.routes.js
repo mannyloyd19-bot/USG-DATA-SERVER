@@ -1,9 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const controller = require('../controllers/realtime-core.controller');
 
-router.get('/stream', controller.stream);
-router.get('/recent', controller.recent);
-router.post('/emit', controller.testEmit);
+router.get('/status', (req, res) => {
+  return res.json({
+    success: true,
+    realtime: 'active'
+  });
+});
 
 module.exports = router;

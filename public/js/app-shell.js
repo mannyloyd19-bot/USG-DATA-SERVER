@@ -1,4 +1,13 @@
 try {
+  if (!document.querySelector('script[data-usg-realtime-client]')) {
+    const script = document.createElement('script');
+    script.src = '/js/realtime-client.js';
+    script.setAttribute('data-usg-realtime-client', '1');
+    document.body.appendChild(script);
+  }
+} catch {}
+
+try {
   if ('scrollRestoration' in history) {
     history.scrollRestoration = 'manual';
   }

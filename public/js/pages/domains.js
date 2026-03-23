@@ -337,3 +337,12 @@ async function loadDomains() {
 }
 
 loadDomains();
+
+if (window.USGRealtime && typeof window.USGRealtime.on === 'function') {
+  window.USGRealtime.on((event) => {
+    if (event && event.module === 'domains') {
+      try { loadDomains(); } catch {}
+    }
+  });
+}
+
