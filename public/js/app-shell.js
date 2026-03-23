@@ -13,10 +13,23 @@ try {
   }
 } catch {}
 
-window.addEventListener('load', () => {
+function forceScrollTop() {
   try {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
     window.scrollTo(0, 0);
   } catch {}
+}
+
+window.addEventListener('load', () => {
+  setTimeout(forceScrollTop, 0);
+  setTimeout(forceScrollTop, 80);
+  setTimeout(forceScrollTop, 250);
+});
+
+window.addEventListener('pageshow', () => {
+  setTimeout(forceScrollTop, 0);
+  setTimeout(forceScrollTop, 80);
 });
 
 document.addEventListener('click', (event) => {
@@ -28,18 +41,20 @@ document.addEventListener('click', (event) => {
     try {
       sessionStorage.setItem('usg_reset_scroll', '1');
     } catch {}
+    forceScrollTop();
+    setTimeout(forceScrollTop, 20);
   }
 });
 
 try {
   if (sessionStorage.getItem('usg_reset_scroll') === '1') {
     sessionStorage.removeItem('usg_reset_scroll');
-    setTimeout(() => {
-      try {
-        window.scrollTo(0, 0);
-      } catch {}
-    }, 0);
+    setTimeout(forceScrollTop, 0);
+    setTimeout(forceScrollTop, 80);
+    setTimeout(forceScrollTop, 250);
   }
+} catch {}
+
 } catch {}
 
 (function () {
@@ -179,7 +194,7 @@ try {
 
         <nav class="nav">
           ${NAV.map(([href, icon, label]) => `
-            <a href="${href}" class="${href === current ? 'active' : ''}">
+            <a href="${href}" class="${href === current ? 'active' : ''}" onclick="try{document.documentElement.scrollTop=0;document.body.scrollTop=0;window.scrollTo(0,0);}catch(e){}">
               <span class="nav-icon">${icon}</span>
               <span>${label}</span>
             </a>
