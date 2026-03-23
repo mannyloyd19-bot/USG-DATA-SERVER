@@ -1,4 +1,5 @@
 const Record = require('../models/record.model');
+const Collection = require('../../collections/models/collection.model');
 
 function normalizePayload(payload = {}) {
   return payload && typeof payload === 'object' ? payload : {};
@@ -21,11 +22,22 @@ exports.create = async (req, res) => {
   try {
     const payload = normalizePayload(req.body || {});
     const data = normalizePayload(payload.data || {});
+
+    if (!payload.collectionId) {
+      return res.status(400).json({ success: false, message: 'collectionId is required' });
+    }
+
+    const collection = await Collection.findByPk(payload.collectionId);
+    if (!collection) {
+      return res.status(404).json({ success: false, message: 'Collection not found' });
+    }
+
     const securedData = req.rls?.applyTenantPayload ? req.rls.applyTenantPayload(data) : data;
 
     const item = await Record.create({
-      ...payload,
-      data: securedData
+      collectionId: payload.collectionId,
+      data: securedData,
+      meta: payload.meta || {}
     });
 
     return res.json({ success: true, record: item });
@@ -50,8 +62,15 @@ exports.update = async (req, res) => {
     const nextData = normalizePayload(payload.data !== undefined ? payload.data : item.data || {});
     const securedData = req.rls?.applyTenantPayload ? req.rls.applyTenantPayload(nextData) : nextData;
 
+    if (payload.collectionId !== undefined) {
+      const collection = await Collection.findByPk(payload.collectionId);
+      if (!collection) {
+        return res.status(404).json({ success: false, message: 'Collection not found' });
+      }
+      item.collectionId = payload.collectionId;
+    }
+
     item.data = securedData;
-    if (payload.collectionId !== undefined) item.collectionId = payload.collectionId;
     if (payload.isDeleted !== undefined) item.isDeleted = payload.isDeleted;
     if (payload.deletedAt !== undefined) item.deletedAt = payload.deletedAt;
     if (payload.meta !== undefined) item.meta = payload.meta;
