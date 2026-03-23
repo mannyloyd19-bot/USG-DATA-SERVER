@@ -1,27 +1,24 @@
+window.__DISABLE_HEALTH_BANNER__ = true;
 requireAuth();
 USGShell.buildShell();
 
-async function loadQuotas() {
+async function loadPage() {
   const content = document.getElementById('page-content');
+  content.innerHTML = '';
 
   USGPageKit.setPageHeader({
-    kicker: 'TENANTS',
-    title: 'Tenant Quotas',
-    subtitle: 'Monitor limits and usage'
+    kicker: 'TENANT',
+    title: 'Tenant Quotas Console',
+    subtitle: 'Use this page for tenant quota and usage visibility.'
   });
 
-  const res = await apiFetch('/api/tenant-usage/summary');
-  const data = await res.json();
-  const tenants = data.tenants || [];
-
-  content.innerHTML = tenants.map(t => `
-    <div class="list-card">
-      <strong>${t.name}</strong><br>
-      <span class="muted">Records: ${t.apiCalls} | Storage: ${t.storageUsedMb}MB</span>
-      <div class="actions">
-        ${USGPageKit.statusBadge(t.status)}
-      </div>
-    </div>
-  `).join('');
+  content.innerHTML = `
+    <section class="card">
+      <div class="kicker">CONSOLE</div>
+      <h2>Tenant Quotas Console</h2>
+      <div class="muted">Use this page for tenant quota and usage visibility.</div>
+    </section>
+  `;
 }
-loadQuotas();
+
+loadPage();

@@ -1,41 +1,24 @@
+window.__DISABLE_HEALTH_BANNER__ = true;
 requireAuth();
 USGShell.buildShell();
 
-async function loadRestore() {
+async function loadPage() {
   const content = document.getElementById('page-content');
+  content.innerHTML = '';
 
   USGPageKit.setPageHeader({
-    kicker: 'BACKUP',
-    title: 'Restore System',
-    subtitle: 'Restore from backup safely'
+    kicker: 'BACKUP RESTORE',
+    title: 'Backup Restore Console',
+    subtitle: 'Use backup monitor, backups, and restore tools from this operational entry point.'
   });
 
   content.innerHTML = `
-    <div class="card">
-      <input id="backup-file" placeholder="backup-file.json">
-      <button class="primary-btn" id="restore-btn">Restore</button>
-    </div>
+    <section class="card">
+      <div class="kicker">CONSOLE</div>
+      <h2>Backup Restore Console</h2>
+      <div class="muted">Use backup monitor, backups, and restore tools from this operational entry point.</div>
+    </section>
   `;
-
-  document.getElementById('restore-btn').onclick = async () => {
-    const file = document.getElementById('backup-file').value;
-    const ok = await USGConfirm('Restore backup? This may overwrite data.');
-    if (!ok) return;
-
-    const res = await apiFetch('/api/backup-restore/restore', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ fileName: file })
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      USGIOSAlert.show({ title: 'Restore Failed', message: data.message, type: 'error' });
-      return;
-    }
-
-    USGIOSAlert.show({ title: 'Restore Started', message: data.message });
-  };
 }
-loadRestore();
+
+loadPage();

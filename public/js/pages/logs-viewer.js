@@ -1,33 +1,37 @@
+window.__DISABLE_HEALTH_BANNER__ = true;
 requireAuth();
 USGShell.buildShell();
 
-async function loadLogsViewer() {
+function card(title, desc, href) {
+  return `
+    <div class="list-card">
+      <strong>${title}</strong><br>
+      <span class="muted">${desc}</span>
+      <div class="actions">
+        <a class="primary-btn" href="${href}">Open</a>
+      </div>
+    </div>
+  `;
+}
+
+async function loadLogsHub() {
   const content = document.getElementById('page-content');
   content.innerHTML = '';
 
   USGPageKit.setPageHeader({
-    kicker: 'OBSERVABILITY',
-    title: 'Logs Viewer',
-    subtitle: 'Unified logs from platform runtime',
-    actions: [{ label: 'Refresh', primary: true, onClick: () => loadLogsViewer() }]
+    kicker: 'LOGS',
+    title: 'Logs Console',
+    subtitle: 'Central entry point for runtime logs, app logs, and diagnostics'
   });
 
-  content.innerHTML += USGPageKit.searchToolbar({ placeholder: 'Search logs...' });
-
-  try {
-    const res = await apiFetch('/api/platform-logs/unified?lines=120');
-    const data = await res.json();
-    const output = data.logs?.output || 'No logs available.';
-
-    content.innerHTML += `
-      <section class="card" style="margin-top:24px">
-        <div class="kicker">UNIFIED LOGS</div>
-        <h2>Runtime Output</h2>
-        <pre id="logs-raw">${output}</pre>
-      </section>
-    `;
-  } catch (err) {
-    USGIOSAlert.show({ title: 'Logs Error', message: err.message, type: 'error' });
-  }
+  content.innerHTML = `
+    <section class="card">
+      <div class="kicker">TOOLS</div>
+      <h2>Log Modules</h2>
+      ${card('Log Viewer', 'Buffered platform and request logs.', '/pages/log-viewer.html')}
+      ${card('App Logs', 'App-specific log stream and runtime summary.', '/pages/app-logs.html')}
+      ${card('Diagnostics', 'Runtime console and deeper debug visibility.', '/pages/diagnostics-console.html')}
+    </section>
+  `;
 }
-loadLogsViewer();
+loadLogsHub();

@@ -1,39 +1,37 @@
+window.__DISABLE_HEALTH_BANNER__ = true;
 requireAuth();
 USGShell.buildShell();
 
-async function loadDomainHealth() {
+function card(title, desc, href) {
+  return `
+    <div class="list-card">
+      <strong>${title}</strong><br>
+      <span class="muted">${desc}</span>
+      <div class="actions">
+        <a class="primary-btn" href="${href}">Open</a>
+      </div>
+    </div>
+  `;
+}
+
+async function loadDomainHealthHub() {
   const content = document.getElementById('page-content');
   content.innerHTML = '';
 
   USGPageKit.setPageHeader({
     kicker: 'DOMAIN HEALTH',
-    title: 'Domain Health',
-    subtitle: 'Check SSL, routing, and availability'
+    title: 'Domain + SSL Console',
+    subtitle: 'Centralized access for domain operations, SSL diagnostics, and public routing health'
   });
 
-  try {
-    const res = await apiFetch('/api/domains');
-    const data = await res.json();
-    const rows = data.domains || [];
-
-    const wrap = document.createElement('section');
-    wrap.style.marginTop = '18px';
-
-    wrap.innerHTML = rows.map(d => `
-      <div class="list-card">
-        <strong>${d.name}</strong><br>
-        <span class="muted">Route: ${d.routePath}</span><br>
-        <span class="muted">SSL: ${d.sslStatus}</span>
-        <div class="actions">
-          ${USGPageKit.statusBadge(d.status)}
-        </div>
-      </div>
-    `).join('');
-
-    content.appendChild(wrap);
-
-  } catch (e) {
-    USGIOSAlert.show({ title: 'Domain Health Error', message: e.message, type: 'error' });
-  }
+  content.innerHTML = `
+    <section class="card">
+      <div class="kicker">TOOLS</div>
+      <h2>Domain Modules</h2>
+      ${card('Domains', 'Domain CRUD, binding, and app access setup.', '/pages/domains.html')}
+      ${card('Domain Diagnostics', 'SSL status, bind health, and deep checks.', '/pages/domain-diagnostics.html')}
+      ${card('SSL Center', 'Certificate and SSL-focused operational page.', '/pages/ssl-center.html')}
+    </section>
+  `;
 }
-loadDomainHealth();
+loadDomainHealthHub();

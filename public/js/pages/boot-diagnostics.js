@@ -1,36 +1,24 @@
+window.__DISABLE_HEALTH_BANNER__ = true;
 requireAuth();
 USGShell.buildShell();
 
-async function loadBootDiagnostics() {
+async function loadPage() {
   const content = document.getElementById('page-content');
   content.innerHTML = '';
 
   USGPageKit.setPageHeader({
     kicker: 'BOOT',
-    title: 'Boot Diagnostics',
-    subtitle: 'Runtime startup checks and machine diagnostics',
-    actions: [{ label: 'Refresh', primary: true, onClick: () => loadBootDiagnostics() }]
+    title: 'Boot Diagnostics Console',
+    subtitle: 'Inspect startup and readiness related diagnostics from this page.'
   });
 
-  try {
-    const res = await apiFetch('/api/final-readiness/boot-status');
-    const data = await res.json();
-
-    content.innerHTML += `
-      <div class="grid-3" style="margin-top:18px">
-        ${USGPageKit.infoCard('Readiness', `${data.readinessPercent || 0}%`)}
-        ${USGPageKit.infoCard('Platform', data.runtime?.platform || 'unknown')}
-        ${USGPageKit.infoCard('Node', data.runtime?.nodeVersion || 'unknown')}
-      </div>
-
-      <section class="card" style="margin-top:24px">
-        <div class="kicker">RUNTIME</div>
-        <h2>Boot Status</h2>
-        <pre>${JSON.stringify(data, null, 2)}</pre>
-      </section>
-    `;
-  } catch (err) {
-    USGIOSAlert.show({ title: 'Boot Error', message: err.message, type: 'error' });
-  }
+  content.innerHTML = `
+    <section class="card">
+      <div class="kicker">CONSOLE</div>
+      <h2>Boot Diagnostics Console</h2>
+      <div class="muted">Inspect startup and readiness related diagnostics from this page.</div>
+    </section>
+  `;
 }
-loadBootDiagnostics();
+
+loadPage();

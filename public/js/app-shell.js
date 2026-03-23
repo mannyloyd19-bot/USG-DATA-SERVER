@@ -1,15 +1,15 @@
 try {
+  if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+  }
+} catch {}
+
+try {
   if (!document.querySelector('script[data-usg-realtime-client]')) {
     const script = document.createElement('script');
     script.src = '/js/realtime-client.js';
     script.setAttribute('data-usg-realtime-client', '1');
     document.body.appendChild(script);
-  }
-} catch {}
-
-try {
-  if ('scrollRestoration' in history) {
-    history.scrollRestoration = 'manual';
   }
 } catch {}
 
@@ -45,39 +45,44 @@ try {
 (function () {
   const NAV = [
     ['/index.html','🏠','Dashboard'],
+
     ['/pages/tenants.html','🏢','Tenants'],
-    ['/pages/permissions-pro.html','🛡','Permissions'],
     ['/pages/users.html','👤','Users'],
+    ['/pages/auth-security.html','🔐','Auth Security'],
+    ['/pages/permissions-pro.html','🛡','Permissions'],
+
     ['/pages/collections.html','📦','Collections'],
     ['/pages/fields.html','📄','Fields'],
+    ['/pages/records.html','🧾','Records'],
+    ['/pages/relationships.html','🔗','Relationships'],
     ['/pages/files.html','📁','Files'],
     ['/pages/storage-buckets.html','🪣','Storage Buckets'],
     ['/pages/storage-admin.html','📦','Storage Admin'],
+
     ['/pages/api-keys.html','🔑','API Keys'],
     ['/pages/api-key-logs.html','🧠','API Key Logs'],
     ['/pages/api-key-analytics.html','📈','API Key Analytics'],
-    ['/pages/relational.html','🗂','Relational'],
-    ['/pages/relationships.html','🔗','Relations'],
-    ['/pages/webhooks.html','🪝','Webhooks'],
-    ['/pages/realtime.html','📡','Realtime'],
-    ['/pages/settings.html','⚙','Settings'],
-    ['/pages/auth-security.html','🔐','Auth Security'],
-    ['/pages/audit-logs.html','🧾','Audit Logs'],
-    ['/pages/backups.html','💾','Backups'],
-    ['/pages/sdk.html','🧩','SDK'],
-    ['/pages/release.html','🚀','Release'],
-    ['/pages/query-builder.html','📊','Query Builder'],
-    ['/pages/enterprise-db.html','🗄','Enterprise DB'],
-    ['/pages/system-analytics.html','📊','System Analytics'],
+
     ['/pages/domains.html','🌐','Domains'],
     ['/pages/domain-diagnostics.html','🛡️','Domain Diagnostics'],
+    ['/pages/webhooks.html','🪝','Webhooks'],
+    ['/pages/realtime-events.html','📡','Realtime Events'],
+
+    ['/pages/apps.html','🧩','Apps'],
+    ['/pages/app-logs.html','🪵','App Logs'],
+    ['/pages/deployment-diagnostics.html','🛰','Deployments'],
+
+    ['/pages/backups.html','💾','Backups'],
+    ['/pages/backup-monitor.html','🛟','Backup Monitor'],
+    ['/pages/queue-monitor.html','🧵','Queue Monitor'],
+
     ['/pages/system-health.html','🩺','System Health'],
     ['/pages/log-viewer.html','📜','Log Viewer'],
-    ['/pages/diagnostics-console.html','🧪','Diagnostics Console'],
-    ['/pages/queue-monitor.html','🧵','Queue Monitor'],
-    ['/pages/backup-monitor.html','🛟','Backup Monitor'],
-    ['/pages/app-logs.html','🪵','App Logs'],
-    ['/pages/deployment-diagnostics.html','🛰','Deployment Diagnostics']
+    ['/pages/diagnostics-console.html','🧪','Diagnostics'],
+
+    ['/pages/query-builder.html','📊','Query Builder'],
+    ['/pages/sdk.html','🧩','SDK'],
+    ['/pages/settings.html','⚙','Settings']
   ];
 
   function getTheme() {

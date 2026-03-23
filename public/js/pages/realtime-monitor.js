@@ -1,43 +1,24 @@
+window.__DISABLE_HEALTH_BANNER__ = true;
 requireAuth();
 USGShell.buildShell();
 
-async function loadRealtimeMonitor() {
+async function loadPage() {
   const content = document.getElementById('page-content');
   content.innerHTML = '';
 
   USGPageKit.setPageHeader({
     kicker: 'REALTIME',
-    title: 'Realtime Monitor',
-    subtitle: 'Live channel summary and event insights'
+    title: 'Realtime Monitor Console',
+    subtitle: 'Open realtime events, monitoring, and logs from this consolidated page.'
   });
 
-  try {
-    const res = await apiFetch('/api/realtime-insights/summary');
-    const data = await res.json();
-    const rt = data.realtime || {};
-    const channels = rt.channels || [];
-
-    content.innerHTML += `
-      <div class="grid-3" style="margin-top:18px">
-        ${USGPageKit.infoCard('Channels', channels.length)}
-        ${USGPageKit.infoCard('Connected Clients', rt.connectedClients || 0)}
-        ${USGPageKit.infoCard('Total Events', rt.totalEvents || 0)}
-      </div>
-
-      <section class="card" style="margin-top:24px">
-        <div class="kicker">CHANNELS</div>
-        <h2>Live Status</h2>
-        ${channels.map(item => `
-          <div class="list-card">
-            <strong>${item.name}</strong><br>
-            <span class="muted">events: ${item.events}</span>
-            <div class="actions">${USGPageKit.statusBadge(item.status)}</div>
-          </div>
-        `).join('')}
-      </section>
-    `;
-  } catch (err) {
-    USGIOSAlert.show({ title: 'Realtime Error', message: err.message, type: 'error' });
-  }
+  content.innerHTML = `
+    <section class="card">
+      <div class="kicker">CONSOLE</div>
+      <h2>Realtime Monitor Console</h2>
+      <div class="muted">Open realtime events, monitoring, and logs from this consolidated page.</div>
+    </section>
+  `;
 }
-loadRealtimeMonitor();
+
+loadPage();
