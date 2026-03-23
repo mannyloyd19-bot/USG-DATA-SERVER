@@ -55,49 +55,73 @@ try {
   }
 } catch {}
 
-} catch {}
-
 (function () {
-  const NAV = [
-    ['/index.html','🏠','Dashboard'],
-
-    ['/pages/tenants.html','🏢','Tenants'],
-    ['/pages/users.html','👤','Users'],
-    ['/pages/auth-security.html','🔐','Auth Security'],
-    ['/pages/permissions-pro.html','🛡','Permissions'],
-
-    ['/pages/collections.html','📦','Collections'],
-    ['/pages/fields.html','📄','Fields'],
-    ['/pages/records.html','🧾','Records'],
-    ['/pages/relationships.html','🔗','Relationships'],
-    ['/pages/files.html','📁','Files'],
-    ['/pages/storage-buckets.html','🪣','Storage Buckets'],
-    ['/pages/storage-admin.html','📦','Storage Admin'],
-
-    ['/pages/api-keys.html','🔑','API Keys'],
-    ['/pages/api-key-logs.html','🧠','API Key Logs'],
-    ['/pages/api-key-analytics.html','📈','API Key Analytics'],
-
-    ['/pages/domains.html','🌐','Domains'],
-    ['/pages/domain-diagnostics.html','🛡️','Domain Diagnostics'],
-    ['/pages/webhooks.html','🪝','Webhooks'],
-    ['/pages/realtime-events.html','📡','Realtime Events'],
-
-    ['/pages/apps.html','🧩','Apps'],
-    ['/pages/app-logs.html','🪵','App Logs'],
-    ['/pages/deployment-diagnostics.html','🛰','Deployments'],
-
-    ['/pages/backups.html','💾','Backups'],
-    ['/pages/backup-monitor.html','🛟','Backup Monitor'],
-    ['/pages/queue-monitor.html','🧵','Queue Monitor'],
-
-    ['/pages/system-health.html','🩺','System Health'],
-    ['/pages/log-viewer.html','📜','Log Viewer'],
-    ['/pages/diagnostics-console.html','🧪','Diagnostics'],
-
-    ['/pages/query-builder.html','📊','Query Builder'],
-    ['/pages/sdk.html','🧩','SDK'],
-    ['/pages/settings.html','⚙','Settings']
+  const NAV_GROUPS = [
+    {
+      title: 'Overview',
+      items: [
+        ['/index.html', '🏠', 'Dashboard']
+      ]
+    },
+    {
+      title: 'Workspace',
+      items: [
+        ['/pages/tenants.html', '🏢', 'Tenants'],
+        ['/pages/users.html', '👤', 'Users'],
+        ['/pages/auth-security.html', '🔐', 'Auth Security'],
+        ['/pages/permissions-pro.html', '🛡', 'Permissions']
+      ]
+    },
+    {
+      title: 'Data',
+      items: [
+        ['/pages/collections.html', '📦', 'Collections'],
+        ['/pages/fields.html', '📄', 'Fields'],
+        ['/pages/records.html', '🧾', 'Records'],
+        ['/pages/relationships.html', '🔗', 'Relationships'],
+        ['/pages/files.html', '📁', 'Files'],
+        ['/pages/storage-buckets.html', '🪣', 'Storage Buckets'],
+        ['/pages/storage-admin.html', '📦', 'Storage Admin']
+      ]
+    },
+    {
+      title: 'Access',
+      items: [
+        ['/pages/api-keys.html', '🔑', 'API Keys'],
+        ['/pages/api-key-logs.html', '🧠', 'API Key Logs'],
+        ['/pages/api-key-analytics.html', '📈', 'API Key Analytics'],
+        ['/pages/domains.html', '🌐', 'Domains'],
+        ['/pages/domain-diagnostics.html', '🛡️', 'Domain Diagnostics'],
+        ['/pages/webhooks.html', '🪝', 'Webhooks'],
+        ['/pages/realtime-events.html', '📡', 'Realtime Events']
+      ]
+    },
+    {
+      title: 'Operations',
+      items: [
+        ['/pages/apps.html', '🧩', 'Apps'],
+        ['/pages/app-logs.html', '🪵', 'App Logs'],
+        ['/pages/deployment-diagnostics.html', '🛰', 'Deployments'],
+        ['/pages/backups.html', '💾', 'Backups'],
+        ['/pages/backup-monitor.html', '🛟', 'Backup Monitor'],
+        ['/pages/queue-monitor.html', '🧵', 'Queue Monitor'],
+        ['/pages/system-health.html', '🩺', 'System Health'],
+        ['/pages/log-viewer.html', '📜', 'Log Viewer'],
+        ['/pages/diagnostics-console.html', '🧪', 'Diagnostics']
+      ]
+    },
+    {
+      title: 'Tools',
+      items: [
+        ['/pages/query-builder.html', '📊', 'Query Builder'],
+        ['/pages/sdk.html', '🧩', 'SDK'],
+        ['/pages/settings.html', '⚙', 'Settings']
+      ]
+    },
+    {
+      title: 'Account',
+      items: []
+    }
   ];
 
   function getTheme() {
@@ -139,9 +163,9 @@ try {
 
       select.innerHTML =
         '<option value="">No Tenant Selected</option>' +
-        list.map(t => `<option value="${t.id}" data-slug="${t.slug || ''}">${t.name || t.slug || t.id}</option>`).join('');
+        list.map((t) => `<option value="${t.id}" data-slug="${t.slug || ''}">${t.name || t.slug || t.id}</option>`).join('');
 
-      if (current?.id) {
+      if (current && current.id) {
         select.value = current.id;
       }
 
@@ -192,17 +216,24 @@ try {
           </div>
         </div>
 
-        <nav class="nav">
-          ${NAV.map(([href, icon, label]) => `
-            <a href="${href}" class="${href === current ? 'active' : ''}" onclick="try{document.documentElement.scrollTop=0;document.body.scrollTop=0;window.scrollTo(0,0);}catch(e){}">
-              <span class="nav-icon">${icon}</span>
-              <span>${label}</span>
-            </a>
+        <nav class="nav grouped-nav">
+          ${NAV_GROUPS.map((group) => `
+            <div class="nav-group">
+              <div class="nav-group-title">${group.title}</div>
+              ${group.items.map(([href, icon, label]) => `
+                <a href="${href}" class="${href === current ? 'active' : ''}" onclick="try{document.documentElement.scrollTop=0;document.body.scrollTop=0;window.scrollTo(0,0);}catch(e){}">
+                  <span class="nav-icon">${icon}</span>
+                  <span>${label}</span>
+                </a>
+              `).join('')}
+              ${group.title === 'Account' ? `
+                <button type="button" id="logout-btn">
+                  <span class="nav-icon">🚪</span>
+                  <span>Logout</span>
+                </button>
+              ` : ''}
+            </div>
           `).join('')}
-          <button type="button" id="logout-btn">
-            <span class="nav-icon">🚪</span>
-            <span>Logout</span>
-          </button>
         </nav>
       </aside>
 
@@ -215,16 +246,19 @@ try {
           <div class="badges">
             <div class="badge ok"><span class="badge-dot"></span> System Online</div>
             <div class="badge"><span class="badge-dot"></span> Private Platform</div>
-            <div class="badge warn"><span class="badge-dot"></span> ${tenant?.slug ? 'Tenant: ' + tenant.slug : 'No Tenant'}</div>
+            <div class="badge warn"><span class="badge-dot"></span> ${tenant && tenant.slug ? 'Tenant: ' + tenant.slug : 'No Tenant'}</div>
           </div>
         </div>
         <div id="page-content"></div>
       </main>
     `;
 
-    document.getElementById('logout-btn').addEventListener('click', logoutNow);
+    const logoutBtn = document.getElementById('logout-btn');
+    if (logoutBtn) logoutBtn.addEventListener('click', logoutNow);
+
     const themeBtn = document.querySelector('[data-theme-btn]');
     if (themeBtn) themeBtn.addEventListener('click', toggleTheme);
+
     setTheme(getTheme());
     loadTenantOptions();
   }
@@ -269,7 +303,7 @@ setTimeout(() => {
 setTimeout(() => {
   try {
     if (!window.__DISABLE_HEALTH_BANNER__ && window.USGHealthBanner && document.getElementById('page-content')) {
-      USGHealthBanner.render();
+      window.USGHealthBanner.render();
     }
   } catch {}
 }, 120);
