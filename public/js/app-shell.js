@@ -13,8 +13,20 @@ try {
   }
 } catch {}
 
-function forceScrollTop() {
+function getMainPane() {
+  return document.querySelector('.main');
+}
+
+function forceContentTop() {
   try {
+    const main = getMainPane();
+    if (main) {
+      main.scrollTop = 0;
+    }
+    const page = document.getElementById('page-content');
+    if (page) {
+      page.scrollTop = 0;
+    }
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
     window.scrollTo(0, 0);
@@ -22,14 +34,14 @@ function forceScrollTop() {
 }
 
 window.addEventListener('load', () => {
-  setTimeout(forceScrollTop, 0);
-  setTimeout(forceScrollTop, 80);
-  setTimeout(forceScrollTop, 250);
+  setTimeout(forceContentTop, 0);
+  setTimeout(forceContentTop, 80);
+  setTimeout(forceContentTop, 180);
 });
 
 window.addEventListener('pageshow', () => {
-  setTimeout(forceScrollTop, 0);
-  setTimeout(forceScrollTop, 80);
+  setTimeout(forceContentTop, 0);
+  setTimeout(forceContentTop, 80);
 });
 
 document.addEventListener('click', (event) => {
@@ -41,17 +53,15 @@ document.addEventListener('click', (event) => {
     try {
       sessionStorage.setItem('usg_reset_scroll', '1');
     } catch {}
-    forceScrollTop();
-    setTimeout(forceScrollTop, 20);
   }
 });
 
 try {
   if (sessionStorage.getItem('usg_reset_scroll') === '1') {
     sessionStorage.removeItem('usg_reset_scroll');
-    setTimeout(forceScrollTop, 0);
-    setTimeout(forceScrollTop, 80);
-    setTimeout(forceScrollTop, 250);
+    setTimeout(forceContentTop, 0);
+    setTimeout(forceContentTop, 80);
+    setTimeout(forceContentTop, 180);
   }
 } catch {}
 
@@ -81,7 +91,8 @@ try {
         ['/pages/relationships.html', 'Relationships'],
         ['/pages/files.html', 'Files'],
         ['/pages/storage-buckets.html', 'Storage Buckets'],
-        ['/pages/storage-admin.html', 'Storage Admin']
+        ['/pages/storage-admin.html', 'Storage Admin'],
+        ['/pages/relational.html', 'Relational']
       ]
     },
     {
@@ -107,7 +118,8 @@ try {
         ['/pages/queue-monitor.html', 'Queue Monitor'],
         ['/pages/system-health.html', 'System Health'],
         ['/pages/log-viewer.html', 'Log Viewer'],
-        ['/pages/diagnostics-console.html', 'Diagnostics']
+        ['/pages/diagnostics-console.html', 'Diagnostics'],
+        ['/pages/installer.html', 'Installer']
       ]
     },
     {
@@ -115,7 +127,8 @@ try {
       items: [
         ['/pages/query-builder.html', 'Query Builder'],
         ['/pages/sdk.html', 'SDK'],
-        ['/pages/settings.html', 'Settings']
+        ['/pages/settings.html', 'Settings'],
+        ['/pages/docs.html', 'Docs']
       ]
     },
     {
@@ -215,7 +228,7 @@ try {
                 }
 
                 return `
-                  <a href="${href}" class="nav-text-link ${href === current ? 'active' : ''}" onclick="try{document.documentElement.scrollTop=0;document.body.scrollTop=0;window.scrollTo(0,0);}catch(e){}">
+                  <a href="${href}" class="nav-text-link ${href === current ? 'active' : ''}">
                     <span class="nav-text-label">${label}</span>
                   </a>
                 `;
@@ -279,6 +292,8 @@ try {
 
     setTheme(getTheme());
     loadTenantOptions();
+    setTimeout(forceContentTop, 0);
+    setTimeout(forceContentTop, 80);
   }
 
   function setupRawToggles(scope = document) {
@@ -308,7 +323,8 @@ try {
     buildShell,
     setupRawToggles,
     getCurrentTenant,
-    setCurrentTenant
+    setCurrentTenant,
+    forceContentTop
   };
 })();
 
