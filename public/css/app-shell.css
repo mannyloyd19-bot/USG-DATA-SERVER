@@ -2842,3 +2842,56 @@ body {
   color:#2563eb;
 }
 
+
+/* ===== Full bottom scroll reach fix ===== */
+html, body {
+  height: 100%;
+}
+
+#app-shell.shell {
+  height: 100dvh !important;
+  min-height: 100dvh !important;
+}
+
+#app-shell .sidebar,
+#app-shell .main {
+  height: 100dvh !important;
+  max-height: 100dvh !important;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+#app-shell .sidebar {
+  padding-bottom: 220px !important;
+}
+
+#app-shell .main {
+  padding-bottom: 220px !important;
+}
+
+#app-shell .grouped-nav {
+  padding-bottom: 80px !important;
+}
+
+#app-shell #page-content {
+  padding-bottom: 140px !important;
+}
+
+#app-shell .sidebar-footer {
+  margin-bottom: 80px !important;
+}
+
+#logout-btn,
+.nav-group:last-child {
+  margin-bottom: 60px !important;
+}
+
+@supports not (height: 100dvh) {
+  #app-shell.shell,
+  #app-shell .sidebar,
+  #app-shell .main {
+    height: 100vh !important;
+    min-height: 100vh !important;
+    max-height: 100vh !important;
+  }
+}
