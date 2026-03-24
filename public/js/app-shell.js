@@ -204,21 +204,23 @@ try {
         ${NAV_GROUPS.map((group) => `
           <div class="nav-group">
             <div class="nav-group-title">${group.title}</div>
-            ${group.items.map(([href, label]) => {
-              if (href === '#logout') {
-                return `
-                  <button type="button" id="logout-btn">
-                    <span>${label}</span>
-                  </button>
-                `;
-              }
+            <div class="nav-group-items">
+              ${group.items.map(([href, label]) => {
+                if (href === '#logout') {
+                  return `
+                    <button type="button" id="logout-btn" class="nav-text-btn">
+                      <span class="nav-text-label">${label}</span>
+                    </button>
+                  `;
+                }
 
-              return `
-                <a href="${href}" class="${href === current ? 'active' : ''}" onclick="try{document.documentElement.scrollTop=0;document.body.scrollTop=0;window.scrollTo(0,0);}catch(e){}">
-                  <span>${label}</span>
-                </a>
-              `;
-            }).join('')}
+                return `
+                  <a href="${href}" class="nav-text-link ${href === current ? 'active' : ''}" onclick="try{document.documentElement.scrollTop=0;document.body.scrollTop=0;window.scrollTo(0,0);}catch(e){}">
+                    <span class="nav-text-label">${label}</span>
+                  </a>
+                `;
+              }).join('')}
+            </div>
           </div>
         `).join('')}
       </nav>
