@@ -2403,3 +2403,32 @@ body {
   }
 }
 
+
+
+/* ===== Sidebar full scroll reach fix ===== */
+#app-shell.shell {
+  height: 100vh;
+  min-height: 100vh;
+}
+
+#app-shell .sidebar {
+  height: 100vh;
+  max-height: 100vh;
+  overflow-y: auto !important;
+  overflow-x: hidden;
+  padding-bottom: 120px !important;
+  box-sizing: border-box;
+}
+
+#app-shell .grouped-nav {
+  padding-bottom: 40px !important;
+}
+
+#app-shell .sidebar-footer {
+  margin-bottom: 40px !important;
+}
+
+#logout-btn {
+  margin-bottom: 24px !important;
+}
+
