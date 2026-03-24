@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Docs · USG DATA SERVER</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="/css/app-shell.css">
+  <link rel="stylesheet" href="/css/pro-ui.css">
+  <link rel="stylesheet" href="/css/theme-pro.css">
+</head>
+<body>
+  <div id="app-shell" class="shell"></div>
+
+  <script src="/js/auth.js"></script>
+  <script src="/js/app-shell.js"></script>
+  <script src="/js/ui/ios-alert.js"></script>
+  <script src="/js/shared/page-kit.js"></script>
+  <script src="/js/shared/app-meta.js"></script>
+  <script src="/js/shared/health-banner.js"></script>
+
+  <script>
+    window.__DISABLE_HEALTH_BANNER__ = false;
+    requireAuth();
+    USGShell.buildShell();
+
+    const content = document.getElementById("page-content");
+
+    USGPageKit.setPageHeader({
+      kicker: "DOCUMENTATION",
+      title: "Docs",
+      subtitle: "System usage, API reference, and developer guides"
+    });
+
+    content.innerHTML = `
+      <section class="card">
+        <div class="kicker">OVERVIEW</div>
+        <h2>USG DATA SERVER Docs</h2>
+        <div class="muted">
+          Documentation module is active.<br><br>
+          You can extend this page with:
+          <ul>
+            <li>API Reference</li>
+            <li>Authentication Guide</li>
+            <li>SDK Usage</li>
+            <li>Deployment Guide</li>
+          </ul>
+        </div>
+      </section>
+    `;
+  </script>
+</body>
+</html>

@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <title>Docs · USG DATA SERVER</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
   <link rel="stylesheet" href="/css/app-shell.css">
   <link rel="stylesheet" href="/css/pro-ui.css">
   <link rel="stylesheet" href="/css/theme-pro.css">
@@ -18,33 +17,38 @@
   <script src="/js/shared/page-kit.js"></script>
   <script src="/js/shared/app-meta.js"></script>
   <script src="/js/shared/health-banner.js"></script>
-
   <script>
-    window.__DISABLE_HEALTH_BANNER__ = false;
+    window.__DISABLE_HEALTH_BANNER__ = true;
     requireAuth();
     USGShell.buildShell();
 
     const content = document.getElementById("page-content");
 
     USGPageKit.setPageHeader({
-      kicker: "DOCUMENTATION",
-      title: "Docs",
-      subtitle: "System usage, API reference, and developer guides"
+      kicker: "REFERENCE",
+      title: "Documentation",
+      subtitle: "Guides, API references, and integration notes for the platform"
     });
 
     content.innerHTML = `
       <section class="card">
-        <div class="kicker">OVERVIEW</div>
-        <h2>USG DATA SERVER Docs</h2>
-        <div class="muted">
-          Documentation module is active.<br><br>
-          You can extend this page with:
-          <ul>
-            <li>API Reference</li>
-            <li>Authentication Guide</li>
-            <li>SDK Usage</li>
-            <li>Deployment Guide</li>
-          </ul>
+        <div class="kicker">GET STARTED</div>
+        <h2>Platform Documentation</h2>
+        <div class="list-card">
+          <strong>Authentication</strong><br>
+          <span class="muted">JWT login, API keys, and access flow for apps and operators.</span>
+        </div>
+        <div class="list-card">
+          <strong>Collections, Fields, and Records</strong><br>
+          <span class="muted">Core data modeling workflow for building your private data server.</span>
+        </div>
+        <div class="list-card">
+          <strong>Domains and Realtime</strong><br>
+          <span class="muted">Domain binding, public routing, and live event streaming basics.</span>
+        </div>
+        <div class="list-card">
+          <strong>Backups and Diagnostics</strong><br>
+          <span class="muted">Operational safety, restore flow, and monitoring references.</span>
         </div>
       </section>
     `;
