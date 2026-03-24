@@ -60,67 +60,69 @@ try {
     {
       title: 'Overview',
       items: [
-        ['/index.html', '', 'Dashboard']
+        ['/index.html', 'Dashboard']
       ]
     },
     {
       title: 'Workspace',
       items: [
-        ['/pages/tenants.html', '', 'Tenants'],
-        ['/pages/users.html', '', 'Users'],
-        ['/pages/auth-security.html', '', 'Auth Security'],
-        ['/pages/permissions-pro.html', '', 'Permissions']
+        ['/pages/tenants.html', 'Tenants'],
+        ['/pages/users.html', 'Users'],
+        ['/pages/auth-security.html', 'Auth Security'],
+        ['/pages/permissions-pro.html', 'Permissions']
       ]
     },
     {
       title: 'Data',
       items: [
-        ['/pages/collections.html', '', 'Collections'],
-        ['/pages/fields.html', '', 'Fields'],
-        ['/pages/records.html', '', 'Records'],
-        ['/pages/relationships.html', '', 'Relationships'],
-        ['/pages/files.html', '', 'Files'],
-        ['/pages/storage-buckets.html', '', 'Storage Buckets'],
-        ['/pages/storage-admin.html', '', 'Storage Admin']
+        ['/pages/collections.html', 'Collections'],
+        ['/pages/fields.html', 'Fields'],
+        ['/pages/records.html', 'Records'],
+        ['/pages/relationships.html', 'Relationships'],
+        ['/pages/files.html', 'Files'],
+        ['/pages/storage-buckets.html', 'Storage Buckets'],
+        ['/pages/storage-admin.html', 'Storage Admin']
       ]
     },
     {
       title: 'Access',
       items: [
-        ['/pages/api-keys.html', '', 'API Keys'],
-        ['/pages/api-key-logs.html', '', 'API Key Logs'],
-        ['/pages/api-key-analytics.html', '', 'API Key Analytics'],
-        ['/pages/domains.html', '', 'Domains'],
-        ['/pages/domain-diagnostics.html', '', 'Domain Diagnostics'],
-        ['/pages/webhooks.html', '', 'Webhooks'],
-        ['/pages/realtime-events.html', '', 'Realtime Events']
+        ['/pages/api-keys.html', 'API Keys'],
+        ['/pages/api-key-logs.html', 'API Key Logs'],
+        ['/pages/api-key-analytics.html', 'API Key Analytics'],
+        ['/pages/domains.html', 'Domains'],
+        ['/pages/domain-diagnostics.html', 'Domain Diagnostics'],
+        ['/pages/webhooks.html', 'Webhooks'],
+        ['/pages/realtime-events.html', 'Realtime Events']
       ]
     },
     {
       title: 'Operations',
       items: [
-        ['/pages/apps.html', '', 'Apps'],
-        ['/pages/app-logs.html', '', 'App Logs'],
-        ['/pages/deployment-diagnostics.html', '', 'Deployments'],
-        ['/pages/backups.html', '', 'Backups'],
-        ['/pages/backup-monitor.html', '', 'Backup Monitor'],
-        ['/pages/queue-monitor.html', '', 'Queue Monitor'],
-        ['/pages/system-health.html', '', 'System Health'],
-        ['/pages/log-viewer.html', '', 'Log Viewer'],
-        ['/pages/diagnostics-console.html', '', 'Diagnostics']
+        ['/pages/apps.html', 'Apps'],
+        ['/pages/app-logs.html', 'App Logs'],
+        ['/pages/deployment-diagnostics.html', 'Deployments'],
+        ['/pages/backups.html', 'Backups'],
+        ['/pages/backup-monitor.html', 'Backup Monitor'],
+        ['/pages/queue-monitor.html', 'Queue Monitor'],
+        ['/pages/system-health.html', 'System Health'],
+        ['/pages/log-viewer.html', 'Log Viewer'],
+        ['/pages/diagnostics-console.html', 'Diagnostics']
       ]
     },
     {
       title: 'Tools',
       items: [
-        ['/pages/query-builder.html', '', 'Query Builder'],
-        ['/pages/sdk.html', '', 'SDK'],
-        ['/pages/settings.html', '', 'Settings']
+        ['/pages/query-builder.html', 'Query Builder'],
+        ['/pages/sdk.html', 'SDK'],
+        ['/pages/settings.html', 'Settings']
       ]
     },
     {
       title: 'Account',
-      items: []
+      items: [
+        ['#logout', 'Logout']
+      ]
     }
   ];
 
@@ -196,6 +198,33 @@ try {
     location.replace('/login.html');
   }
 
+  function renderGroupedNav(current) {
+    return `
+      <nav class="nav grouped-nav">
+        ${NAV_GROUPS.map((group) => `
+          <div class="nav-group">
+            <div class="nav-group-title">${group.title}</div>
+            ${group.items.map(([href, label]) => {
+              if (href === '#logout') {
+                return `
+                  <button type="button" id="logout-btn">
+                    <span>${label}</span>
+                  </button>
+                `;
+              }
+
+              return `
+                <a href="${href}" class="${href === current ? 'active' : ''}" onclick="try{document.documentElement.scrollTop=0;document.body.scrollTop=0;window.scrollTo(0,0);}catch(e){}">
+                  <span>${label}</span>
+                </a>
+              `;
+            }).join('')}
+          </div>
+        `).join('')}
+      </nav>
+    `;
+  }
+
   function buildShell() {
     const shell = document.getElementById('app-shell');
     if (!shell) return;
@@ -216,24 +245,12 @@ try {
           </div>
         </div>
 
-        <nav class="nav grouped-nav">
-          ${NAV_GROUPS.map((group) => `
-            <div class="nav-group">
-              <div class="nav-group-title">${group.title}</div>
-              ${group.items.map(([href, icon, label]) => `
-                <a href="${href}" class="${href === current ? 'active' : ''}" onclick="try{document.documentElement.scrollTop=0;document.body.scrollTop=0;window.scrollTo(0,0);}catch(e){}">
-                  ${icon ? `<span class="nav-icon">${icon}</span>` : ''}
-                  <span>${label}</span>
-                </a>
-              `).join('')}
-              ${group.title === 'Account' ? `
-                <button type="button" id="logout-btn">
-                  <span>Logout</span>
-                </button>
-              ` : ''}
-            </div>
-          `).join('')}
-        </nav>
+        ${renderGroupedNav(current)}
+
+        <div class="sidebar-footer">
+          <div>usg-data-server · v1.0.0</div>
+          <div>development · ./database.sqlite</div>
+        </div>
       </aside>
 
       <main class="main">
@@ -295,7 +312,7 @@ try {
 
 setTimeout(() => {
   try {
-    if (window.USGAppMeta) USGAppMeta.renderFooter();
+    if (window.USGAppMeta) window.USGAppMeta.renderFooter();
   } catch {}
 }, 50);
 
