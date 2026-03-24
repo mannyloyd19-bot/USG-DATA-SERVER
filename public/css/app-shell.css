@@ -2895,3 +2895,98 @@ html, body {
     max-height: 100vh !important;
   }
 }
+
+/* ===== Menu text-only clean sidebar ===== */
+#app-shell .nav-group-items {
+  gap: 10px !important;
+  padding-left: 10px !important;
+}
+
+#app-shell .nav-text-link,
+#app-shell .nav-text-btn,
+#app-shell .grouped-nav a,
+#app-shell .grouped-nav button {
+  display: block !important;
+  width: 100% !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  min-height: auto !important;
+  text-decoration: none !important;
+}
+
+#app-shell .nav-text-label {
+  display: inline-block !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  font-size: 18px !important;
+  font-weight: 600 !important;
+  line-height: 1.25 !important;
+}
+
+#app-shell .nav-text-link:hover,
+#app-shell .nav-text-btn:hover,
+#app-shell .grouped-nav a:hover,
+#app-shell .grouped-nav button:hover {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+#app-shell .nav-text-link:hover .nav-text-label,
+#app-shell .nav-text-btn:hover .nav-text-label {
+  color: #2563eb !important;
+  text-shadow:
+    0 0 8px rgba(59,130,246,0.14),
+    0 0 18px rgba(59,130,246,0.10);
+  transform: translateX(2px);
+}
+
+#app-shell .nav-text-link.active,
+#app-shell .grouped-nav a.active {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+#app-shell .nav-text-link.active .nav-text-label,
+#app-shell .grouped-nav a.active .nav-text-label {
+  color: #2563eb !important;
+  font-weight: 800 !important;
+  text-shadow:
+    0 0 8px rgba(59,130,246,0.14),
+    0 0 18px rgba(59,130,246,0.10);
+}
+
+/* remove any inherited list/card style inside sidebar nav */
+#app-shell .sidebar .list-card,
+#app-shell .sidebar .card,
+#app-shell .sidebar .info-card,
+#app-shell .sidebar .metric-card,
+#app-shell .sidebar .usg-stat-card {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+/* light mode sidebar words only */
+:root[data-theme="light"] #app-shell .nav-text-label {
+  color: #334155 !important;
+}
+
+:root[data-theme="light"] #app-shell .nav-text-link:hover .nav-text-label,
+:root[data-theme="light"] #app-shell .nav-text-btn:hover .nav-text-label {
+  color: #1d4ed8 !important;
+}
+
+:root[data-theme="light"] #app-shell .nav-text-link.active .nav-text-label,
+:root[data-theme="light"] #app-shell .grouped-nav a.active .nav-text-label {
+  color: #1d4ed8 !important;
+}
