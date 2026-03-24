@@ -2432,3 +2432,121 @@ body {
   margin-bottom: 24px !important;
 }
 
+
+
+/* ===== Light Mode Contrast Fix ===== */
+:root[data-theme="light"] body {
+  background: linear-gradient(180deg, #eef2f7 0%, #e8edf5 100%);
+  color: #1f2937;
+}
+
+:root[data-theme="light"] #app-shell .sidebar {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.92), rgba(245,247,251,0.96)),
+    radial-gradient(circle at top left, rgba(59,130,246,0.05), transparent 36%);
+  border-right: 1px solid rgba(15,23,42,0.08);
+  box-shadow:
+    inset -1px 0 0 rgba(255,255,255,0.4),
+    0 10px 30px rgba(15,23,42,0.06);
+}
+
+:root[data-theme="light"] #app-shell .main {
+  background: transparent;
+}
+
+:root[data-theme="light"] .topbar,
+:root[data-theme="light"] .card,
+:root[data-theme="light"] .list-card,
+:root[data-theme="light"] .info-card,
+:root[data-theme="light"] .usg-stat-card,
+:root[data-theme="light"] .metric-card {
+  background: rgba(255,255,255,0.82) !important;
+  border: 1px solid rgba(15,23,42,0.08) !important;
+  box-shadow: 0 10px 24px rgba(15,23,42,0.06) !important;
+  color: #1f2937 !important;
+}
+
+:root[data-theme="light"] .brand-title,
+:root[data-theme="light"] h1,
+:root[data-theme="light"] h2,
+:root[data-theme="light"] h3,
+:root[data-theme="light"] strong {
+  color: #0f172a !important;
+}
+
+:root[data-theme="light"] .kicker,
+:root[data-theme="light"] .nav-group-title {
+  color: #64748b !important;
+}
+
+:root[data-theme="light"] .muted,
+:root[data-theme="light"] .info-title,
+:root[data-theme="light"] .subtitle {
+  color: #6b7280 !important;
+}
+
+:root[data-theme="light"] .nav-text-link,
+:root[data-theme="light"] .nav-text-btn {
+  color: #334155 !important;
+}
+
+:root[data-theme="light"] .nav-text-label {
+  color: #334155 !important;
+}
+
+:root[data-theme="light"] .nav-text-link:hover .nav-text-label,
+:root[data-theme="light"] .nav-text-btn:hover .nav-text-label {
+  color: #1d4ed8 !important;
+  text-shadow:
+    0 0 8px rgba(59,130,246,0.14),
+    0 0 18px rgba(59,130,246,0.10);
+}
+
+:root[data-theme="light"] .nav-text-link.active .nav-text-label {
+  color: #1d4ed8 !important;
+  font-weight: 800 !important;
+  text-shadow:
+    0 0 8px rgba(59,130,246,0.14),
+    0 0 18px rgba(59,130,246,0.10);
+}
+
+:root[data-theme="light"] input,
+:root[data-theme="light"] select,
+:root[data-theme="light"] textarea {
+  background: rgba(255,255,255,0.92) !important;
+  color: #111827 !important;
+  border: 1px solid rgba(15,23,42,0.12) !important;
+}
+
+:root[data-theme="light"] input::placeholder,
+:root[data-theme="light"] textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+:root[data-theme="light"] .ghost-btn {
+  background: rgba(255,255,255,0.86) !important;
+  color: #334155 !important;
+  border: 1px solid rgba(15,23,42,0.10) !important;
+}
+
+:root[data-theme="light"] .primary-btn {
+  box-shadow: 0 8px 22px rgba(59,130,246,0.22) !important;
+}
+
+:root[data-theme="light"] pre {
+  background: #f8fafc !important;
+  color: #0f172a !important;
+  border: 1px solid rgba(15,23,42,0.08) !important;
+}
+
+:root[data-theme="light"] .badge {
+  background: rgba(255,255,255,0.78) !important;
+  color: #334155 !important;
+  border: 1px solid rgba(15,23,42,0.08) !important;
+}
+
+:root[data-theme="light"] .sidebar-footer {
+  color: #64748b !important;
+  border-top: 1px solid rgba(15,23,42,0.08) !important;
+}
+
