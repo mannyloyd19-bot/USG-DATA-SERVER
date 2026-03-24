@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Relational · USG DATA SERVER</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/css/app-shell.css">
+  <link rel="stylesheet" href="/css/pro-ui.css">
+  <link rel="stylesheet" href="/css/theme-pro.css">
+</head>
+<body>
+  <div id="app-shell" class="shell"></div>
+
+  <script src="/js/auth.js"></script>
+  <script src="/js/app-shell.js"></script>
+  <script src="/js/ui/ios-alert.js"></script>
+  <script src="/js/shared/page-kit.js"></script>
+  <script src="/js/shared/app-meta.js"></script>
+  <script src="/js/shared/health-banner.js"></script>
+  <script src="/js/shared/premium-ui.js"></script>
+  <script src="/js/shared/real-charts.js"></script>
+  <script src="/js/pages/relations.js"></script>
+</body>
+</html>
