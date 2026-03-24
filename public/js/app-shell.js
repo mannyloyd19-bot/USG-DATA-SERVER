@@ -19,17 +19,11 @@ function getMainPane() {
 
 function forceContentTop() {
   try {
-    const main = getMainPane();
-    if (main) {
-      main.scrollTop = 0;
-    }
+    const main = document.querySelector('#app-shell .main');
+    if (main) main.scrollTop = 0;
+
     const page = document.getElementById('page-content');
-    if (page) {
-      page.scrollTop = 0;
-    }
-    document.documentElement.scrollTop = 0;
-    document.body.scrollTop = 0;
-    window.scrollTo(0, 0);
+    if (page) page.scrollTop = 0;
   } catch {}
 }
 
