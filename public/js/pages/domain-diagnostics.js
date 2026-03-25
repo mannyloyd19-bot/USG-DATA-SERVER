@@ -2,37 +2,34 @@ window.__DISABLE_HEALTH_BANNER__ = true;
 requireAuth();
 USGShell.buildShell();
 
-function metricCard(title, value, subtitle = '') {
-  return `
-    <section class="card">
-      <div class="kicker">${title.toUpperCase()}</div>
-      <h2>${value}</h2>
-      <div class="muted">${subtitle}</div>
-    </section>
-  `;
+async function safeJson(url) {
+  try {
+    const res = await apiFetch(url);
+    return await res.json();
+  } catch {
+    return {};
+  }
 }
 
-function boolText(v) {
-  return v ? 'Yes' : 'No';
+function badge(value) {
+  const v = String(value || '').toLowerCase();
+  if (v.includes('ok') || v.includes('active') || v.includes('online')) return USGPageKit.statusBadge('online');
+  if (v.includes('warn')) return USGPageKit.statusBadge('warning');
+  if (v.includes('fail') || v.includes('error') || v.includes('offline')) return USGPageKit.statusBadge('error');
+  return USGPageKit.statusBadge('neutral');
 }
 
-function domainCard(item) {
-  const checks = item.checks || {};
+function domainCard(d) {
   return `
     <div class="list-card">
-      <strong>${item.name || 'Domain'}</strong><br>
-      <span class="muted">Service: ${item.serviceName || '-'}</span><br>
-      <span class="muted">Route: ${item.routePath || '-'}</span><br>
-      <span class="muted">Access: ${item.accessMode || '-'}</span><br>
-      <span class="muted">SSL: ${item.sslStatus || '-'}</span><br>
-      <span class="muted">Public Address: ${item.publicAddress || '-'}</span><br>
-      <span class="muted">Healthy Bind: ${boolText(checks.bindHealthy)}</span><br>
-      <span class="muted">Has Route: ${boolText(checks.hasRoute)} · Has Service: ${boolText(checks.hasService)}</span>
-      <div class="actions">
-        ${USGPageKit.statusBadge(item.status || 'unknown')}
-        <button class="ghost-btn" data-ssl-active="${item.id}" type="button">SSL Active</button>
-        <button class="ghost-btn" data-ssl-pending="${item.id}" type="button">SSL Pending</button>
-        <button class="danger-btn" data-inactive-domain="${item.id}" type="button">Mark Inactive</button>
+      <strong>${d.domain || d.host || 'Domain'}</strong><br>
+      <span class="muted">Status: ${d.status || 'unknown'}</span><br>
+      <span class="muted">SSL: ${d.sslStatus || 'unknown'}</span><br>
+      <span class="muted">Target: ${d.target || '-'}</span><br>
+      <div class="actions" style="margin-top:8px">
+        ${badge(d.status)}
+        ${badge(d.sslStatus)}
+        <a href="/pages/domains.html" class="ghost-btn">Manage</a>
       </div>
     </div>
   `;
@@ -40,12 +37,14 @@ function domainCard(item) {
 
 async function loadDomainDiagnostics() {
   const content = document.getElementById('page-content');
+  if (!content) return;
+
   content.innerHTML = '';
 
   USGPageKit.setPageHeader({
-    kicker: 'DOMAIN HEALTH',
+    kicker: 'NETWORK',
     title: 'Domain Diagnostics',
-    subtitle: 'Inspect SSL readiness, bind status, and deep domain health details'
+    subtitle: 'Monitor domain binding, SSL status, and public accessibility'
   });
 
   const top = document.createElement('section');
@@ -54,71 +53,98 @@ async function loadDomainDiagnostics() {
     <div class="usg-page-head-row">
       <div>
         <div class="kicker">ACTIONS</div>
-        <h2>Domain Diagnostics Controls</h2>
+        <h2>Domain Controls</h2>
       </div>
       <div class="actions">
-        <button id="refresh-domain-diagnostics-btn" class="primary-btn" type="button">Refresh</button>
+        <button id="domain-refresh-btn" class="ghost-btn">Refresh</button>
+        <a href="/pages/domains.html" class="primary-btn">Domains</a>
+        <a href="/pages/system-health.html" class="ghost-btn">System Health</a>
       </div>
     </div>
   `;
   content.appendChild(top);
 
-  document.getElementById('refresh-domain-diagnostics-btn').onclick = () => loadDomainDiagnostics();
+  document.getElementById('domain-refresh-btn').onclick = loadDomainDiagnostics;
+
+  const loading = document.createElement('section');
+  loading.className = 'card';
+  loading.style.marginTop = '18px';
+  loading.innerHTML = `<div class="muted">Loading domain diagnostics...</div>`;
+  content.appendChild(loading);
 
   try {
-    const res = await apiFetch('/api/domain-diagnostics/summary');
-    const data = await res.json();
-    const summary = data.summary || {};
-    const domains = data.domains || [];
+    const [domains, health] = await Promise.all([
+      safeJson('/api/domains'),
+      safeJson('/api/domain-diagnostics')
+    ]);
 
-    content.innerHTML += `
-      <div class="grid-6">
-        ${metricCard('Total', summary.total || 0, 'All domains')}
-        ${metricCard('Active', summary.active || 0, 'Active domains')}
-        ${metricCard('Public', summary.public || 0, 'Public domains')}
-        ${metricCard('Internal', summary.internal || 0, 'Internal domains')}
-        ${metricCard('SSL Active', summary.sslActive || 0, 'Active certificates')}
-        ${metricCard('SSL Pending', summary.sslPending || 0, 'Pending certificates')}
-      </div>
-    `;
+    loading.remove();
+
+    const rows = Array.isArray(domains)
+      ? domains
+      : (domains.domains || domains.data || []);
+
+    const diag = Array.isArray(health)
+      ? health
+      : (health.results || health.data || []);
+
+    const merged = rows.map(d => {
+      const match = diag.find(x => x.domain === d.domain) || {};
+      return {
+        domain: d.domain,
+        status: match.status || d.status,
+        sslStatus: match.sslStatus || 'unknown',
+        target: d.target || d.route || '-'
+      };
+    });
 
     const wrap = document.createElement('section');
     wrap.className = 'card';
     wrap.style.marginTop = '18px';
+
     wrap.innerHTML = `
       <div class="kicker">DOMAINS</div>
-      <h2>Domain Health Matrix</h2>
-      ${domains.length ? domains.map(domainCard).join('') : '<div class="muted">No domains found.</div>'}
+      <h2>Domain Status</h2>
+      ${
+        merged.length
+          ? merged.map(domainCard).join('')
+          : USGPageKit.emptyState({ title: 'No domains configured' })
+      }
     `;
+
     content.appendChild(wrap);
 
-    domains.forEach(item => {
-      const activeBtn = document.querySelector(`[data-ssl-active="${item.id}"]`);
-      if (activeBtn) {
-        activeBtn.onclick = async () => {
-          await apiFetch(`/api/domain-diagnostics/${item.id}/ssl-active`, { method: 'POST' });
-          loadDomainDiagnostics();
-        };
-      }
+    content.innerHTML += `
+      <section class="card" style="margin-top:18px">
+        <div class="kicker">CHECKS</div>
+        <h2>Diagnostics Summary</h2>
+        <div class="list-card">
+          <strong>Total Domains</strong><br>
+          <span class="muted">${merged.length}</span>
+        </div>
+        <div class="list-card">
+          <strong>Healthy</strong><br>
+          <span class="muted">${merged.filter(d => String(d.status).toLowerCase().includes('ok')).length}</span>
+        </div>
+        <div class="list-card">
+          <strong>SSL Issues</strong><br>
+          <span class="muted">${merged.filter(d => String(d.sslStatus).toLowerCase().includes('fail')).length}</span>
+        </div>
+      </section>
+    `;
 
-      const pendingBtn = document.querySelector(`[data-ssl-pending="${item.id}"]`);
-      if (pendingBtn) {
-        pendingBtn.onclick = async () => {
-          await apiFetch(`/api/domain-diagnostics/${item.id}/ssl-pending`, { method: 'POST' });
-          loadDomainDiagnostics();
-        };
-      }
-
-      const inactiveBtn = document.querySelector(`[data-inactive-domain="${item.id}"]`);
-      if (inactiveBtn) {
-        inactiveBtn.onclick = async () => {
-          await apiFetch(`/api/domain-diagnostics/${item.id}/inactive`, { method: 'POST' });
-          loadDomainDiagnostics();
-        };
-      }
-    });
   } catch (error) {
-    USGIOSAlert.show({ title: 'Domain Diagnostics Error', message: error.message, type: 'error' });
+    loading.remove();
+
+    const err = document.createElement('section');
+    err.className = 'card';
+    err.style.marginTop = '18px';
+    err.innerHTML = `
+      <div class="kicker">ERROR</div>
+      <h2>Domain Diagnostics Failed</h2>
+      <div class="muted">${error.message}</div>
+    `;
+    content.appendChild(err);
   }
 }
 
