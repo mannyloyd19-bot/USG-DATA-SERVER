@@ -240,9 +240,10 @@ try {
         ${renderGroupedNav(current)}
 
         <div class="sidebar-footer">
-  <button id="dev-token-btn" type="button" onclick="window.__USG_DEV_TOOLS__.showToken()" style="margin-top:10px;padding:8px 10px;border-radius:10px;border:1px solid rgba(148,163,184,.25);background:transparent;color:inherit;font-size:12px;cursor:pointer;opacity:.75;">
+  <button id="dev-token-btn" type="button" onclick="window.__USG_DEV_TOOLS__.toggleTokenPanel()" style="margin-top:10px;padding:8px 10px;border-radius:10px;border:1px solid rgba(148,163,184,.25);background:transparent;color:inherit;font-size:12px;cursor:pointer;opacity:.75;">
     Show Token
   </button>
+  
           <div>usg-data-server · v1.0.0</div>
           <div>development · ./database.sqlite</div>
         </div>
@@ -330,15 +331,43 @@ try {
 } catch {}
 
 
+
+
+
 try {
-  window.__USG_DEV_TOOLS__ = window.__USG_DEV_TOOLS__ || {
-    showToken() {
+  window.__USG_DEV_TOOLS__ = {
+    toggleTokenPanel() {
       try {
-        const token = localStorage.getItem('usg_token') || '';
-        alert(token || 'No token found');
-      } catch (e) {
-        alert('No token found');
-      }
+        const token = localStorage.getItem('usg_token') || 'No token found';
+        let panel = document.getElementById('dev-token-panel');
+        const footer = document.querySelector('.sidebar-footer');
+
+        if (!footer) return;
+
+        if (!panel) {
+          panel = document.createElement('div');
+          panel.id = 'dev-token-panel';
+          panel.style.marginTop = '12px';
+          panel.style.padding = '10px';
+          panel.style.borderRadius = '12px';
+          panel.style.fontSize = '11px';
+          panel.style.lineHeight = '1.45';
+          panel.style.wordBreak = 'break-all';
+          panel.style.maxHeight = '140px';
+          panel.style.overflow = 'auto';
+          panel.style.background = 'rgba(0,0,0,0.05)';
+          panel.style.border = '1px solid rgba(148,163,184,.20)';
+          panel.style.display = 'none';
+          footer.appendChild(panel);
+        }
+
+        if (panel.style.display === 'none') {
+          panel.textContent = token;
+          panel.style.display = 'block';
+        } else {
+          panel.style.display = 'none';
+        }
+      } catch (e) {}
     }
   };
 } catch {}
