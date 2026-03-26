@@ -23,6 +23,8 @@
         position: relative;
         display: inline-flex;
         align-items: center;
+        isolation: isolate;
+        z-index: 2000;
       }
 
       .usg-bell-btn {
@@ -44,8 +46,8 @@
 
       .usg-bell-badge {
         position: absolute;
-        top: 0;
-        right: 0;
+        top: -4px;
+        right: -4px;
         min-width: 18px;
         height: 18px;
         border-radius: 999px;
@@ -61,19 +63,21 @@
       }
 
       .usg-bell-panel {
-        position: absolute;
-        top: calc(100% + 10px);
-        right: 0;
-        width: min(380px, 92vw);
-        max-height: 460px;
+        position: fixed;
+        top: 88px;
+        right: 28px;
+        width: min(420px, calc(100vw - 24px));
+        max-height: min(70vh, 520px);
         overflow-y: auto;
         border-radius: 18px;
         padding: 14px;
-        z-index: 9999;
-        background: rgba(15,23,42,0.96);
+        z-index: 99999;
+        background: rgba(15,23,42,0.97);
         border: 1px solid rgba(255,255,255,0.08);
         box-shadow: 0 20px 40px rgba(0,0,0,0.22);
         display: none;
+        backdrop-filter: blur(16px) saturate(140%);
+        -webkit-backdrop-filter: blur(16px) saturate(140%);
       }
 
       .usg-bell-panel.open {
@@ -86,6 +90,11 @@
         justify-content: space-between;
         gap: 10px;
         margin-bottom: 10px;
+        position: sticky;
+        top: 0;
+        background: inherit;
+        z-index: 2;
+        padding-bottom: 6px;
       }
 
       .usg-bell-head h3 {
@@ -100,7 +109,8 @@
       }
 
       .usg-bell-link,
-      .usg-bell-markall {
+      .usg-bell-markall,
+      .usg-bell-refresh {
         border: 0;
         background: rgba(255,255,255,0.08);
         color: inherit;
@@ -109,6 +119,17 @@
         cursor: pointer;
         text-decoration: none;
         font-size: 12px;
+      }
+
+      .usg-bell-search {
+        width: 100%;
+        border-radius: 12px;
+        border: 1px solid rgba(255,255,255,0.08);
+        background: rgba(255,255,255,0.05);
+        color: inherit;
+        padding: 10px 12px;
+        margin: 6px 0 12px;
+        outline: none;
       }
 
       .usg-bell-list {
@@ -141,6 +162,20 @@
         margin-top: 6px;
       }
 
+      .usg-bell-tags {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 8px;
+      }
+
+      .usg-bell-tag {
+        font-size: 11px;
+        padding: 4px 8px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.08);
+      }
+
       .usg-bell-empty {
         padding: 14px;
         border-radius: 14px;
@@ -150,7 +185,7 @@
       }
 
       :root[data-theme="light"] .usg-bell-panel {
-        background: rgba(255,255,255,0.96);
+        background: rgba(255,255,255,0.98);
         color: #0f172a;
         border: 1px solid rgba(15,23,42,0.08);
         box-shadow: 0 18px 38px rgba(15,23,42,0.12);
@@ -167,11 +202,35 @@
       }
 
       :root[data-theme="light"] .usg-bell-link,
-      :root[data-theme="light"] .usg-bell-markall {
+      :root[data-theme="light"] .usg-bell-markall,
+      :root[data-theme="light"] .usg-bell-refresh {
         background: rgba(15,23,42,0.06);
+      }
+
+      :root[data-theme="light"] .usg-bell-search {
+        background: rgba(15,23,42,0.04);
+        border-color: rgba(15,23,42,0.08);
+        color: #0f172a;
+      }
+
+      @media (max-width: 900px) {
+        .usg-bell-panel {
+          top: 78px;
+          right: 12px;
+          left: auto;
+          width: min(400px, calc(100vw - 24px));
+        }
       }
     `;
     document.head.appendChild(style);
+  }
+
+  function levelClass(level) {
+    const v = String(level || '').toLowerCase();
+    if (['error', 'failed', 'critical'].includes(v)) return 'error';
+    if (['warning', 'warn'].includes(v)) return 'warning';
+    if (['success', 'ok'].includes(v)) return 'success';
+    return 'info';
   }
 
   function panelItemHtml(item) {
@@ -180,23 +239,47 @@
     const source = item?.source || 'system';
     const time = item?.createdAt || '-';
     const unread = !item?.read ? ' unread' : '';
+    const level = item?.level || 'info';
+    const tagClass = levelClass(level);
     return `
       <div class="usg-bell-item${unread}">
         <strong>${title}</strong>
         <div>${message}</div>
-        <div class="usg-bell-meta">${source} · ${time}</div>
+        <div class="usg-bell-tags">
+          <span class="usg-bell-tag">${source}</span>
+          <span class="usg-bell-tag">${tagClass}</span>
+          ${!item?.read ? '<span class="usg-bell-tag">unread</span>' : ''}
+        </div>
+        <div class="usg-bell-meta">${time}</div>
       </div>
     `;
+  }
+
+  async function fetchPayload() {
+    return await safeJson('/api/notifications');
   }
 
   async function refreshBell() {
     const badge = document.getElementById('usg-bell-badge');
     const list = document.getElementById('usg-bell-list');
+    const search = document.getElementById('usg-bell-search');
     if (!badge || !list) return;
 
-    const payload = await safeJson('/api/notifications');
+    const payload = await fetchPayload();
     const rows = Array.isArray(payload.notifications) ? payload.notifications : [];
     const unread = Number(payload.unread || 0);
+    const q = String(search?.value || '').trim().toLowerCase();
+
+    const filtered = rows.filter((item) => {
+      if (!q) return true;
+      const hay = [
+        item?.title || '',
+        item?.message || '',
+        item?.source || '',
+        item?.level || ''
+      ].join(' ').toLowerCase();
+      return hay.includes(q);
+    });
 
     if (unread > 0) {
       badge.textContent = unread > 99 ? '99+' : String(unread);
@@ -205,8 +288,8 @@
       badge.style.display = 'none';
     }
 
-    list.innerHTML = rows.length
-      ? rows.slice(0, 8).map(panelItemHtml).join('')
+    list.innerHTML = filtered.length
+      ? filtered.slice(0, 10).map(panelItemHtml).join('')
       : '<div class="usg-bell-empty">No notifications found.</div>';
   }
 
@@ -214,7 +297,7 @@
     const panel = document.getElementById('usg-bell-panel');
     const wrap = document.getElementById('usg-bell-wrap');
     if (!panel || !wrap) return;
-    if (!wrap.contains(event.target)) {
+    if (!wrap.contains(event.target) && !panel.contains(event.target)) {
       panel.classList.remove('open');
     }
   }
@@ -243,32 +326,46 @@
         🔔
         <span class="usg-bell-badge" id="usg-bell-badge" style="display:none">0</span>
       </button>
+    `;
 
-      <div class="usg-bell-panel" id="usg-bell-panel">
-        <div class="usg-bell-head">
-          <h3>Notifications</h3>
-          <div class="usg-bell-actions">
-            <button class="usg-bell-markall" id="usg-bell-markall" type="button">Mark All Read</button>
-            <a class="usg-bell-link" href="/pages/notifications.html">Open Page</a>
-          </div>
+    const panel = document.createElement('div');
+    panel.className = 'usg-bell-panel';
+    panel.id = 'usg-bell-panel';
+    panel.innerHTML = `
+      <div class="usg-bell-head">
+        <h3>Notifications</h3>
+        <div class="usg-bell-actions">
+          <button class="usg-bell-refresh" id="usg-bell-refresh" type="button">Refresh</button>
+          <button class="usg-bell-markall" id="usg-bell-markall" type="button">Mark All Read</button>
+          <a class="usg-bell-link" href="/pages/notifications.html">Open Page</a>
         </div>
-        <div class="usg-bell-list" id="usg-bell-list"></div>
       </div>
+      <input class="usg-bell-search" id="usg-bell-search" placeholder="Search notifications">
+      <div class="usg-bell-list" id="usg-bell-list"></div>
     `;
 
     host.prepend(wrap);
+    document.body.appendChild(panel);
 
     document.getElementById('usg-bell-btn').addEventListener('click', async () => {
-      const panel = document.getElementById('usg-bell-panel');
-      if (!panel) return;
-      panel.classList.toggle('open');
-      if (panel.classList.contains('open')) {
+      const panelEl = document.getElementById('usg-bell-panel');
+      if (!panelEl) return;
+      panelEl.classList.toggle('open');
+      if (panelEl.classList.contains('open')) {
         await refreshBell();
       }
     });
 
+    document.getElementById('usg-bell-refresh').addEventListener('click', async () => {
+      await refreshBell();
+    });
+
     document.getElementById('usg-bell-markall').addEventListener('click', async () => {
       await safeJson('/api/notifications/mark-all-read', { method: 'POST' });
+      await refreshBell();
+    });
+
+    document.getElementById('usg-bell-search').addEventListener('input', async () => {
       await refreshBell();
     });
 
