@@ -316,3 +316,12 @@ setTimeout(() => {
     }
   } catch {}
 }, 120);
+
+try {
+  if (!document.querySelector('script[data-usg-topbar-notifications]')) {
+    const script = document.createElement('script');
+    script.src = '/js/shared/topbar-notifications.js';
+    script.setAttribute('data-usg-topbar-notifications', '1');
+    document.body.appendChild(script);
+  }
+} catch {}
