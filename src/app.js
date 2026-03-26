@@ -250,3 +250,5 @@ app.use(notFoundHandler);
 app.use(errorHandler);
 
 module.exports = app;
+
+app.use("/api/notifications", require("./modules/notifications/routes/notification.routes"));
