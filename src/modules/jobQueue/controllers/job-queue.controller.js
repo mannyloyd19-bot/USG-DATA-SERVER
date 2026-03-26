@@ -1,4 +1,5 @@
 const JobQueue = require('../models/job-queue.model');
+const notificationTrigger = require('../../notifications/services/notification-trigger.service');
 
 exports.list = async (req, res) => {
   try {

@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const sequelize = require('../../../core/database');
 const backupService = require('../services/backup.service');
+const notificationTrigger = require('../../notifications/services/notification-trigger.service');
 
 exports.create = async (req, res) => {
   try {
@@ -11,6 +12,7 @@ exports.create = async (req, res) => {
       backup: item
     });
   } catch (error) {
+    notificationTrigger.backupFailed({ message: error.message });
     return res.status(500).json({
       message: 'Failed to create backup',
       error: error.message
@@ -23,6 +25,7 @@ exports.findAll = async (req, res) => {
     const items = await backupService.listBackups();
     return res.json(items);
   } catch (error) {
+    notificationTrigger.backupFailed({ message: error.message });
     return res.status(500).json({
       message: 'Failed to fetch backups',
       error: error.message
@@ -53,6 +56,7 @@ exports.restore = async (req, res) => {
       databasePath: dbPath
     });
   } catch (error) {
+    notificationTrigger.backupFailed({ message: error.message });
     return res.status(500).json({
       message: 'Failed to prepare restore',
       error: error.message

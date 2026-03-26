@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const notificationTrigger = require('../../notifications/services/notification-trigger.service');
 
 function ensureDir(dirPath) {
   if (!fs.existsSync(dirPath)) {

@@ -3,6 +3,7 @@ const path = require('path');
 const BackupJob = require('../models/backup-job.model');
 const BackupConfig = require('../models/backup-config.model');
 const backupService = require('../services/backup.service');
+const notificationTrigger = require('../../notifications/services/notification-trigger.service');
 
 exports.status = async (req, res) => {
   try {
@@ -27,6 +28,7 @@ exports.status = async (req, res) => {
       jobs: mapped
     });
   } catch (error) {
+    notificationTrigger.backupFailed({ message: error.message });
     return res.status(500).json({
       success: false,
       message: 'Failed to load backup status',
@@ -44,6 +46,7 @@ exports.runNow = async (req, res) => {
       job
     });
   } catch (error) {
+    notificationTrigger.backupFailed({ message: error.message });
     return res.status(500).json({
       success: false,
       message: 'Backup failed',
@@ -70,6 +73,7 @@ exports.saveConfig = async (req, res) => {
       config: cfg
     });
   } catch (error) {
+    notificationTrigger.backupFailed({ message: error.message });
     return res.status(500).json({
       success: false,
       message: 'Failed to save backup config',
@@ -89,6 +93,7 @@ exports.enableAuto = async (req, res) => {
       config: cfg
     });
   } catch (error) {
+    notificationTrigger.backupFailed({ message: error.message });
     return res.status(500).json({
       success: false,
       message: 'Failed to enable auto backup',
@@ -107,6 +112,7 @@ exports.disableAuto = async (req, res) => {
       config: cfg
     });
   } catch (error) {
+    notificationTrigger.backupFailed({ message: error.message });
     return res.status(500).json({
       success: false,
       message: 'Failed to disable auto backup',
