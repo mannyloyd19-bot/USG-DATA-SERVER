@@ -7,6 +7,7 @@ router.use(auth);
 
 router.get("/", ctrl.list);
 router.post("/", ctrl.create);
+router.post("/test-seed", ctrl.testSeed);
 router.patch("/:id/read", ctrl.markRead);
 router.post("/mark-all-read", ctrl.markAllRead);
 router.delete("/:id", ctrl.remove);
