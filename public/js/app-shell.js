@@ -240,6 +240,9 @@ try {
         ${renderGroupedNav(current)}
 
         <div class="sidebar-footer">
+  <button id="dev-token-btn" type="button" onclick="window.__USG_DEV_TOOLS__.showToken()" style="margin-top:10px;padding:8px 10px;border-radius:10px;border:1px solid rgba(148,163,184,.25);background:transparent;color:inherit;font-size:12px;cursor:pointer;opacity:.75;">
+    Show Token
+  </button>
           <div>usg-data-server · v1.0.0</div>
           <div>development · ./database.sqlite</div>
         </div>
@@ -324,4 +327,18 @@ try {
     script.setAttribute('data-usg-topbar-notifications', '1');
     document.body.appendChild(script);
   }
+} catch {}
+
+
+try {
+  window.__USG_DEV_TOOLS__ = window.__USG_DEV_TOOLS__ || {
+    showToken() {
+      try {
+        const token = localStorage.getItem('usg_token') || '';
+        alert(token || 'No token found');
+      } catch (e) {
+        alert('No token found');
+      }
+    }
+  };
 } catch {}
