@@ -102,7 +102,8 @@ try {
         ['/pages/query-builder.html', 'Query Builder'],
         ['/pages/sdk.html', 'SDK'],
         ['/pages/settings.html', 'Settings'],
-        ['/pages/docs.html', 'Docs']
+        ['/pages/docs.html', 'Docs'],
+        ['/pages/notifications.html', 'Notifications']
       ]
     },
     {
