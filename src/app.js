@@ -246,9 +246,8 @@ app.use('/api/domain-diagnostics', domainDiagnosticsRoutes);
 app.use('/api/auth-security', authSecurityRoutes);
 app.use('/api/storage-admin', storageAdminRoutes);
 app.use('/api/records', recordRoutes);
+app.use('/api/notifications', require('./modules/notifications/routes/notification.routes'));
 app.use(notFoundHandler);
 app.use(errorHandler);
 
 module.exports = app;
-
-app.use("/api/notifications", require("./modules/notifications/routes/notification.routes"));
