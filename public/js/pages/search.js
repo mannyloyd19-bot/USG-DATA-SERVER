@@ -6,19 +6,33 @@ async function search(q) {
   return await res.json();
 }
 
+function escapeHtml(value) {
+  return String(value || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function resolveLink(item) {
+  if (item.link) return item.link;
+  if (item.type === 'user') return '/pages/users.html';
+  if (item.type === 'collection') return '/pages/collections.html';
+  if (item.type === 'record') return '/pages/records.html';
+  if (item.type === 'file') return '/pages/files.html';
+  if (item.type === 'tenant') return '/pages/tenants.html';
+  if (item.type === 'notification') return '/pages/notifications.html';
+  return '#';
+}
+
 function resultCard(item) {
-  let link = '#';
-
-  if (item.type === 'user') link = '/pages/users.html';
-  if (item.type === 'collection') link = '/pages/collections.html';
-  if (item.type === 'record') link = '/pages/records.html';
-  if (item.type === 'file') link = '/pages/files.html';
-  if (item.type === 'notification') link = '/pages/notifications.html';
-
+  const link = resolveLink(item);
   return `
     <div class="list-card">
-      <strong>${item.name}</strong><br>
-      <span class="muted">${item.type}</span><br>
+      <strong>${escapeHtml(item.name)}</strong><br>
+      <span class="muted">${escapeHtml(item.type)}</span><br>
+      ${item.subtitle ? `<div class="muted" style="margin:6px 0 10px 0">${escapeHtml(item.subtitle)}</div>` : ''}
       <a href="${link}" class="ghost-btn">Open</a>
     </div>
   `;
@@ -30,7 +44,7 @@ async function render() {
   USGPageKit.setPageHeader({
     kicker: 'TOOLS',
     title: 'Global Search',
-    subtitle: 'Search across the entire data server'
+    subtitle: 'Search across users, collections, records, files, and tenants'
   });
 
   content.innerHTML = `
@@ -46,8 +60,11 @@ async function render() {
   const input = document.getElementById('search-box');
   const resultsDiv = document.getElementById('results');
 
+  let currentToken = 0;
+
   input.oninput = async () => {
-    const q = input.value;
+    const q = input.value.trim();
+    const token = ++currentToken;
 
     if (!q) {
       resultsDiv.innerHTML = `<div class="muted">Start typing to search...</div>`;
@@ -56,14 +73,24 @@ async function render() {
 
     resultsDiv.innerHTML = `<div class="muted">Searching...</div>`;
 
-    const data = await search(q);
+    try {
+      const data = await search(q);
 
-    if (!data.results.length) {
-      resultsDiv.innerHTML = `<div class="muted">No results</div>`;
-      return;
+      if (token !== currentToken) return;
+
+      if (!data.results || !data.results.length) {
+        resultsDiv.innerHTML = `<div class="muted">No results</div>`;
+        return;
+      }
+
+      resultsDiv.innerHTML = `
+        <div class="muted" style="margin-bottom:12px">Found ${data.count} result(s)</div>
+        ${data.results.map(resultCard).join('')}
+      `;
+    } catch (error) {
+      if (token !== currentToken) return;
+      resultsDiv.innerHTML = `<div class="muted">Search failed</div>`;
     }
-
-    resultsDiv.innerHTML = data.results.map(resultCard).join('');
   };
 }
 

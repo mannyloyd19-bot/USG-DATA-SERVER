@@ -11,6 +11,7 @@ const bcrypt = require('bcrypt');
 const app = require('./app');
 const env = require('./core/utils/env');
 const sequelize = require('./core/database');
+const { DB_STORAGE } = require('./core/utils/paths');
 
 const User = require('./modules/users/models/user.model');
 const Permission = require('./modules/permissions/models/permission.model');
@@ -62,8 +63,8 @@ require('./modules/invoices/models/invoice.model');
 let server = null;
 
 function applyPendingRestore() {
-  const restoreFile = path.join(process.cwd(), 'database.sqlite.restore_pending');
-  const dbFile = path.join(process.cwd(), 'database.sqlite');
+  const restoreFile = `${DB_STORAGE}.restore_pending`;
+  const dbFile = DB_STORAGE;
 
   if (fs.existsSync(restoreFile)) {
     fs.copyFileSync(restoreFile, dbFile);

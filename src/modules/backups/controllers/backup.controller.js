@@ -1,65 +1,43 @@
 const fs = require('fs');
 const path = require('path');
-const sequelize = require('../../../core/database');
 const backupService = require('../services/backup.service');
-const notificationTrigger = require('../../notifications/services/notification-trigger.service');
+const { DB_STORAGE, BACKUP_DIR } = require('../../../core/utils/paths');
 
 exports.create = async (req, res) => {
   try {
-    const item = await backupService.createBackup();
-    return res.status(201).json({
-      message: 'Backup created successfully',
-      backup: item
-    });
+    const backup = await backupService.createBackup();
+    return res.status(201).json({ success: true, backup });
   } catch (error) {
-    notificationTrigger.backupFailed({ message: error.message });
-    return res.status(500).json({
-      message: 'Failed to create backup',
-      error: error.message
-    });
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
 
 exports.findAll = async (req, res) => {
   try {
-    const items = await backupService.listBackups();
-    return res.json(items);
+    const backups = await backupService.listBackups();
+    return res.json({ success: true, backups });
   } catch (error) {
-    notificationTrigger.backupFailed({ message: error.message });
-    return res.status(500).json({
-      message: 'Failed to fetch backups',
-      error: error.message
-    });
+    return res.status(500).json({ success: false, message: 'Failed to fetch backups', error: error.message });
   }
 };
 
 exports.restore = async (req, res) => {
   try {
-    const filename = req.params.filename;
-    const backupsDir = path.join(process.cwd(), 'backups');
-    const dbPath = path.join(process.cwd(), 'database.sqlite');
-    const source = path.join(backupsDir, filename);
+    const { filename } = req.params;
+    const source = path.join(BACKUP_DIR, filename);
+    const restoreMarker = `${DB_STORAGE}.restore_pending`;
 
     if (!fs.existsSync(source)) {
-      return res.status(404).json({ message: 'Backup file not found' });
+      return res.status(404).json({ success: false, message: 'Backup file not found' });
     }
-
-    const restoreMarker = path.join(process.cwd(), 'database.sqlite.restore_pending');
 
     fs.copyFileSync(source, restoreMarker);
 
     return res.json({
       success: true,
-      message: 'Restore prepared successfully. Restart the server to apply the restored database.',
-      restoreFile: restoreMarker,
-      sourceBackup: filename,
-      databasePath: dbPath
+      message: 'Restore scheduled. Restart the server to apply the selected backup.'
     });
   } catch (error) {
-    notificationTrigger.backupFailed({ message: error.message });
-    return res.status(500).json({
-      message: 'Failed to prepare restore',
-      error: error.message
-    });
+    return res.status(500).json({ success: false, message: error.message });
   }
 };

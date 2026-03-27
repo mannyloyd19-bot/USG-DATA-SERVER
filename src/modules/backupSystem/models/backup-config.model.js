@@ -15,7 +15,7 @@ const BackupConfig = sequelize.define('BackupConfig', {
   sourceDbPath: {
     type: DataTypes.STRING,
     allowNull: false,
-    defaultValue: './database.sqlite'
+    defaultValue: 'storage/database.sqlite'
   },
   autoEnabled: {
     type: DataTypes.BOOLEAN,

@@ -1,16 +1,15 @@
-const path = require('path');
 const fs = require('fs');
 const cron = require('node-cron');
 const backupService = require('./backup.service');
+const { BACKUP_DIR } = require('../../../core/utils/paths');
 
 function cleanupOldBackups(keepCount) {
-  const backupsDir = path.join(process.cwd(), 'backups');
-  if (!fs.existsSync(backupsDir)) return;
+  if (!fs.existsSync(BACKUP_DIR)) return;
 
-  const files = fs.readdirSync(backupsDir)
+  const files = fs.readdirSync(BACKUP_DIR)
     .filter(name => name.endsWith('.sqlite'))
     .map(name => {
-      const full = path.join(backupsDir, name);
+      const full = require('path').join(BACKUP_DIR, name);
       const stats = fs.statSync(full);
       return { name, full, createdAt: stats.birthtimeMs };
     })

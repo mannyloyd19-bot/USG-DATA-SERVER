@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const BackupJob = require('../models/backup-job.model');
 const BackupConfig = require('../models/backup-config.model');
+const { DB_STORAGE, BACKUP_DIR } = require('../../../core/utils/paths');
 
 let timerRef = null;
 
@@ -20,8 +21,8 @@ async function getConfig() {
   let cfg = await BackupConfig.findOne({ order: [['createdAt', 'DESC']] });
   if (!cfg) {
     cfg = await BackupConfig.create({
-      backupDir: 'storage/backups',
-      sourceDbPath: process.env.DB_STORAGE || './database.sqlite',
+      backupDir: BACKUP_DIR,
+      sourceDbPath: DB_STORAGE,
       autoEnabled: false,
       intervalMinutes: 60,
       retentionCount: 10
@@ -53,8 +54,8 @@ async function cleanupRetention(cfg) {
 async function runBackup(triggerType = 'manual', notes = '') {
   const cfg = await getConfig();
 
-  const backupDir = path.resolve(cfg.backupDir || 'storage/backups');
-  const sourceDbPath = path.resolve(cfg.sourceDbPath || './database.sqlite');
+  const backupDir = path.resolve(cfg.backupDir || BACKUP_DIR);
+  const sourceDbPath = path.resolve(cfg.sourceDbPath || DB_STORAGE);
 
   if (!fs.existsSync(backupDir)) {
     fs.mkdirSync(backupDir, { recursive: true });

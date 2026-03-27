@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const notificationTrigger = require('../../notifications/services/notification-trigger.service');
+const { DB_STORAGE, BACKUP_DIR } = require('../../../core/utils/paths');
 
 function ensureDir(dirPath) {
   if (!fs.existsSync(dirPath)) {
@@ -9,19 +9,17 @@ function ensureDir(dirPath) {
 }
 
 exports.createBackup = async () => {
-  const dbPath = path.join(process.cwd(), 'database.sqlite');
-  const backupsDir = path.join(process.cwd(), 'backups');
-  ensureDir(backupsDir);
+  ensureDir(BACKUP_DIR);
 
-  if (!fs.existsSync(dbPath)) {
+  if (!fs.existsSync(DB_STORAGE)) {
     throw new Error('Database file not found');
   }
 
   const stamp = new Date().toISOString().replace(/[:.]/g, '-');
   const filename = `backup-${stamp}.sqlite`;
-  const target = path.join(backupsDir, filename);
+  const target = path.join(BACKUP_DIR, filename);
 
-  fs.copyFileSync(dbPath, target);
+  fs.copyFileSync(DB_STORAGE, target);
 
   const stats = fs.statSync(target);
 
@@ -34,13 +32,12 @@ exports.createBackup = async () => {
 };
 
 exports.listBackups = async () => {
-  const backupsDir = path.join(process.cwd(), 'backups');
-  ensureDir(backupsDir);
+  ensureDir(BACKUP_DIR);
 
-  const files = fs.readdirSync(backupsDir)
+  const files = fs.readdirSync(BACKUP_DIR)
     .filter(name => name.endsWith('.sqlite'))
     .map(name => {
-      const full = path.join(backupsDir, name);
+      const full = path.join(BACKUP_DIR, name);
       const stats = fs.statSync(full);
       return {
         filename: name,
