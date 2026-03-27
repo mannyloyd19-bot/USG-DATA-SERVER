@@ -1,0 +1,140 @@
+public/js/pages/api-key-analytics.js:77:            : `<div class="muted">No route analytics found.</div>`}
+public/js/pages/api-key-analytics.js:88:            : `<div class="muted">No key analytics found.</div>`}
+public/js/pages/api-key-logs-shell.js:22:      list.innerHTML = '<div class="muted">No API key logs found yet.</div>';
+public/js/pages/api-key-logs.js:34:  searchWrap.innerHTML = USGPageKit.searchToolbar({ placeholder: 'Search API logs...' });
+public/js/pages/api-key-logs.js:50:    `).join('') : USGPageKit.emptyState({ title: 'No API key logs found' });
+public/js/pages/api-keys-shell.js:111:      `).join('') || '<div class="muted">No API keys found.</div>';
+public/js/pages/api-keys-shell.js:29:          <input id="api-key-name" placeholder="API key name" required>
+public/js/pages/api-keys-shell.js:30:          <input id="api-key-owner" placeholder="Owner / team / app">
+public/js/pages/api-keys-shell.js:31:          <input id="api-key-purpose" placeholder="Purpose">
+public/js/pages/api-keys-shell.js:38:            <input id="api-key-expires" type="datetime-local" placeholder="Expires At">
+public/js/pages/api-keys-shell.js:52:          <input id="api-key-scopes" placeholder="Scopes, comma-separated">
+public/js/pages/api-keys-shell.js:53:          <input id="api-key-ip-whitelist" placeholder="IP whitelist, comma-separated">
+public/js/pages/api-keys.js:62:  searchWrap.innerHTML = USGPageKit.searchToolbar({ placeholder: 'Search API keys...' });
+public/js/pages/api-keys.js:83:    `).join('') : USGPageKit.emptyState({ title: 'No API keys found' });
+public/js/pages/app-logs.js:86:      ${apps.length ? apps.map(appCard).join('') : '<div class="muted">No apps found.</div>'}
+public/js/pages/apps.js:11:        <input id="name" placeholder="App name">
+public/js/pages/apps.js:12:        <input id="port" placeholder="Port">
+public/js/pages/apps.js:13:        <input id="domain" placeholder="domain.usg">
+public/js/pages/apps.js:14:        <input id="entry" placeholder="entry file (app.js)">
+public/js/pages/audit-logs.js:33:  searchWrap.innerHTML = USGPageKit.searchToolbar({ placeholder: 'Search audit logs...' });
+public/js/pages/audit-logs.js:48:    `).join('') : USGPageKit.emptyState({ title: 'No audit logs found' });
+public/js/pages/auth-providers.js:75:    `).join('') : USGPageKit.emptyState({ title: 'No providers found' });
+public/js/pages/auth-security.js:128:      ${sessions.length ? sessions.map(sessionCard).join('') : '<div class="muted">No sessions found.</div>'}
+public/js/pages/auth-security.js:138:      ${providers.length ? providers.map(providerCard).join('') : '<div class="muted">No auth providers found.</div>'}
+public/js/pages/backup-restore.js:12:    subtitle: 'Use backup monitor, backups, and restore tools from this operational entry point.'
+public/js/pages/backup-restore.js:19:      <div class="muted">Use backup monitor, backups, and restore tools from this operational entry point.</div>
+public/js/pages/backup-system.js:26:          <input id="backupDir" placeholder="Backup directory">
+public/js/pages/backup-system.js:27:          <input id="sourceDbPath" placeholder="Source DB path">
+public/js/pages/backup-system.js:29:            <input id="intervalMinutes" type="number" placeholder="Interval minutes">
+public/js/pages/backup-system.js:30:            <input id="retentionCount" type="number" placeholder="Retention count">
+public/js/pages/backup-system.js:90:    `).join('') || '<div class="muted">No backups found.</div>';
+public/js/pages/backups.js:58:    `).join('') : USGPageKit.emptyState({ title: 'No backups found' });
+public/js/pages/collections.js:51:  searchWrap.innerHTML = USGPageKit.searchToolbar({ placeholder: 'Search collections...' });
+public/js/pages/collections.js:72:    `).join('') : USGPageKit.emptyState({ title: 'No collections found' });
+public/js/pages/deployment-diagnostics.js:101:      ${deployments.length ? deployments.map(deploymentCard).join('') : '<div class="muted">No deployments found.</div>'}
+public/js/pages/deployments.js:18:          <input id="appName" placeholder="App name" required>
+public/js/pages/deployments.js:19:          <input id="appPath" placeholder="/workspaces/MY-APP" required>
+public/js/pages/deployments.js:20:          <input id="pm2Name" placeholder="PM2 name" required>
+public/js/pages/deployments.js:21:          <input id="port" type="number" placeholder="Port (optional)">
+public/js/pages/deployments.js:22:          <input id="domain" placeholder="domain.usg or subdomain">
+public/js/pages/deployments.js:23:          <input id="buildCommand" placeholder="Build command (example: npm install && npm run build)">
+public/js/pages/deployments.js:24:          <input id="startCommand" placeholder="Start command (example: npm run dev)" value="npm run dev">
+public/js/pages/deployments.js:77:    `).join('') || '<div class="muted">No deployments found.</div>';
+public/js/pages/diagnostics-console.js:156:            : USGPageKit.emptyState({ title: 'No diagnostics logs found' })
+public/js/pages/domains.js:267:  toolbarWrap.innerHTML = USGPageKit.searchToolbar({ placeholder: 'Search domains...' });
+public/js/pages/domains.js:70:    <input id="d-name" placeholder="Domain (.usg)" style="width:100%;margin:8px 0;padding:14px;border-radius:14px;border:1px solid rgba(255,255,255,.14);background:#111827;color:#fff">
+public/js/pages/domains.js:71:    <input id="d-service" placeholder="Service Name" style="width:100%;margin:8px 0;padding:14px;border-radius:14px;border:1px solid rgba(255,255,255,.14);background:#111827;color:#fff">
+public/js/pages/domains.js:72:    <input id="d-route" placeholder="/website" style="width:100%;margin:8px 0;padding:14px;border-radius:14px;border:1px solid rgba(255,255,255,.14);background:#111827;color:#fff">
+public/js/pages/domains.js:85:    <textarea id="d-notes" placeholder="Notes" style="width:100%;margin:8px 0;padding:14px;border-radius:14px;border:1px solid rgba(255,255,255,.14);background:#111827;color:#fff;min-height:90px"></textarea>
+public/js/pages/enterprise-db-shell.js:19:          <input id="source-dialect" placeholder="Source Dialect" value="sqlite">
+public/js/pages/enterprise-db-shell.js:26:            <input id="target-host" placeholder="Target Host" value="127.0.0.1">
+public/js/pages/enterprise-db-shell.js:30:            <input id="target-port" placeholder="Target Port">
+public/js/pages/enterprise-db-shell.js:31:            <input id="target-database" placeholder="Target Database">
+public/js/pages/enterprise-db-shell.js:35:            <input id="target-username" placeholder="Target Username">
+public/js/pages/enterprise-db-shell.js:36:            <input id="target-password" placeholder="Target Password" type="password">
+public/js/pages/enterprise-db-shell.js:39:          <textarea id="migration-notes" rows="5" placeholder="Notes / migration remarks"></textarea>
+public/js/pages/env-manager.js:18:      <input id="env-key" placeholder="ENV KEY">
+public/js/pages/env-manager.js:19:      <input id="env-value" placeholder="ENV VALUE">
+public/js/pages/env-manager.js:41:    `).join('') : USGPageKit.emptyState({ title: 'No env variables found' });
+public/js/pages/fields.js:120:    wrap.innerHTML = USGPageKit.emptyState({ title: 'No collections found' });
+public/js/pages/fields.js:136:      ${rows.length ? rows.map(fieldCard).join('') : USGPageKit.emptyState({ title: 'No fields found' })}
+public/js/pages/files.js:42:  searchWrap.innerHTML = USGPageKit.searchToolbar({ placeholder: 'Search files...' });
+public/js/pages/files.js:62:    `).join('') : USGPageKit.emptyState({ title: 'No files found' });
+public/js/pages/functions.js:69:    `).join('') : USGPageKit.emptyState({ title: 'No functions found' });
+public/js/pages/index-manager.js:25:          <input id="collectionKey" placeholder="Collection key" required>
+public/js/pages/index-manager.js:26:          <input id="indexName" placeholder="Index name" required>
+public/js/pages/index-manager.js:27:          <input id="fields" placeholder="Fields, comma-separated">
+public/js/pages/index-manager.js:38:          <textarea id="notes" rows="4" placeholder="Notes"></textarea>
+public/js/pages/index-manager.js:87:    `).join('') || '<div class="muted">No indexes found.</div>';
+public/js/pages/infrastructure-shell.js:35:          <input id="infra-custom-domain" placeholder="Custom domain (example: api.company.com)">
+public/js/pages/infrastructure-shell.js:36:          <input id="infra-subdomain" placeholder="Internal alias (example: api.usg)">
+public/js/pages/infrastructure-shell.js:38:            <input id="infra-ddns-provider" placeholder="DDNS provider (duckdns)">
+public/js/pages/infrastructure-shell.js:39:            <input id="infra-ddns-domain" placeholder="example.duckdns.org">
+public/js/pages/infrastructure-shell.js:41:          <input id="infra-ddns-token" placeholder="DuckDNS token">
+public/js/pages/infrastructure-shell.js:43:            <input id="infra-app-port" type="number" placeholder="App port">
+public/js/pages/infrastructure-shell.js:44:            <input id="infra-public-port" type="number" placeholder="Public port">
+public/js/pages/infrastructure-shell.js:56:          <textarea id="infra-notes" rows="4" placeholder="Notes / deployment remarks"></textarea>
+public/js/pages/invoices.js:73:    `).join('') : USGPageKit.emptyState({ title: 'No invoices found' });
+public/js/pages/log-viewer.js:136:          <input id="lv-search" placeholder="Search message, source, or level" value="${logViewerSearch.replaceAll('"', '&quot;')}" style="width:100%;margin-top:6px">
+public/js/pages/network-center.js:18:          <input id="router-ip" placeholder="Router IP (example: 192.168.1.1)">
+public/js/pages/network-center.js:19:          <input id="local-server-ip" placeholder="Local server IP (example: 192.168.1.10)">
+public/js/pages/network-center.js:21:            <input id="app-port" type="number" placeholder="App port">
+public/js/pages/network-center.js:22:            <input id="public-port" type="number" placeholder="Public port">
+public/js/pages/network-center.js:36:          <input id="domain-gateway" placeholder="Domain gateway / public host">
+public/js/pages/network-center.js:37:          <input id="ddns-domain" placeholder="DDNS domain (example: yourname.duckdns.org)">
+public/js/pages/network-center.js:48:          <textarea id="network-notes" rows="4" placeholder="Network notes / router remarks"></textarea>
+public/js/pages/notifications.js:136:          <input id="ntf-search" placeholder="Search title, message, source" value="${searchQuery.replaceAll('"', '&quot;')}" style="width:100%;margin-top:6px">
+public/js/pages/payment-gateways.js:40:    `).join('') : USGPageKit.emptyState({ title: 'No gateways found' });
+public/js/pages/payments.js:96:    `).join('') : USGPageKit.emptyState({ title: 'No payments found' });
+public/js/pages/permissions.js:161:      USGPageKit.emptyState({ title: 'No permissions found for the current view' })
+public/js/pages/query-builder-advanced.js:20:        <input id="qb-name" placeholder="Saved query name">
+public/js/pages/query-builder-advanced.js:21:        <input id="qb-collection" placeholder="Collection key">
+public/js/pages/query-builder-advanced.js:22:        <input id="qb-filter-field" placeholder="Filter field (example: email)">
+public/js/pages/query-builder-advanced.js:23:        <input id="qb-filter-value" placeholder="Filter value">
+public/js/pages/query-builder-advanced.js:24:        <input id="qb-search" placeholder="Search text">
+public/js/pages/query-builder-advanced.js:25:        <input id="qb-sort-field" placeholder="Sort field">
+public/js/pages/query-builder-advanced.js:30:        <input id="qb-page" placeholder="Page" value="1">
+public/js/pages/query-builder-advanced.js:31:        <input id="qb-limit" placeholder="Limit" value="20">
+public/js/pages/query-builder-advanced.js:32:        <input id="qb-select" placeholder="Select fields (comma separated)">
+public/js/pages/query-builder-shell.js:108:    if (op === 'between') valueInput.placeholder = 'example: 100,500';
+public/js/pages/query-builder-shell.js:109:    else if (op === 'in') valueInput.placeholder = 'example: red,blue,green';
+public/js/pages/query-builder-shell.js:110:    else if (op === 'exists' || op === 'not_exists') valueInput.placeholder = 'true or false';
+public/js/pages/query-builder-shell.js:111:    else valueInput.placeholder = 'Value';
+public/js/pages/query-builder-shell.js:120:      <input class="qb-value" placeholder="Value">
+public/js/pages/query-builder-shell.js:54:          <input id="qb-search" placeholder="Global search">
+public/js/pages/query-builder-shell.js:58:          <input id="qb-sort-by" placeholder="Sort by field">
+public/js/pages/query-builder-shell.js:65:        <input id="qb-limit" type="number" value="10" min="1" placeholder="Limit">
+public/js/pages/query-builder.js:304:          <input id="qb-name" placeholder="Recent Orders by Status" style="width:100%;margin-top:6px">
+public/js/pages/queue-monitor.js:137:            : USGPageKit.emptyState({ title: 'No queue jobs found' })
+public/js/pages/realtime.js:46:    `).join('') : USGPageKit.emptyState({ title: 'No realtime channels found' });
+public/js/pages/records.js:113:    wrap.innerHTML = USGPageKit.emptyState({ title: 'No collections found' });
+public/js/pages/records.js:130:      ${rows.length ? rows.map(recordCard).join('') : USGPageKit.emptyState({ title: 'No records found' })}
+public/js/pages/search.js:52:      <input id="search-box" placeholder="Search anything..." style="width:100%;padding:12px;font-size:16px">
+public/js/pages/search.js:56:      <div class="muted">Start typing to search...</div>
+public/js/pages/search.js:70:      resultsDiv.innerHTML = `<div class="muted">Start typing to search...</div>`;
+public/js/pages/sessions.js:64:    `).join('') : USGPageKit.emptyState({ title: 'No sessions found' });
+public/js/pages/settings-shell.js:15:          <input id="setting-key" placeholder="Setting key, e.g. app.theme" required>
+public/js/pages/settings-shell.js:16:          <input id="setting-group" placeholder="Group, e.g. general">
+public/js/pages/settings-shell.js:17:          <input id="setting-label" placeholder="Label">
+public/js/pages/settings-shell.js:18:          <input id="setting-description" placeholder="Description">
+public/js/pages/settings-shell.js:19:          <textarea id="setting-value" rows="7" placeholder='"dark" or {"enabled":true}' required></textarea>
+public/js/pages/settings-shell.js:61:      `).join('') || '<div class="muted">No settings found.</div>';
+public/js/pages/settings.js:102:  searchWrap.innerHTML = USGPageKit.searchToolbar({ placeholder: 'Search settings...' });
+public/js/pages/settings.js:112:  `).join('') : USGPageKit.emptyState({ title: 'No settings found' });
+public/js/pages/storage-buckets.js:76:    `).join('') : USGPageKit.emptyState({ title: 'No buckets found' });
+public/js/pages/tenant-overview.js:35:        `).join('') : USGPageKit.emptyState({ title: 'No tenants found' })}
+public/js/pages/tenants-shell.js:12:          <input id="tenant-name" placeholder="Tenant name" required>
+public/js/pages/tenants-shell.js:13:          <input id="tenant-slug" placeholder="Tenant slug (optional)">
+public/js/pages/tenants-shell.js:14:          <input id="tenant-owner-name" placeholder="Owner name">
+public/js/pages/tenants-shell.js:15:          <input id="tenant-owner-email" placeholder="Owner email">
+public/js/pages/tenants-shell.js:160:      `).join('') || '<div class="muted">No tenants found.</div>';
+public/js/pages/tenants-shell.js:16:          <textarea id="tenant-notes" rows="5" placeholder="Notes"></textarea>
+public/js/pages/tenants-shell.js:40:          <input id="membership-tenant-id" placeholder="Tenant ID" required>
+public/js/pages/tenants-shell.js:41:          <input id="membership-user-id" placeholder="User ID" required>
+public/js/pages/tenants-shell.js:96:      `).join('') || '<div class="muted">No tenant memberships found.</div>';
+public/js/pages/tenants.js:51:  searchWrap.innerHTML = USGPageKit.searchToolbar({ placeholder: 'Search tenants...' });
+public/js/pages/tenants.js:71:    `).join('') : USGPageKit.emptyState({ title: 'No tenants found' });
+public/js/pages/users.js:60:    searchWrap.innerHTML = USGPageKit.searchToolbar({ placeholder: 'Search users...' });
+public/js/pages/users.js:80:      `).join('') : USGPageKit.emptyState({ title: 'No users found' });
+public/js/pages/webhooks.js:71:    `).join('') : USGPageKit.emptyState({ title: 'No webhooks found' });

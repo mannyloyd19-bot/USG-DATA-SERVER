@@ -1,0 +1,181 @@
+public/js/pages/permissions.js:101:  const roleOptions = permissionsRoles.map((role) => {
+public/js/pages/permissions.js:107:  const visiblePermissions = filterPermissionsForRole(permissionsList, selectedRoleKey);
+public/js/pages/permissions.js:116:    subtitle: 'Inspect role permissions and security registry entries'
+public/js/pages/permissions.js:127:          <button id="permissions-refresh-btn" class="ghost-btn" type="button">Refresh</button>
+public/js/pages/permissions.js:135:          <select id="permissions-role-filter" style="width:100%;margin-top:6px">
+public/js/pages/permissions.js:143:            Review permissions by role and grouped permission domain.
+public/js/pages/permissions.js:152:      ${infoCard('Roles', permissionsRoles.length, 'Available RBAC roles')}
+public/js/pages/permissions.js:153:      ${infoCard('Permissions', permissionsList.length, 'Registered permission entries')}
+public/js/pages/permissions.js:161:      USGPageKit.emptyState({ title: 'No permissions found for the current view' })
+public/js/pages/permissions.js:170:          ${grouped[group].map(permissionCard).join('')}
+public/js/pages/permissions.js:177:  document.getElementById('permissions-refresh-btn').onclick = () => initPermissionsPage();
+public/js/pages/permissions.js:178:  document.getElementById('permissions-role-filter').onchange = (e) => {
+public/js/pages/permissions.js:187:    content.innerHTML = `<section class="card"><div class="muted">Loading permissions...</div></section>`;
+public/js/pages/permissions.js:190:  const [rolesRes, permissionsRes] = await Promise.all([
+public/js/pages/permissions.js:192:    safeJson('/api/rbac/permissions')
+public/js/pages/permissions.js:195:  permissionsRoles = normalizeArray(rolesRes, ['roles', 'data']);
+public/js/pages/permissions.js:196:  permissionsList = normalizeArray(permissionsRes, ['permissions', 'data']);
+public/js/pages/permissions.js:198:  if (!selectedRoleKey && permissionsRoles.length) {
+public/js/pages/permissions.js:199:    selectedRoleKey = normalizeRoleKey(permissionsRoles[0]);
+public/js/pages/permissions.js:5:let permissionsRoles = [];
+public/js/pages/permissions.js:66:function permissionCard(item) {
+public/js/pages/permissions.js:6:let permissionsList = [];
+public/js/pages/rbac.js:12:    subtitle: 'Manage roles, permissions, and tenant-scoped security'
+public/js/pages/rbac.js:38:        <div id="rbac-permissions">Loading...</div>
+public/js/pages/rbac.js:45:      <div id="rbac-my-permissions">Loading...</div>
+public/js/pages/rbac.js:54:      message: out.success ? 'Default roles and permissions created' : (out.message || 'Failed'),
+public/js/pages/rbac.js:63:      apiFetch('/api/rbac/permissions'),
+public/js/pages/rbac.js:64:      apiFetch('/api/rbac/my-permissions', {
+public/js/pages/rbac.js:70:    const permissions = (await permsRes.json()).permissions || [];
+public/js/pages/rbac.js:71:    const myPermissions = (await myPermsRes.json()).permissions || [];
+public/js/pages/rbac.js:77:    document.getElementById('rbac-permissions').innerHTML = permissions.length
+public/js/pages/rbac.js:78:      ? permissions.map(p => `<div class="list-card"><strong>${p.name}</strong><br><span class="muted">${p.key}</span></div>`).join('')
+public/js/pages/rbac.js:79:      : '<div class="muted">No permissions yet.</div>';
+public/js/pages/rbac.js:81:    document.getElementById('rbac-my-permissions').innerHTML = myPermissions.length
+public/js/pages/rbac.js:83:      : '<div class="muted">No resolved permissions yet.</div>';
+src/middleware/permission.middleware.js:101:      if (permission && permission.allowed) {
+src/middleware/permission.middleware.js:1:const Permission = require('../modules/permissions/models/permission.model');
+src/middleware/permission.middleware.js:33:    'permissions',
+src/middleware/permission.middleware.js:40:module.exports = function requirePermission(moduleName, action) {
+src/middleware/permission.middleware.js:93:      const permission = await Permission.findOne({
+src/middleware/rbac.middleware.js:15:      const ok = await userHasPermission(userId, permissionKey);
+src/middleware/rbac.middleware.js:19:          message: `Missing permission: ${permissionKey}`
+src/middleware/rbac.middleware.js:31:  requirePermission
+src/middleware/rbac.middleware.js:7:function requirePermission(permissionKey) {
+src/modules/appLogs/routes/app-log.routes.js:10:router.get('/apps-summary', requirePermission('settings.read'), controller.appsSummary);
+src/modules/appLogs/routes/app-log.routes.js:11:router.post('/test-log', requirePermission('settings.write'), controller.testLog);
+src/modules/appLogs/routes/app-log.routes.js:4:const { requirePermission } = require('../../../middleware/rbac.middleware');
+src/modules/appLogs/routes/app-log.routes.js:9:router.get('/', requirePermission('settings.read'), controller.list);
+src/modules/authSecurity/routes/auth-security.routes.js:10:router.get('/providers', requirePermission('settings.read'), controller.providers);
+src/modules/authSecurity/routes/auth-security.routes.js:11:router.get('/sessions', requirePermission('settings.read'), controller.sessions);
+src/modules/authSecurity/routes/auth-security.routes.js:12:router.post('/sessions/revoke-current', requirePermission('settings.write'), controller.revokeCurrent);
+src/modules/authSecurity/routes/auth-security.routes.js:13:router.post('/sessions/revoke-all', requirePermission('settings.write'), controller.revokeAll);
+src/modules/authSecurity/routes/auth-security.routes.js:4:const { requirePermission } = require('../../../middleware/rbac.middleware');
+src/modules/authSecurity/routes/auth-security.routes.js:9:router.get('/summary', requirePermission('settings.read'), controller.summary);
+src/modules/backupMonitor/routes/backup-monitor.routes.js:10:router.get('/jobs', requirePermission('settings.read'), controller.list);
+src/modules/backupMonitor/routes/backup-monitor.routes.js:11:router.post('/run-now', requirePermission('settings.write'), controller.runNow);
+src/modules/backupMonitor/routes/backup-monitor.routes.js:4:const { requirePermission } = require('../../../middleware/rbac.middleware');
+src/modules/backupMonitor/routes/backup-monitor.routes.js:9:router.get('/summary', requirePermission('settings.read'), controller.summary);
+src/modules/collections/routes/collection.routes.js:11:router.get('/', requirePermission('collections.read'), controller.list);
+src/modules/collections/routes/collection.routes.js:12:router.post('/', requirePermission('collections.write'), controller.create);
+src/modules/collections/routes/collection.routes.js:13:router.put('/:id', requirePermission('collections.write'), controller.update);
+src/modules/collections/routes/collection.routes.js:14:router.delete('/:id', requirePermission('collections.write'), controller.remove);
+src/modules/collections/routes/collection.routes.js:5:const { requirePermission } = require('../../../middleware/rbac.middleware');
+src/modules/deploymentDiagnostics/routes/deployment-diagnostics.routes.js:10:router.get('/deployments', requirePermission('settings.read'), controller.list);
+src/modules/deploymentDiagnostics/routes/deployment-diagnostics.routes.js:11:router.post('/deployments/:id/mark-success', requirePermission('settings.write'), controller.markSuccess);
+src/modules/deploymentDiagnostics/routes/deployment-diagnostics.routes.js:12:router.post('/deployments/:id/mark-failed', requirePermission('settings.write'), controller.markFailed);
+src/modules/deploymentDiagnostics/routes/deployment-diagnostics.routes.js:4:const { requirePermission } = require('../../../middleware/rbac.middleware');
+src/modules/deploymentDiagnostics/routes/deployment-diagnostics.routes.js:9:router.get('/summary', requirePermission('settings.read'), controller.summary);
+src/modules/diagnostics/routes/diagnostics.routes.js:10:router.get('/console', requirePermission('settings.read'), controller.diagnostics);
+src/modules/diagnostics/routes/diagnostics.routes.js:11:router.post('/test-log', requirePermission('settings.write'), controller.testLog);
+src/modules/diagnostics/routes/diagnostics.routes.js:4:const { requirePermission } = require('../../../middleware/rbac.middleware');
+src/modules/diagnostics/routes/diagnostics.routes.js:9:router.get('/logs', requirePermission('settings.read'), controller.logs);
+src/modules/domainDiagnostics/routes/domain-diagnostics.routes.js:10:router.get('/:id', requirePermission('domains.read'), controller.details);
+src/modules/domainDiagnostics/routes/domain-diagnostics.routes.js:11:router.post('/:id/ssl-active', requirePermission('domains.write'), controller.markSslActive);
+src/modules/domainDiagnostics/routes/domain-diagnostics.routes.js:12:router.post('/:id/ssl-pending', requirePermission('domains.write'), controller.markSslPending);
+src/modules/domainDiagnostics/routes/domain-diagnostics.routes.js:13:router.post('/:id/inactive', requirePermission('domains.write'), controller.markInactive);
+src/modules/domainDiagnostics/routes/domain-diagnostics.routes.js:4:const { requirePermission } = require('../../../middleware/rbac.middleware');
+src/modules/domainDiagnostics/routes/domain-diagnostics.routes.js:9:router.get('/summary', requirePermission('domains.read'), controller.summary);
+src/modules/domains/routes/domain.routes.js:10:router.get('/', requirePermission('domains.read'), controller.list);
+src/modules/domains/routes/domain.routes.js:11:router.post('/', requirePermission('domains.write'), enforceUsage('domains', 1), controller.create);
+src/modules/domains/routes/domain.routes.js:12:router.get('/:id', requirePermission('domains.read'), controller.details);
+src/modules/domains/routes/domain.routes.js:13:router.put('/:id', requirePermission('domains.write'), controller.update);
+src/modules/domains/routes/domain.routes.js:14:router.delete('/:id', requirePermission('domains.write'), controller.remove);
+src/modules/domains/routes/domain.routes.js:5:const { requirePermission } = require('../../../middleware/rbac.middleware');
+src/modules/fields/routes/field.routes.js:10:router.post('/', requirePermission('collections.write'), controller.create);
+src/modules/fields/routes/field.routes.js:11:router.get('/', requirePermission('collections.read'), controller.findAll);
+src/modules/fields/routes/field.routes.js:12:router.get('/:fieldId', requirePermission('collections.read'), controller.findOne);
+src/modules/fields/routes/field.routes.js:13:router.patch('/:fieldId', requirePermission('collections.write'), controller.update);
+src/modules/fields/routes/field.routes.js:14:router.delete('/:fieldId', requirePermission('collections.write'), controller.remove);
+src/modules/fields/routes/field.routes.js:4:const { requirePermission } = require('../../../middleware/rbac.middleware');
+src/modules/files/routes/file.routes.js:10:router.get('/', requirePermission('files.read'), controller.findAll);
+src/modules/files/routes/file.routes.js:11:router.get('/:fileId', requirePermission('files.read'), controller.findOne);
+src/modules/files/routes/file.routes.js:12:router.get('/:fileId/preview', requirePermission('files.read'), controller.preview);
+src/modules/files/routes/file.routes.js:13:router.get('/:fileId/download', requirePermission('files.read'), controller.download);
+src/modules/files/routes/file.routes.js:14:router.post('/', requirePermission('files.write'), upload.single('file'), controller.uploadSingle);
+src/modules/files/routes/file.routes.js:15:router.delete('/:fileId', requirePermission('files.write'), controller.remove);
+src/modules/files/routes/file.routes.js:4:const { requirePermission } = require('../../../middleware/rbac.middleware');
+src/modules/permissionMatrix/controllers/permission-matrix.controller.js:1:const Permission = require('../../permissions/models/permission.model');
+src/modules/permissionMatrix/controllers/permission-matrix.controller.js:54:      message: 'Failed to load permission matrix',
+src/modules/permissionMatrix/controllers/permission-matrix.controller.js:89:      message: 'Failed to save permission matrix',
+src/modules/permissionMatrix/routes/permission-matrix.routes.js:2:const controller = require('../controllers/permission-matrix.controller');
+src/modules/permissions/controllers/permission.controller.js:102:      entityId: req.params.permissionId,
+src/modules/permissions/controllers/permission.controller.js:113:      module: 'permissions',
+src/modules/permissions/controllers/permission.controller.js:116:      entityId: req.params.permissionId,
+src/modules/permissions/controllers/permission.controller.js:122:      message: 'Failed to delete permission',
+src/modules/permissions/controllers/permission.controller.js:14:    const [permission, created] = await Permission.findOrCreate({
+src/modules/permissions/controllers/permission.controller.js:1:const Permission = require('../models/permission.model');
+src/modules/permissions/controllers/permission.controller.js:21:    const beforeData = created ? null : permission.toJSON();
+src/modules/permissions/controllers/permission.controller.js:24:      permission.allowed = Boolean(allowed);
+src/modules/permissions/controllers/permission.controller.js:25:      await permission.save();
+src/modules/permissions/controllers/permission.controller.js:31:      module: 'permissions',
+src/modules/permissions/controllers/permission.controller.js:34:      entityId: permission.id,
+src/modules/permissions/controllers/permission.controller.js:40:      afterData: permission.toJSON(),
+src/modules/permissions/controllers/permission.controller.js:44:    return res.status(created ? 201 : 200).json(permission);
+src/modules/permissions/controllers/permission.controller.js:49:      module: 'permissions',
+src/modules/permissions/controllers/permission.controller.js:58:      message: 'Failed to save permission',
+src/modules/permissions/controllers/permission.controller.js:71:    const permissions = await Permission.findAll({
+src/modules/permissions/controllers/permission.controller.js:76:    return res.json(permissions);
+src/modules/permissions/controllers/permission.controller.js:79:      message: 'Failed to fetch permissions',
+src/modules/permissions/controllers/permission.controller.js:87:    const permission = await Permission.findByPk(req.params.permissionId);
+src/modules/permissions/controllers/permission.controller.js:89:    if (!permission) {
+src/modules/permissions/controllers/permission.controller.js:93:    const beforeData = permission.toJSON();
+src/modules/permissions/controllers/permission.controller.js:94:    await permission.destroy();
+src/modules/permissions/controllers/permission.controller.js:99:      module: 'permissions',
+src/modules/permissions/routes/permission.routes.js:13:router.delete('/:permissionId', controller.remove);
+src/modules/permissions/routes/permission.routes.js:2:const controller = require('../controllers/permission.controller');
+src/modules/queueMonitor/routes/queue-monitor.routes.js:10:router.get('/jobs', requirePermission('settings.read'), controller.list);
+src/modules/queueMonitor/routes/queue-monitor.routes.js:11:router.post('/jobs/:id/retry', requirePermission('settings.write'), controller.retry);
+src/modules/queueMonitor/routes/queue-monitor.routes.js:12:router.post('/jobs/:id/cancel', requirePermission('settings.write'), controller.cancel);
+src/modules/queueMonitor/routes/queue-monitor.routes.js:4:const { requirePermission } = require('../../../middleware/rbac.middleware');
+src/modules/queueMonitor/routes/queue-monitor.routes.js:9:router.get('/summary', requirePermission('settings.read'), controller.summary);
+src/modules/rbac/controllers/rbac.controller.js:28:    return res.json({ success: true, permissions: rows });
+src/modules/rbac/controllers/rbac.controller.js:2:const Permission = require('../models/permission.model');
+src/modules/rbac/controllers/rbac.controller.js:3:const RolePermission = require('../models/role-permission.model');
+src/modules/rbac/controllers/rbac.controller.js:54:    const { roleId, permissionId } = req.body || {};
+src/modules/rbac/controllers/rbac.controller.js:55:    if (!roleId || !permissionId) {
+src/modules/rbac/controllers/rbac.controller.js:56:      return res.status(400).json({ success: false, message: 'roleId and permissionId are required' });
+src/modules/rbac/controllers/rbac.controller.js:59:    const existing = await RolePermission.findOne({ where: { roleId: String(roleId), permissionId: String(permissionId) } });
+src/modules/rbac/controllers/rbac.controller.js:61:      await RolePermission.create({ roleId: String(roleId), permissionId: String(permissionId) });
+src/modules/rbac/controllers/rbac.controller.js:77:    const permissions = await getUserPermissionKeys(userId);
+src/modules/rbac/controllers/rbac.controller.js:78:    return res.json({ success: true, permissions });
+src/modules/rbac/models/permission.model.js:24:  tableName: 'rbac_permissions',
+src/modules/rbac/models/role-permission.model.js:14:  permissionId: {
+src/modules/rbac/models/role-permission.model.js:19:  tableName: 'rbac_role_permissions',
+src/modules/rbac/routes/rbac.routes.js:10:router.get('/my-permissions', controller.myPermissions);
+src/modules/rbac/routes/rbac.routes.js:7:router.get('/permissions', controller.listPermissions);
+src/modules/rbac/routes/rbac.routes.js:9:router.post('/attach-permission', controller.attachPermissionToRole);
+src/modules/rbac/services/rbac.service.js:104:    const perm = permissionMap[permKey];
+src/modules/rbac/services/rbac.service.js:108:      where: { roleId: role.id, permissionId: perm.id }
+src/modules/rbac/services/rbac.service.js:112:      await RolePermission.create({ roleId: role.id, permissionId: perm.id });
+src/modules/rbac/services/rbac.service.js:116:  return { roles, permissions };
+src/modules/rbac/services/rbac.service.js:2:const Permission = require('../models/permission.model');
+src/modules/rbac/services/rbac.service.js:34:  const permissionIds = rolePermissions.map(rp => rp.permissionId);
+src/modules/rbac/services/rbac.service.js:35:  const permissions = await Permission.findAll({ where: { id: permissionIds } });
+src/modules/rbac/services/rbac.service.js:36:  return permissions.map(p => p.key);
+src/modules/rbac/services/rbac.service.js:39:async function userHasPermission(userId, permissionKey) {
+src/modules/rbac/services/rbac.service.js:3:const RolePermission = require('../models/role-permission.model');
+src/modules/rbac/services/rbac.service.js:41:  return keys.includes('*') || keys.includes(permissionKey);
+src/modules/rbac/services/rbac.service.js:51:  const permissionDefaults = [
+src/modules/rbac/services/rbac.service.js:70:  for (const item of permissionDefaults) {
+src/modules/rbac/services/rbac.service.js:76:  const permissions = await Permission.findAll();
+src/modules/rbac/services/rbac.service.js:79:  const permissionMap = Object.fromEntries(permissions.map(p => [p.key, p]));
+src/modules/records/routes/record.routes.js:10:router.post('/', requirePermission('collections.write'), controller.create);
+src/modules/records/routes/record.routes.js:11:router.put('/:id', requirePermission('collections.write'), controller.update);
+src/modules/records/routes/record.routes.js:12:router.delete('/:id', requirePermission('collections.write'), controller.remove);
+src/modules/records/routes/record.routes.js:5:const { requirePermission } = require('../../../middleware/rbac.middleware');
+src/modules/records/routes/record.routes.js:9:router.get('/', requirePermission('collections.read'), controller.list);
+src/modules/storageBuckets/routes/storage-admin.routes.js:10:router.get('/buckets/:id/files', requirePermission('files.read'), controller.listFilesByBucket);
+src/modules/storageBuckets/routes/storage-admin.routes.js:11:router.post('/files/:fileId/sign', requirePermission('files.read'), controller.generateSignedUrl);
+src/modules/storageBuckets/routes/storage-admin.routes.js:4:const { requirePermission } = require('../../../middleware/rbac.middleware');
+src/modules/storageBuckets/routes/storage-admin.routes.js:9:router.get('/buckets', requirePermission('files.read'), controller.listBuckets);
+src/modules/systemMonitoring/routes/system-monitoring.routes.js:10:router.get('/metrics', requirePermission('settings.read'), controller.metrics);
+src/modules/systemMonitoring/routes/system-monitoring.routes.js:11:router.get('/runtime', requirePermission('settings.read'), controller.runtime);
+src/modules/systemMonitoring/routes/system-monitoring.routes.js:4:const { requirePermission } = require('../../../middleware/rbac.middleware');
+src/modules/systemMonitoring/routes/system-monitoring.routes.js:9:router.get('/health', requirePermission('settings.read'), controller.health);
+src/modules/users/routes/user.routes.js:10:router.get('/:userId', requirePermission('users.read'), controller.findOne);
+src/modules/users/routes/user.routes.js:11:router.post('/', requirePermission('users.write'), controller.create);
+src/modules/users/routes/user.routes.js:12:router.put('/:userId', requirePermission('users.write'), controller.update);
+src/modules/users/routes/user.routes.js:13:router.delete('/:userId', requirePermission('users.write'), controller.remove);
+src/modules/users/routes/user.routes.js:5:const { requirePermission } = require('../../../middleware/rbac.middleware');
+src/modules/users/routes/user.routes.js:9:router.get('/', requirePermission('users.read'), controller.findAll);

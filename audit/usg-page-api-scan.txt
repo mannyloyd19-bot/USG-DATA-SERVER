@@ -1,0 +1,226 @@
+public/js/pages/advanced-system.js:35:    safeJson('/api/advanced-system/overview'),
+public/js/pages/advanced-system.js:36:    safeJson('/api/usage-tracking/summary'),
+public/js/pages/advanced-system.js:37:    safeJson('/api/job-queue')
+public/js/pages/api-key-analytics-shell.js:46:  const logsRes = await apiFetch('/api/api-key-logs');
+public/js/pages/api-key-analytics.js:52:  const data = await safeJson('/api/api-key-analytics');
+public/js/pages/api-key-logs-shell.js:18:    const res = await apiFetch('/api/api-key-logs');
+public/js/pages/api-key-logs.js:38:    const res = await apiFetch('/api/api-key-logs');
+public/js/pages/api-keys-shell.js:131:            const res = await apiFetch(`/api/api-keys/${id}/status`, {
+public/js/pages/api-keys-shell.js:151:            const res = await apiFetch(`/api/api-keys/${id}/rotate`, {
+public/js/pages/api-keys-shell.js:178:            const res = await apiFetch(`/api/api-keys/${id}`, {
+public/js/pages/api-keys-shell.js:210:      const res = await apiFetch('/api/api-keys', {
+public/js/pages/api-keys-shell.js:81:      const res = await apiFetch('/api/api-keys');
+public/js/pages/api-keys.js:118:          endpoint: `/api/api-keys/${k.id}`,
+public/js/pages/api-keys.js:51:    endpoint: '/api/api-keys',
+public/js/pages/api-keys.js:66:    const res = await apiFetch('/api/api-keys');
+public/js/pages/api-keys.js:97:          endpoint: `/api/api-keys/${k.id}`,
+public/js/pages/app-hosting-overview.js:15:    const res = await apiFetch('/api/hosting-health/summary');
+public/js/pages/app-logs.js:60:    await apiFetch('/api/app-logs/test-log', {
+public/js/pages/app-logs.js:70:      apiFetch('/api/app-logs'),
+public/js/pages/app-logs.js:71:      apiFetch('/api/app-logs/apps-summary')
+public/js/pages/apps.js:28:    const res = await apiFetch('/api/apps');
+public/js/pages/apps.js:44:  window.start = async (id)=>{ await apiFetch(`/api/apps/${id}/start`,{method:'POST'}); refresh(); }
+public/js/pages/apps.js:45:  window.stop = async (id)=>{ await apiFetch(`/api/apps/${id}/stop`,{method:'POST'}); refresh(); }
+public/js/pages/apps.js:46:  window.restart = async (id)=>{ await apiFetch(`/api/apps/${id}/restart`,{method:'POST'}); refresh(); }
+public/js/pages/apps.js:50:    await apiFetch('/api/apps',{
+public/js/pages/audit-logs.js:37:    const res = await apiFetch('/api/audit-logs');
+public/js/pages/auth-providers.js:39:    await apiFetch('/api/auth-providers/seed-defaults', { method: 'POST' });
+public/js/pages/auth-providers.js:45:    endpoint: '/api/auth-providers/upsert',
+public/js/pages/auth-providers.js:60:    const res = await apiFetch('/api/auth-providers');
+public/js/pages/auth-security.js:100:      apiFetch('/api/auth-security/summary'),
+public/js/pages/auth-security.js:101:      apiFetch('/api/auth-security/sessions'),
+public/js/pages/auth-security.js:102:      apiFetch('/api/auth-security/providers')
+public/js/pages/auth-security.js:76:      const res = await apiFetch('/api/auth-security/sessions/revoke-current', { method: 'POST' });
+public/js/pages/auth-security.js:88:      const res = await apiFetch('/api/auth-security/sessions/revoke-all', { method: 'POST' });
+public/js/pages/backup-system.js:105:    const res = await apiFetch('/api/backup-system/config', {
+public/js/pages/backup-system.js:122:    const res = await apiFetch('/api/backup-system/run', { method: 'POST' });
+public/js/pages/backup-system.js:133:    const res = await apiFetch('/api/backup-system/enable-auto', {
+public/js/pages/backup-system.js:147:    const res = await apiFetch('/api/backup-system/disable-auto', { method: 'POST' });
+public/js/pages/backup-system.js:60:    const res = await apiFetch('/api/backup-system/status');
+public/js/pages/backups.js:35:      await apiFetch('/api/backups/create', { method: 'POST' });
+public/js/pages/backups.js:44:    const res = await apiFetch('/api/backups');
+public/js/pages/backups.js:66:          await apiFetch(`/api/backups/${b.id}/restore`, { method: 'POST' });
+public/js/pages/billing.js:51:    await apiFetch('/api/billing/seed-plans', { method: 'POST' });
+public/js/pages/billing.js:59:    safeJson('/api/billing/plans'),
+public/js/pages/billing.js:60:    safeJson('/api/billing/subscriptions'),
+public/js/pages/billing.js:61:    safeJson(`/api/billing/tenant-summary?tenantId=${encodeURIComponent(tenantId)}`)
+public/js/pages/collection-stats.js:44:    const res = await apiFetch('/api/collection-stats/summary');
+public/js/pages/collections.js:103:          endpoint: `/api/collections/${c.id}`,
+public/js/pages/collections.js:40:    endpoint: '/api/collections',
+public/js/pages/collections.js:55:    const res = await apiFetch('/api/collections');
+public/js/pages/collections.js:82:          endpoint: `/api/collections/${c.id}`,
+public/js/pages/dashboard-shell.js:96:    apiFetch('/api/dashboard/stats')
+public/js/pages/dashboard.js:37:    safeJson('/api/dashboard'),
+public/js/pages/dashboard.js:38:    safeJson('/api/live-readiness/status'),
+public/js/pages/dashboard.js:39:    safeJson('/api/platform-analytics/summary'),
+public/js/pages/dashboard.js:40:    safeJson('/api/final-polish/summary')
+public/js/pages/deployment-diagnostics.js:109:          await apiFetch(`/api/deployment-diagnostics/deployments/${item.id}/mark-success`, { method: 'POST' });
+public/js/pages/deployment-diagnostics.js:117:          await apiFetch(`/api/deployment-diagnostics/deployments/${item.id}/mark-failed`, { method: 'POST' });
+public/js/pages/deployment-diagnostics.js:60:      apiFetch('/api/deployment-diagnostics/summary'),
+public/js/pages/deployment-diagnostics.js:61:      apiFetch('/api/deployment-diagnostics/deployments')
+public/js/pages/deployments.js:105:        const res = await apiFetch(`/api/deployments/${id}/stop`, { method: 'POST' });
+public/js/pages/deployments.js:117:        const res = await apiFetch(`/api/deployments/${id}`, { method: 'DELETE' });
+public/js/pages/deployments.js:141:    const res = await apiFetch('/api/deployments', {
+public/js/pages/deployments.js:50:    const res = await apiFetch('/api/deployments');
+public/js/pages/deployments.js:83:        const res = await apiFetch(`/api/deployments/${id}/deploy`, { method: 'POST' });
+public/js/pages/deployments.js:94:        const res = await apiFetch(`/api/deployments/${id}/restart`, { method: 'POST' });
+public/js/pages/diagnostics-console.js:71:      const result = await safeJson('/api/diagnostics/test-log', { method: 'POST' });
+public/js/pages/diagnostics-console.js:94:      safeJson('/api/diagnostics/console'),
+public/js/pages/diagnostics-console.js:95:      safeJson('/api/diagnostics/logs'),
+public/js/pages/diagnostics-console.js:96:      safeJson('/api/system-monitoring/runtime'),
+public/js/pages/diagnostics-console.js:97:      safeJson('/api/system-monitoring/health')
+public/js/pages/docs.js:47:    ${codeBlock(`POST /api/auth/login
+public/js/pages/docs.js:67:    ${codeBlock(`POST /api/collections
+public/js/pages/docs.js:74:    ${codeBlock(`POST /api/collections/products/fields
+public/js/pages/docs.js:81:    ${codeBlock(`POST /api/records
+public/js/pages/docs.js:91:    ${codeBlock(`POST /api/files/upload`)}
+public/js/pages/domain-diagnostics.js:77:      safeJson('/api/domains'),
+public/js/pages/domain-diagnostics.js:78:      safeJson('/api/domain-diagnostics')
+public/js/pages/domains.js:115:      const res = await apiFetch('/api/domains', {
+public/js/pages/domains.js:156:    await apiFetch(`/api/domain-bindings/${domainId}/ensure`, { method: 'POST' });
+public/js/pages/domains.js:157:    const res = await apiFetch(`/api/domain-bindings/${domainId}`);
+public/js/pages/domains.js:271:    const res = await apiFetch('/api/domains');
+public/js/pages/domains.js:312:        const res = await apiFetch(`/api/domains/${btn.dataset.delete}`, { method: 'DELETE' });
+public/js/pages/enterprise-db-shell.js:111:      const res = await apiFetch('/api/db-migration/draft', {
+public/js/pages/enterprise-db-shell.js:127:      const res = await apiFetch('/api/db-migration/test-connection', {
+public/js/pages/enterprise-db-shell.js:143:      const res = await apiFetch('/api/db-migration/dry-run', {
+public/js/pages/enterprise-db-shell.js:166:      const res = await apiFetch('/api/db-migration/run', {
+public/js/pages/enterprise-db-shell.js:185:      const res = await apiFetch('/api/db-migration/verify', {
+public/js/pages/enterprise-db-shell.js:75:        apiFetch('/api/db-migration/latest')
+public/js/pages/enterprise-db.js:50:  const data = await safeJson('/api/enterprise-db/summary');
+public/js/pages/env-manager.js:33:    const res = await apiFetch('/api/env-manager');
+public/js/pages/env-manager.js:49:    const res = await apiFetch('/api/env-manager', {
+public/js/pages/fields.js:126:    const res = await apiFetch(`/api/collections/${encodeURIComponent(currentCollectionKey)}/fields`);
+public/js/pages/fields.js:145:          endpoint: `/api/collections/${encodeURIComponent(currentCollectionKey)}/fields/${item.id}`,
+public/js/pages/fields.js:182:          endpoint: `/api/collections/${encodeURIComponent(currentCollectionKey)}/fields/${item.id}`,
+public/js/pages/fields.js:20:  const res = await apiFetch('/api/collections');
+public/js/pages/fields.js:93:      endpoint: `/api/collections/${encodeURIComponent(currentCollectionKey)}/fields`,
+public/js/pages/files.js:46:    const res = await apiFetch('/api/files');
+public/js/pages/functions.js:41:    endpoint: '/api/functions',
+public/js/pages/functions.js:53:    const res = await apiFetch('/api/functions');
+public/js/pages/functions.js:85:          endpoint: `/api/functions/${item.id}`,
+public/js/pages/index-manager.js:109:        const res = await apiFetch(`/api/indexes/${id}`, { method: 'DELETE' });
+public/js/pages/index-manager.js:132:    const res = await apiFetch('/api/indexes', {
+public/js/pages/index-manager.js:64:    const res = await apiFetch('/api/indexes');
+public/js/pages/index-manager.js:93:        const res = await apiFetch(`/api/indexes/${id}`, {
+public/js/pages/infrastructure-shell.js:137:      apiFetch('/api/infrastructure/config'),
+public/js/pages/infrastructure-shell.js:138:      apiFetch('/api/infrastructure/global-status')
+public/js/pages/infrastructure-shell.js:208:    const res = await apiFetch('/api/infrastructure/ssl-status');
+public/js/pages/infrastructure-shell.js:215:    const res = await apiFetch('/api/ddns/status');
+public/js/pages/infrastructure-shell.js:222:    const res = await apiFetch('/api/runtime/status');
+public/js/pages/infrastructure-shell.js:266:    const res = await apiFetch('/api/infrastructure/config', {
+public/js/pages/infrastructure-shell.js:293:    const res = await apiFetch('/api/ddns/run', { method: 'POST' });
+public/js/pages/infrastructure-shell.js:304:    const res = await apiFetch('/api/ddns/enable-auto', {
+public/js/pages/infrastructure-shell.js:318:    const res = await apiFetch('/api/ddns/disable-auto', { method: 'POST' });
+public/js/pages/infrastructure-shell.js:328:    await apiFetch('/api/runtime/pm2/restart', {
+public/js/pages/infrastructure-shell.js:337:    await apiFetch('/api/runtime/pm2/stop', {
+public/js/pages/infrastructure-shell.js:346:    await apiFetch('/api/runtime/pm2/start', {
+public/js/pages/infrastructure-shell.js:357:    const res = await apiFetch('/api/runtime/pm2/logs?lines=80');
+public/js/pages/install-wizard.js:16:      apiFetch('/api/final-readiness/boot-status'),
+public/js/pages/install-wizard.js:17:      apiFetch('/api/final-readiness/lock-status')
+public/js/pages/invoices.js:42:    endpoint: '/api/invoices',
+public/js/pages/invoices.js:56:    const res = await apiFetch('/api/invoices');
+public/js/pages/invoices.js:79:        await apiFetch(`/api/invoices/${btn.dataset.markPaid}/mark-paid`, { method: 'POST' });
+public/js/pages/live-readiness.js:39:    const res = await apiFetch('/api/live-readiness/status');
+public/js/pages/log-viewer.js:221:    safeJson('/api/platform-logs/unified'),
+public/js/pages/log-viewer.js:222:    safeJson('/api/diagnostics/logs')
+public/js/pages/network-center.js:161:    const res = await apiFetch('/api/network/config', {
+public/js/pages/network-center.js:92:      apiFetch('/api/network/config'),
+public/js/pages/network-center.js:93:      apiFetch('/api/network/checklist')
+public/js/pages/notifications.js:100:        await safeJson('/api/notifications/' + item.id, { method: 'DELETE' });
+public/js/pages/notifications.js:167:  const payload = await safeJson('/api/notifications');
+public/js/pages/notifications.js:195:    await safeJson('/api/notifications/test-seed', { method: 'POST' });
+public/js/pages/notifications.js:201:    await safeJson('/api/notifications/mark-all-read', { method: 'POST' });
+public/js/pages/notifications.js:93:        await safeJson('/api/notifications/' + item.id + '/read', { method: 'PATCH' });
+public/js/pages/payment-gateways.js:16:    const res = await apiFetch('/api/payment-gateway/health');
+public/js/pages/payment-gateways.js:25:          Stripe: /api/payment-gateway/webhook/stripe<br>
+public/js/pages/payment-gateways.js:26:          PayMongo: /api/payment-gateway/webhook/paymongo<br>
+public/js/pages/payment-gateways.js:27:          PayPal: /api/payment-gateway/webhook/paypal
+public/js/pages/payments.js:106:        await apiFetch(`/api/payments/${btn.dataset.markPaid}/mark-paid`, { method: 'POST' });
+public/js/pages/payments.js:113:        await apiFetch(`/api/payments/${btn.dataset.markFailed}/mark-failed`, { method: 'POST' });
+public/js/pages/payments.js:14:  const res = await apiFetch('/api/payment-gateway/checkout', {
+public/js/pages/payments.js:64:    endpoint: '/api/payments',
+public/js/pages/payments.js:78:    const res = await apiFetch('/api/payments');
+public/js/pages/permissions.js:191:    safeJson('/api/rbac/roles'),
+public/js/pages/permissions.js:192:    safeJson('/api/rbac/permissions')
+public/js/pages/query-builder-advanced.js:118:          await apiFetch(\`/api/query-builder-pro/saved/\${row.id}\`, { method: 'DELETE' });
+public/js/pages/query-builder-advanced.js:132:    const res = await apiFetch('/api/query-builder-pro/save', {
+public/js/pages/query-builder-advanced.js:149:    const res = await apiFetch('/api/query-builder-pro/execute', {
+public/js/pages/query-builder-advanced.js:79:    const res = await apiFetch('/api/query-builder-pro/saved');
+public/js/pages/query-builder-shell.js:170:    const res = await apiFetch('/api/collections');
+public/js/pages/query-builder-shell.js:187:      const res = await apiFetch(`/api/collections/${encodeURIComponent(collectionKey)}/fields`);
+public/js/pages/query-builder-shell.js:216:      const res = await apiFetch(`/api/collections/${encodeURIComponent(collectionKey)}/records?${params.toString()}`);
+public/js/pages/query-builder.js:141:  const res = await safeJson('/api/collections');
+public/js/pages/query-builder.js:146:  const res = await safeJson('/api/query-builder-pro/saved');
+public/js/pages/query-builder.js:167:  const result = await safeJson('/api/query-builder-pro/execute', {
+public/js/pages/query-builder.js:211:  const result = await safeJson('/api/query-builder-pro/save', {
+public/js/pages/query-builder.js:230:  await safeJson(`/api/query-builder-pro/saved/${id}`, { method: 'DELETE' });
+public/js/pages/query-builder.js:254:          endpoint: `/api/query-builder-pro/saved/${id}`,
+public/js/pages/queue-monitor.js:104:    const payload = await safeJson('/api/job-queue');
+public/js/pages/rbac.js:50:    const res = await apiFetch('/api/rbac/seed', { method: 'POST' });
+public/js/pages/rbac.js:62:      apiFetch('/api/rbac/roles'),
+public/js/pages/rbac.js:63:      apiFetch('/api/rbac/permissions'),
+public/js/pages/rbac.js:64:      apiFetch('/api/rbac/my-permissions', {
+public/js/pages/realtime-events.js:58:      const res = await apiFetch('/api/realtime-core/recent');
+public/js/pages/realtime-events.js:70:    await apiFetch('/api/realtime-core/emit', {
+public/js/pages/realtime-events.js:87:    realtimeSource = new EventSource('/api/realtime-core/stream');
+public/js/pages/realtime.js:33:    const res = await apiFetch('/api/realtime-insights/summary');
+public/js/pages/records.js:119:    const res = await apiFetch('/api/records');
+public/js/pages/records.js:139:          endpoint: `/api/records/${item.id}`,
+public/js/pages/records.js:160:          endpoint: `/api/records/${item.id}`,
+public/js/pages/records.js:24:  const res = await apiFetch('/api/collections');
+public/js/pages/records.js:96:      endpoint: '/api/records',
+public/js/pages/release-shell.js:23:    const res = await apiFetch('/api/system/release');
+public/js/pages/sdk-shell.js:17:          <pre class="code-block">fetch('/api/auth/login', {
+public/js/pages/sdk-shell.js:30:          <pre class="code-block">fetch('/api/collections', {
+public/js/pages/sdk-shell.js:36:          <pre class="code-block">fetch('/api/collections/products/records?limit=10', {
+public/js/pages/sdk.js:121:  const listCollectionsExample = `const data = await api("/api/collections");
+public/js/pages/sdk.js:123:  const createCollectionExample = `await api("/api/collections", {
+public/js/pages/sdk.js:131:  const createFieldExample = `await api("/api/collections/products/fields", {
+public/js/pages/sdk.js:140:  const createRecordExample = `await api("/api/records", {
+public/js/pages/sdk.js:153:const res = await fetch(\`\${BASE_URL}/api/files\`, {
+public/js/pages/sdk.js:163:  const listDomainsExample = `const domains = await api("/api/domains");
+public/js/pages/sdk.js:165:  const realtimeExample = `const source = new EventSource("/api/realtime/stream");
+public/js/pages/search.js:5:  const res = await apiFetch('/api/search/global?q=' + encodeURIComponent(q));
+public/js/pages/sessions.js:34:    const res = await apiFetch('/api/sessions/logout-all', { method: 'POST' });
+public/js/pages/sessions.js:45:    const res = await apiFetch('/api/sessions/mine', {
+public/js/pages/settings-shell.js:41:        apiFetch('/api/settings'),
+public/js/pages/settings-shell.js:81:      await apiFetch('/api/settings', {
+public/js/pages/settings.js:54:    safeJson('/api/settings'),
+public/js/pages/settings.js:56:    safeJson('/api/final-polish/summary')
+public/js/pages/storage-admin.js:30:  const res = await apiFetch('/api/storage-admin/buckets');
+public/js/pages/storage-admin.js:52:  const res = await apiFetch(`/api/storage-admin/buckets/${bucketId}/files`);
+public/js/pages/storage-admin.js:67:        const r = await apiFetch(`/api/storage-admin/files/${f.id}/sign`, { method: 'POST' });
+public/js/pages/storage-buckets.js:111:            const res2 = await apiFetch(`/api/storage-buckets/files/${b.dataset.signFile}/sign`, {
+public/js/pages/storage-buckets.js:48:    endpoint: '/api/storage-buckets',
+public/js/pages/storage-buckets.js:60:    const res = await apiFetch('/api/storage-buckets');
+public/js/pages/storage-buckets.js:86:        const res = await apiFetch(`/api/storage-buckets/${btn.dataset.openBucket}/files`);
+public/js/pages/system-analytics-shell.js:45:      apiFetch('/api/dashboard/stats'),
+public/js/pages/system-analytics.js:51:  const data = await safeJson('/api/platform-analytics/summary');
+public/js/pages/system-audit.js:54:    const res = await apiFetch('/api/system-audit/report');
+public/js/pages/system-health.js:100:      safeJson('/api/system-monitoring/health'),
+public/js/pages/system-health.js:101:      safeJson('/api/system-monitoring/runtime'),
+public/js/pages/system-health.js:102:      safeJson('/api/backup-system/status'),
+public/js/pages/system-health.js:103:      safeJson('/api/job-queue'),
+public/js/pages/system-health.js:104:      safeJson('/api/live-readiness/status')
+public/js/pages/tenant-overview.js:15:    const res = await apiFetch('/api/tenant-usage/summary');
+public/js/pages/tenants-shell.js:104:            const res = await apiFetch(`/api/tenant-memberships/${id}`, {
+public/js/pages/tenants-shell.js:124:            const res = await apiFetch(`/api/tenant-memberships/${id}`, {
+public/js/pages/tenants-shell.js:142:      const res = await apiFetch('/api/tenants');
+public/js/pages/tenants-shell.js:180:            const res = await apiFetch(`/api/tenants/${id}`, {
+public/js/pages/tenants-shell.js:200:            const res = await apiFetch(`/api/tenants/${id}`, {
+public/js/pages/tenants-shell.js:230:      const res = await apiFetch('/api/tenants', {
+public/js/pages/tenants-shell.js:256:      const res = await apiFetch('/api/tenant-memberships', {
+public/js/pages/tenants-shell.js:80:      const res = await apiFetch('/api/tenant-memberships');
+public/js/pages/tenants.js:102:          endpoint: `/api/tenants/${t.id}`,
+public/js/pages/tenants.js:40:    endpoint: '/api/tenants',
+public/js/pages/tenants.js:55:    const res = await apiFetch('/api/tenants');
+public/js/pages/tenants.js:81:          endpoint: `/api/tenants/${t.id}`,
+public/js/pages/users.js:115:            endpoint: `/api/users/${u.id}`,
+public/js/pages/users.js:48:      endpoint: '/api/users',
+public/js/pages/users.js:64:      const res = await apiFetch('/api/users');
+public/js/pages/users.js:90:            endpoint: `/api/users/${u.id}`,
+public/js/pages/webhooks.js:103:        const res = await apiFetch(`/api/webhook-advanced/${btn.dataset.testHook}/test`, { method: 'POST' });
+public/js/pages/webhooks.js:116:        const res = await apiFetch(`/api/webhook-advanced/deliveries/${btn.dataset.retryDelivery}/retry`, { method: 'POST' });
+public/js/pages/webhooks.js:16:    const res = await apiFetch('/api/webhook-advanced/deliveries');
+public/js/pages/webhooks.js:53:      apiFetch('/api/webhooks'),

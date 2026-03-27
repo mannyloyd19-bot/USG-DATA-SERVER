@@ -1,0 +1,435 @@
+public/js/pages/advanced-system.js:1:window.__DISABLE_HEALTH_BANNER__ = true;
+public/js/pages/advanced-system.js:7:    const res = await apiFetch(url);
+public/js/pages/api-key-analytics-shell.js:46:  const logsRes = await apiFetch('/api/api-key-logs');
+public/js/pages/api-key-analytics.js:1:window.__DISABLE_HEALTH_BANNER__ = true;
+public/js/pages/api-key-analytics.js:50:  document.getElementById('refresh-key-analytics-btn').onclick = () => loadApiKeyAnalytics();
+public/js/pages/api-key-analytics.js:73:        ${window.USGRealCharts.lineSVG(routeCounts.length ? routeCounts : [2,4,3,6,5], { pixelHeight: 140 })}
+public/js/pages/api-key-analytics.js:7:    const res = await apiFetch(url);
+public/js/pages/api-key-analytics.js:84:        ${window.USGRealCharts.lineSVG(keyCounts.length ? keyCounts : [1,3,2,5,4], { pixelHeight: 140 })}
+public/js/pages/api-key-logs-shell.js:18:    const res = await apiFetch('/api/api-key-logs');
+public/js/pages/api-key-logs.js:1:window.__DISABLE_HEALTH_BANNER__ = true;
+public/js/pages/api-key-logs.js:31:  document.getElementById('refresh-key-logs-btn').onclick = () => loadApiKeyLogs();
+public/js/pages/api-key-logs.js:38:    const res = await apiFetch('/api/api-key-logs');
+public/js/pages/api-keys-shell.js:114:        btn.addEventListener('click', async () => {
+public/js/pages/api-keys-shell.js:126:        btn.addEventListener('click', async () => {
+public/js/pages/api-keys-shell.js:131:            const res = await apiFetch(`/api/api-keys/${id}/status`, {
+public/js/pages/api-keys-shell.js:146:        btn.addEventListener('click', async () => {
+public/js/pages/api-keys-shell.js:151:            const res = await apiFetch(`/api/api-keys/${id}/rotate`, {
+public/js/pages/api-keys-shell.js:173:        btn.addEventListener('click', async () => {
+public/js/pages/api-keys-shell.js:178:            const res = await apiFetch(`/api/api-keys/${id}`, {
+public/js/pages/api-keys-shell.js:194:  form.addEventListener('submit', async (e) => {
+public/js/pages/api-keys-shell.js:210:      const res = await apiFetch('/api/api-keys', {
+public/js/pages/api-keys-shell.js:56:            <button class="primary-btn" type="submit">Create API Key</button>
+public/js/pages/api-keys-shell.js:81:      const res = await apiFetch('/api/api-keys');
+public/js/pages/api-keys.js:115:        delBtn.onclick = () => USGCrudKit.remove({
+public/js/pages/api-keys.js:1:window.__DISABLE_HEALTH_BANNER__ = true;
+public/js/pages/api-keys.js:49:  document.getElementById('create-key-btn').onclick = () => USGCrudKit.create({
+public/js/pages/api-keys.js:66:    const res = await apiFetch('/api/api-keys');
+public/js/pages/api-keys.js:89:      btn.onclick = () => copyText(btn.dataset.copyKey, 'API key copied');
+public/js/pages/api-keys.js:95:        editBtn.onclick = () => USGCrudKit.edit({
+public/js/pages/app-health.js:1:window.__DISABLE_HEALTH_BANNER__ = true;
+public/js/pages/app-hosting-overview.js:15:    const res = await apiFetch('/api/hosting-health/summary');
+public/js/pages/app-logs.js:1:window.__DISABLE_HEALTH_BANNER__ = true;
+public/js/pages/app-logs.js:58:  document.getElementById('refresh-app-logs-btn').onclick = () => loadAppLogs();
+public/js/pages/app-logs.js:59:  document.getElementById('test-app-log-btn').onclick = async () => {
+public/js/pages/app-logs.js:60:    await apiFetch('/api/app-logs/test-log', {
+public/js/pages/app-logs.js:70:      apiFetch('/api/app-logs'),
+public/js/pages/app-logs.js:71:      apiFetch('/api/app-logs/apps-summary')
+public/js/pages/apps.js:28:    const res = await apiFetch('/api/apps');
+public/js/pages/apps.js:36:          <button onclick="start('${a.id}')">Start</button>
+public/js/pages/apps.js:37:          <button onclick="stop('${a.id}')">Stop</button>
+public/js/pages/apps.js:38:          <button onclick="restart('${a.id}')">Restart</button>
+public/js/pages/apps.js:44:  window.start = async (id)=>{ await apiFetch(`/api/apps/${id}/start`,{method:'POST'}); refresh(); }
+public/js/pages/apps.js:45:  window.stop = async (id)=>{ await apiFetch(`/api/apps/${id}/stop`,{method:'POST'}); refresh(); }
+public/js/pages/apps.js:46:  window.restart = async (id)=>{ await apiFetch(`/api/apps/${id}/restart`,{method:'POST'}); refresh(); }
+public/js/pages/apps.js:48:  document.getElementById('form').onsubmit = async (e)=>{
+public/js/pages/apps.js:50:    await apiFetch('/api/apps',{
+public/js/pages/audit-logs.js:12:    subtitle: 'Track actions and changes across the platform'
+public/js/pages/audit-logs.js:1:window.__DISABLE_HEALTH_BANNER__ = true;
+public/js/pages/audit-logs.js:30:  document.getElementById('refresh-audit-btn').onclick = () => loadAuditLogs();
+public/js/pages/audit-logs.js:37:    const res = await apiFetch('/api/audit-logs');
+public/js/pages/auth-providers.js:1:window.__DISABLE_HEALTH_BANNER__ = true;
+public/js/pages/auth-providers.js:38:  document.getElementById('seed-provider-btn').onclick = async () => {
+public/js/pages/auth-providers.js:39:    await apiFetch('/api/auth-providers/seed-defaults', { method: 'POST' });
+public/js/pages/auth-providers.js:43:  document.getElementById('create-provider-btn').onclick = () => USGCrudKit.create({
+public/js/pages/auth-providers.js:60:    const res = await apiFetch('/api/auth-providers');
+public/js/pages/auth-security.js:100:      apiFetch('/api/auth-security/summary'),
+public/js/pages/auth-security.js:101:      apiFetch('/api/auth-security/sessions'),
+public/js/pages/auth-security.js:102:      apiFetch('/api/auth-security/providers')
+public/js/pages/auth-security.js:1:window.__DISABLE_HEALTH_BANNER__ = true;
+public/js/pages/auth-security.js:72:  document.getElementById('refresh-auth-security-btn').onclick = () => loadAuthSecurity();
+public/js/pages/auth-security.js:74:  document.getElementById('revoke-current-session-btn').onclick = async () => {
+public/js/pages/auth-security.js:76:      const res = await apiFetch('/api/auth-security/sessions/revoke-current', { method: 'POST' });
+public/js/pages/auth-security.js:86:  document.getElementById('revoke-all-sessions-btn').onclick = async () => {
+public/js/pages/auth-security.js:88:      const res = await apiFetch('/api/auth-security/sessions/revoke-all', { method: 'POST' });
+public/js/pages/backup-restore.js:1:window.__DISABLE_HEALTH_BANNER__ = true;
+public/js/pages/backup-system.js:105:    const res = await apiFetch('/api/backup-system/config', {
+public/js/pages/backup-system.js:121:  document.getElementById('backup-run-now').addEventListener('click', async () => {
+public/js/pages/backup-system.js:122:    const res = await apiFetch('/api/backup-system/run', { method: 'POST' });
+public/js/pages/backup-system.js:131:  document.getElementById('backup-enable-auto').addEventListener('click', async () => {
+public/js/pages/backup-system.js:133:    const res = await apiFetch('/api/backup-system/enable-auto', {
+public/js/pages/backup-system.js:146:  document.getElementById('backup-disable-auto').addEventListener('click', async () => {
+public/js/pages/backup-system.js:147:    const res = await apiFetch('/api/backup-system/disable-auto', { method: 'POST' });
+public/js/pages/backup-system.js:33:            <button class="primary-btn" type="submit">Save Backup Config</button>
+public/js/pages/backup-system.js:60:    const res = await apiFetch('/api/backup-system/status');
+public/js/pages/backup-system.js:95:  form.addEventListener('submit', async (e) => {
+public/js/pages/backups.js:1:window.__DISABLE_HEALTH_BANNER__ = true;
+public/js/pages/backups.js:31:  document.getElementById('refresh-backups-btn').onclick = loadBackups;
+public/js/pages/backups.js:33:  document.getElementById('create-backup-btn').onclick = async () => {
+public/js/pages/backups.js:35:      await apiFetch('/api/backups/create', { method: 'POST' });
+public/js/pages/backups.js:44:    const res = await apiFetch('/api/backups');
+public/js/pages/backups.js:65:        r.onclick = async () => {
+public/js/pages/backups.js:66:          await apiFetch(`/api/backups/${b.id}/restore`, { method: 'POST' });
+public/js/pages/billing.js:1:window.__DISABLE_HEALTH_BANNER__ = true;
+public/js/pages/billing.js:50:  document.getElementById('seed-plans-btn').onclick = async () => {
+public/js/pages/billing.js:51:    await apiFetch('/api/billing/seed-plans', { method: 'POST' });
+public/js/pages/billing.js:54:  document.getElementById('refresh-billing-btn').onclick = () => loadBilling();
+public/js/pages/billing.js:7:    const res = await apiFetch(url, options);
+public/js/pages/boot-diagnostics.js:1:window.__DISABLE_HEALTH_BANNER__ = true;
+public/js/pages/collection-stats.js:44:    const res = await apiFetch('/api/collection-stats/summary');
+public/js/pages/collection-stats.js:87:  document.getElementById('refresh-stats').addEventListener('click', refresh);
+public/js/pages/collections.js:100:        delBtn.onclick = () => USGCrudKit.remove({
+public/js/pages/collections.js:38:  document.getElementById('create-collection-btn').onclick = () => USGCrudKit.create({
+public/js/pages/collections.js:55:    const res = await apiFetch('/api/collections');
+public/js/pages/collections.js:80:        editBtn.onclick = () => USGCrudKit.edit({
+public/js/pages/dashboard-shell.js:270:  dashboardSocket.addEventListener('open', () => {
+public/js/pages/dashboard-shell.js:281:  dashboardSocket.addEventListener('message', (event) => {
+public/js/pages/dashboard-shell.js:291:  dashboardSocket.addEventListener('close', () => {
+public/js/pages/dashboard-shell.js:299:  dashboardSocket.addEventListener('error', () => {
+public/js/pages/dashboard-shell.js:353:  document.getElementById('manual-refresh-btn').addEventListener('click', () => {
+public/js/pages/dashboard-shell.js:40:  const base = window.location.origin
+public/js/pages/dashboard-shell.js:95:    fetch('/health/details'),
+public/js/pages/dashboard-shell.js:96:    apiFetch('/api/dashboard/stats')
+public/js/pages/dashboard.js:100:      ${window.USGRealCharts.chartCard('BACKUPS', 'Backup Activity', charts.backups || [0,1,0,1,1,1,0,1])}
+public/js/pages/dashboard.js:104:  window.USGPremiumUI?.pulseButton('.primary-btn');
+public/js/pages/dashboard.js:1:window.__DISABLE_HEALTH_BANNER__ = false;
+public/js/pages/dashboard.js:34:  const skeleton = window.USGPremiumUI?.addSkeleton(content, 4);
+public/js/pages/dashboard.js:7:    const res = await apiFetch(url);
+public/js/pages/dashboard.js:98:      ${window.USGRealCharts.chartCard('REQUESTS', 'Traffic Trend', charts.requests || [12,18,17,26,31,28,36])}
+public/js/pages/dashboard.js:99:      ${window.USGRealCharts.chartCard('ERRORS', 'Error Trend', charts.errors || [1,0,2,1,1,0,1])}
+public/js/pages/deployment-diagnostics.js:108:        successBtn.onclick = async () => {
+public/js/pages/deployment-diagnostics.js:109:          await apiFetch(`/api/deployment-diagnostics/deployments/${item.id}/mark-success`, { method: 'POST' });
+public/js/pages/deployment-diagnostics.js:116:        failedBtn.onclick = async () => {
+public/js/pages/deployment-diagnostics.js:117:          await apiFetch(`/api/deployment-diagnostics/deployments/${item.id}/mark-failed`, { method: 'POST' });
+public/js/pages/deployment-diagnostics.js:1:window.__DISABLE_HEALTH_BANNER__ = true;
+public/js/pages/deployment-diagnostics.js:56:  document.getElementById('refresh-deployment-diagnostics-btn').onclick = () => loadDeploymentDiagnostics();
+public/js/pages/deployment-diagnostics.js:60:      apiFetch('/api/deployment-diagnostics/summary'),
+public/js/pages/deployment-diagnostics.js:61:      apiFetch('/api/deployment-diagnostics/deployments')
+public/js/pages/deployments.js:103:      btn.addEventListener('click', async () => {
+public/js/pages/deployments.js:105:        const res = await apiFetch(`/api/deployments/${id}/stop`, { method: 'POST' });
+public/js/pages/deployments.js:114:      btn.addEventListener('click', async () => {
+public/js/pages/deployments.js:117:        const res = await apiFetch(`/api/deployments/${id}`, { method: 'DELETE' });
+public/js/pages/deployments.js:128:  form.addEventListener('submit', async (e) => {
+public/js/pages/deployments.js:141:    const res = await apiFetch('/api/deployments', {
+public/js/pages/deployments.js:26:            <button class="primary-btn" type="submit">Save Deployment</button>
+public/js/pages/deployments.js:50:    const res = await apiFetch('/api/deployments');
+public/js/pages/deployments.js:80:      btn.addEventListener('click', async () => {
+public/js/pages/deployments.js:83:        const res = await apiFetch(`/api/deployments/${id}/deploy`, { method: 'POST' });
+public/js/pages/deployments.js:92:      btn.addEventListener('click', async () => {
+public/js/pages/deployments.js:94:        const res = await apiFetch(`/api/deployments/${id}/restart`, { method: 'POST' });
+public/js/pages/diagnostics-console.js:168:    if (window.USGShell && typeof window.USGShell.setupRawToggles === 'function') {
+public/js/pages/diagnostics-console.js:169:      window.USGShell.setupRawToggles(content);
+public/js/pages/diagnostics-console.js:1:window.__DISABLE_HEALTH_BANNER__ = true;
+public/js/pages/diagnostics-console.js:67:  document.getElementById('diagnostics-refresh-btn').onclick = () => loadDiagnosticsConsole();
+public/js/pages/diagnostics-console.js:69:  document.getElementById('diagnostics-test-log-btn').onclick = async () => {
+public/js/pages/diagnostics-console.js:74:        message: result.message || 'Test log submitted'
+public/js/pages/diagnostics-console.js:7:    const res = await apiFetch(url, options || {});
+public/js/pages/docs.js:1:window.__DISABLE_HEALTH_BANNER__ = true;
+public/js/pages/domain-diagnostics.js:1:window.__DISABLE_HEALTH_BANNER__ = true;
+public/js/pages/domain-diagnostics.js:67:  document.getElementById('domain-refresh-btn').onclick = loadDomainDiagnostics;
+public/js/pages/domain-diagnostics.js:7:    const res = await apiFetch(url);
+public/js/pages/domain-health.js:1:window.__DISABLE_HEALTH_BANNER__ = true;
+public/js/pages/domains.js:115:      const res = await apiFetch('/api/domains', {
+public/js/pages/domains.js:156:    await apiFetch(`/api/domain-bindings/${domainId}/ensure`, { method: 'POST' });
+public/js/pages/domains.js:157:    const res = await apiFetch(`/api/domain-bindings/${domainId}`);
+public/js/pages/domains.js:1:window.__DISABLE_HEALTH_BANNER__ = true;
+public/js/pages/domains.js:223:    document.getElementById('close-binding-modal').onclick = () => overlay.remove();
+public/js/pages/domains.js:224:    document.getElementById('copy-binding-config').onclick = () => copyText(configBlock(binding), 'Project config copied');
+public/js/pages/domains.js:225:    document.getElementById('copy-domain-key').onclick = () => copyText(binding.domainKey || '', 'Domain key copied');
+public/js/pages/domains.js:226:    document.getElementById('copy-app-token').onclick = () => copyText(binding.appToken || '', 'App token copied');
+public/js/pages/domains.js:262:  document.getElementById('domain-create-inline-btn').onclick = () => {
+public/js/pages/domains.js:271:    const res = await apiFetch('/api/domains');
+public/js/pages/domains.js:300:      btn.onclick = () => copyText(btn.dataset.copyUrl, 'Domain URL copied');
+public/js/pages/domains.js:304:      btn.onclick = () => openBindingModal(btn.dataset.binding);
+public/js/pages/domains.js:308:      btn.onclick = async () => {
+public/js/pages/domains.js:312:        const res = await apiFetch(`/api/domains/${btn.dataset.delete}`, { method: 'DELETE' });
+public/js/pages/domains.js:341:if (window.USGRealtime && typeof window.USGRealtime.on === 'function') {
+public/js/pages/domains.js:342:  window.USGRealtime.on((event) => {
+public/js/pages/domains.js:5:if (typeof apiFetch !== 'function') {
+public/js/pages/domains.js:6:  window.apiFetch = (url, options = {}) => fetch(url, options);
+public/js/pages/domains.js:89:      <button id="create-domain-submit" class="primary-btn" type="button">Create</button>
+public/js/pages/domains.js:96:  document.getElementById('cancel-domain-modal').onclick = () => overlay.remove();
+public/js/pages/domains.js:98:  document.getElementById('create-domain-submit').onclick = async () => {
+public/js/pages/enterprise-db-shell.js:109:  document.getElementById('save-draft-btn').addEventListener('click', async () => {
+public/js/pages/enterprise-db-shell.js:111:      const res = await apiFetch('/api/db-migration/draft', {
+public/js/pages/enterprise-db-shell.js:125:  document.getElementById('test-connection-btn').addEventListener('click', async () => {
+public/js/pages/enterprise-db-shell.js:127:      const res = await apiFetch('/api/db-migration/test-connection', {
+public/js/pages/enterprise-db-shell.js:141:  document.getElementById('dry-run-btn').addEventListener('click', async () => {
+public/js/pages/enterprise-db-shell.js:143:      const res = await apiFetch('/api/db-migration/dry-run', {
+public/js/pages/enterprise-db-shell.js:159:  document.getElementById('run-migration-btn').addEventListener('click', async () => {
+public/js/pages/enterprise-db-shell.js:166:      const res = await apiFetch('/api/db-migration/run', {
+public/js/pages/enterprise-db-shell.js:182:  document.getElementById('verify-migration-btn').addEventListener('click', async () => {
+public/js/pages/enterprise-db-shell.js:185:      const res = await apiFetch('/api/db-migration/verify', {
+public/js/pages/enterprise-db-shell.js:74:        apiFetch('/health/details'),
+public/js/pages/enterprise-db-shell.js:75:        apiFetch('/api/db-migration/latest')
+public/js/pages/enterprise-db.js:1:window.__DISABLE_HEALTH_BANNER__ = true;
+public/js/pages/enterprise-db.js:7:    const res = await apiFetch(url);
+public/js/pages/env-manager.js:33:    const res = await apiFetch('/api/env-manager');
+public/js/pages/env-manager.js:44:  document.getElementById('env-save').onclick = async () => {
+public/js/pages/env-manager.js:49:    const res = await apiFetch('/api/env-manager', {
+public/js/pages/fields.js:126:    const res = await apiFetch(`/api/collections/${encodeURIComponent(currentCollectionKey)}/fields`);
+public/js/pages/fields.js:143:        editBtn.onclick = () => USGCrudKit.edit({
+public/js/pages/fields.js:179:        delBtn.onclick = () => USGCrudKit.remove({
+public/js/pages/fields.js:1:window.__DISABLE_HEALTH_BANNER__ = true;
+public/js/pages/fields.js:20:  const res = await apiFetch('/api/collections');
+public/js/pages/fields.js:77:    select.onchange = () => {
+public/js/pages/fields.js:83:  document.getElementById('refresh-fields-btn').onclick = () => loadFields();
+public/js/pages/fields.js:85:  document.getElementById('create-field-btn').onclick = () => {
+public/js/pages/files.js:39:  document.getElementById('refresh-files-btn').onclick = () => loadFiles();
+public/js/pages/files.js:46:    const res = await apiFetch('/api/files');
+public/js/pages/files.js:68:      btn.onclick = () => copyText(btn.dataset.copyFile, 'File link copied');
+public/js/pages/functions.js:1:window.__DISABLE_HEALTH_BANNER__ = true;
+public/js/pages/functions.js:38:  document.getElementById('refresh-functions-btn').onclick = () => loadFunctions();
+public/js/pages/functions.js:39:  document.getElementById('create-function-btn').onclick = () => USGCrudKit.create({
+public/js/pages/functions.js:53:    const res = await apiFetch('/api/functions');
+public/js/pages/functions.js:74:      btn.onclick = async () => {
+public/js/pages/functions.js:82:        delBtn.onclick = () => USGCrudKit.remove({
+public/js/pages/index-manager.js:106:      btn.addEventListener('click', async () => {
+public/js/pages/index-manager.js:109:        const res = await apiFetch(`/api/indexes/${id}`, { method: 'DELETE' });
+public/js/pages/index-manager.js:120:  form.addEventListener('submit', async (e) => {
+public/js/pages/index-manager.js:132:    const res = await apiFetch('/api/indexes', {
+public/js/pages/index-manager.js:40:            <button class="primary-btn" type="submit">Save Index</button>
+public/js/pages/index-manager.js:64:    const res = await apiFetch('/api/indexes');
+public/js/pages/index-manager.js:90:      btn.addEventListener('click', async () => {
+public/js/pages/index-manager.js:93:        const res = await apiFetch(`/api/indexes/${id}`, {
+public/js/pages/infrastructure-shell.js:137:      apiFetch('/api/infrastructure/config'),
+public/js/pages/infrastructure-shell.js:138:      apiFetch('/api/infrastructure/global-status')
+public/js/pages/infrastructure-shell.js:208:    const res = await apiFetch('/api/infrastructure/ssl-status');
+public/js/pages/infrastructure-shell.js:215:    const res = await apiFetch('/api/ddns/status');
+public/js/pages/infrastructure-shell.js:222:    const res = await apiFetch('/api/runtime/status');
+public/js/pages/infrastructure-shell.js:248:  form.addEventListener('submit', async (e) => {
+public/js/pages/infrastructure-shell.js:266:    const res = await apiFetch('/api/infrastructure/config', {
+public/js/pages/infrastructure-shell.js:283:  document.getElementById('refresh-global-status').addEventListener('click', async () => {
+public/js/pages/infrastructure-shell.js:290:  document.getElementById('refresh-ssl-status').addEventListener('click', refreshSsl);
+public/js/pages/infrastructure-shell.js:292:  document.getElementById('ddns-run').addEventListener('click', async () => {
+public/js/pages/infrastructure-shell.js:293:    const res = await apiFetch('/api/ddns/run', { method: 'POST' });
+public/js/pages/infrastructure-shell.js:303:  document.getElementById('ddns-enable').addEventListener('click', async () => {
+public/js/pages/infrastructure-shell.js:304:    const res = await apiFetch('/api/ddns/enable-auto', {
+public/js/pages/infrastructure-shell.js:317:  document.getElementById('ddns-disable').addEventListener('click', async () => {
+public/js/pages/infrastructure-shell.js:318:    const res = await apiFetch('/api/ddns/disable-auto', { method: 'POST' });
+public/js/pages/infrastructure-shell.js:327:  document.getElementById('pm2-restart-all').addEventListener('click', async () => {
+public/js/pages/infrastructure-shell.js:328:    await apiFetch('/api/runtime/pm2/restart', {
+public/js/pages/infrastructure-shell.js:336:  document.getElementById('pm2-stop-all').addEventListener('click', async () => {
+public/js/pages/infrastructure-shell.js:337:    await apiFetch('/api/runtime/pm2/stop', {
+public/js/pages/infrastructure-shell.js:345:  document.getElementById('pm2-start-default').addEventListener('click', async () => {
+public/js/pages/infrastructure-shell.js:346:    await apiFetch('/api/runtime/pm2/start', {
+public/js/pages/infrastructure-shell.js:354:  document.getElementById('pm2-refresh').addEventListener('click', refreshPm2);
+public/js/pages/infrastructure-shell.js:356:  document.getElementById('pm2-load-logs').addEventListener('click', async () => {
+public/js/pages/infrastructure-shell.js:357:    const res = await apiFetch('/api/runtime/pm2/logs?lines=80');
+public/js/pages/infrastructure-shell.js:58:            <button class="primary-btn" type="submit">Save Config</button>
+public/js/pages/infrastructure.js:1:window.__DISABLE_HEALTH_BANNER__ = true;
+public/js/pages/install-wizard.js:16:      apiFetch('/api/final-readiness/boot-status'),
+public/js/pages/install-wizard.js:17:      apiFetch('/api/final-readiness/lock-status')
+public/js/pages/invoices.js:1:window.__DISABLE_HEALTH_BANNER__ = true;
+public/js/pages/invoices.js:38:  document.getElementById('refresh-invoices-btn').onclick = () => loadInvoices();
+public/js/pages/invoices.js:40:  document.getElementById('create-invoice-btn').onclick = () => USGCrudKit.create({
+public/js/pages/invoices.js:56:    const res = await apiFetch('/api/invoices');
+public/js/pages/invoices.js:78:      btn.onclick = async () => {
+public/js/pages/invoices.js:79:        await apiFetch(`/api/invoices/${btn.dataset.markPaid}/mark-paid`, { method: 'POST' });
+public/js/pages/live-readiness.js:39:    const res = await apiFetch('/api/live-readiness/status');
+public/js/pages/live-readiness.js:77:  document.getElementById('refresh-readiness').addEventListener('click', refresh);
+public/js/pages/log-viewer.js:12:    const res = await apiFetch(url, options || {});
+public/js/pages/log-viewer.js:195:  document.getElementById('lv-refresh-btn').onclick = () => initLogViewer();
+public/js/pages/log-viewer.js:196:  document.getElementById('lv-search').oninput = (e) => {
+public/js/pages/log-viewer.js:1:window.__DISABLE_HEALTH_BANNER__ = true;
+public/js/pages/log-viewer.js:200:  document.getElementById('lv-level').onchange = (e) => {
+public/js/pages/log-viewer.js:204:  document.getElementById('lv-source').onchange = (e) => {
+public/js/pages/log-viewer.js:209:  if (window.USGShell && typeof window.USGShell.setupRawToggles === 'function') {
+public/js/pages/log-viewer.js:210:    window.USGShell.setupRawToggles(content);
+public/js/pages/logs-viewer.js:1:window.__DISABLE_HEALTH_BANNER__ = true;
+public/js/pages/network-center.js:144:  form.addEventListener('submit', async (e) => {
+public/js/pages/network-center.js:161:    const res = await apiFetch('/api/network/config', {
+public/js/pages/network-center.js:177:  document.getElementById('refresh-network').addEventListener('click', refreshAll);
+public/js/pages/network-center.js:50:            <button class="primary-btn" type="submit">Save Network Config</button>
+public/js/pages/network-center.js:92:      apiFetch('/api/network/config'),
+public/js/pages/network-center.js:93:      apiFetch('/api/network/checklist')
+public/js/pages/notifications.js:13:    const res = await apiFetch(url, options || {});
+public/js/pages/notifications.js:192:  document.getElementById('ntf-refresh-btn').onclick = () => loadNotifications();
+public/js/pages/notifications.js:194:  document.getElementById('ntf-seed-btn').onclick = async () => {
+public/js/pages/notifications.js:1:window.__DISABLE_HEALTH_BANNER__ = true;
+public/js/pages/notifications.js:200:  document.getElementById('ntf-mark-all-btn').onclick = async () => {
+public/js/pages/notifications.js:206:  document.getElementById('ntf-search').oninput = async (e) => {
+public/js/pages/notifications.js:211:  document.getElementById('ntf-level').onchange = async (e) => {
+public/js/pages/notifications.js:216:  document.getElementById('ntf-unread-only').onchange = async (e) => {
+public/js/pages/notifications.js:92:      readBtn.onclick = async () => {
+public/js/pages/notifications.js:99:      delBtn.onclick = async () => {
+public/js/pages/payment-gateways.js:16:    const res = await apiFetch('/api/payment-gateway/health');
+public/js/pages/payment-gateways.js:1:window.__DISABLE_HEALTH_BANNER__ = true;
+public/js/pages/payments.js:101:      btn.onclick = () => openCheckout(btn.dataset.checkout, btn.dataset.provider);
+public/js/pages/payments.js:105:      btn.onclick = async () => {
+public/js/pages/payments.js:106:        await apiFetch(`/api/payments/${btn.dataset.markPaid}/mark-paid`, { method: 'POST' });
+public/js/pages/payments.js:112:      btn.onclick = async () => {
+public/js/pages/payments.js:113:        await apiFetch(`/api/payments/${btn.dataset.markFailed}/mark-failed`, { method: 'POST' });
+public/js/pages/payments.js:14:  const res = await apiFetch('/api/payment-gateway/checkout', {
+public/js/pages/payments.js:1:window.__DISABLE_HEALTH_BANNER__ = true;
+public/js/pages/payments.js:28:    window.open(url, '_blank');
+public/js/pages/payments.js:60:  document.getElementById('refresh-payments-btn').onclick = () => loadPayments();
+public/js/pages/payments.js:62:  document.getElementById('create-payment-btn').onclick = () => USGCrudKit.create({
+public/js/pages/payments.js:78:    const res = await apiFetch('/api/payments');
+public/js/pages/permissions.js:11:    const res = await apiFetch(url, options || {});
+public/js/pages/permissions.js:177:  document.getElementById('permissions-refresh-btn').onclick = () => initPermissionsPage();
+public/js/pages/permissions.js:178:  document.getElementById('permissions-role-filter').onchange = (e) => {
+public/js/pages/permissions.js:1:window.__DISABLE_HEALTH_BANNER__ = true;
+public/js/pages/query-builder-advanced.js:117:        delBtn.onclick = async () => {
+public/js/pages/query-builder-advanced.js:118:          await apiFetch(\`/api/query-builder-pro/saved/\${row.id}\`, { method: 'DELETE' });
+public/js/pages/query-builder-advanced.js:125:  document.getElementById('qb-save').onclick = async () => {
+public/js/pages/query-builder-advanced.js:132:    const res = await apiFetch('/api/query-builder-pro/save', {
+public/js/pages/query-builder-advanced.js:143:  document.getElementById('qb-execute').onclick = async () => {
+public/js/pages/query-builder-advanced.js:149:    const res = await apiFetch('/api/query-builder-pro/execute', {
+public/js/pages/query-builder-advanced.js:1:window.__DISABLE_HEALTH_BANNER__ = true;
+public/js/pages/query-builder-advanced.js:79:    const res = await apiFetch('/api/query-builder-pro/saved');
+public/js/pages/query-builder-advanced.js:97:        loadBtn.onclick = () => {
+public/js/pages/query-builder-shell.js:131:    operatorSelect.addEventListener('change', () => {
+public/js/pages/query-builder-shell.js:135:    fieldSelect.addEventListener('change', updatePreview);
+public/js/pages/query-builder-shell.js:136:    valueInput.addEventListener('input', updatePreview);
+public/js/pages/query-builder-shell.js:137:    row.querySelector('.qb-remove').addEventListener('click', () => {
+public/js/pages/query-builder-shell.js:170:    const res = await apiFetch('/api/collections');
+public/js/pages/query-builder-shell.js:187:      const res = await apiFetch(`/api/collections/${encodeURIComponent(collectionKey)}/fields`);
+public/js/pages/query-builder-shell.js:216:      const res = await apiFetch(`/api/collections/${encodeURIComponent(collectionKey)}/records?${params.toString()}`);
+public/js/pages/query-builder-shell.js:224:  collectionSelect.addEventListener('change', async () => loadFields(collectionSelect.value));
+public/js/pages/query-builder-shell.js:225:  searchInput.addEventListener('input', updatePreview);
+public/js/pages/query-builder-shell.js:226:  sortByInput.addEventListener('input', updatePreview);
+public/js/pages/query-builder-shell.js:227:  sortOrderSelect.addEventListener('change', updatePreview);
+public/js/pages/query-builder-shell.js:228:  limitInput.addEventListener('input', updatePreview);
+public/js/pages/query-builder-shell.js:229:  addRowBtn.addEventListener('click', () => { createRow(); updatePreview(); });
+public/js/pages/query-builder-shell.js:230:  runBtn.addEventListener('click', runQuery);
+public/js/pages/query-builder.js:11:    const res = await apiFetch(url, options || {});
+public/js/pages/query-builder.js:1:window.__DISABLE_HEALTH_BANNER__ = true;
+public/js/pages/query-builder.js:243:      loadBtn.onclick = () => {
+public/js/pages/query-builder.js:250:      delBtn.onclick = () => {
+public/js/pages/query-builder.js:367:  document.getElementById('qb-refresh-btn').onclick = async () => {
+public/js/pages/query-builder.js:373:  document.getElementById('qb-execute-btn').onclick = () => executeQuery();
+public/js/pages/query-builder.js:374:  document.getElementById('qb-save-btn').onclick = () => saveQuery();
+public/js/pages/query-builder.js:376:  if (window.USGShell && typeof window.USGShell.setupRawToggles === 'function') {
+public/js/pages/query-builder.js:377:    window.USGShell.setupRawToggles(content);
+public/js/pages/queue-monitor.js:1:window.__DISABLE_HEALTH_BANNER__ = true;
+public/js/pages/queue-monitor.js:7:    const res = await apiFetch(url, options || {});
+public/js/pages/queue-monitor.js:95:  document.getElementById('queue-refresh-btn').onclick = () => loadQueueMonitor();
+public/js/pages/rbac.js:1:window.__DISABLE_HEALTH_BANNER__ = true;
+public/js/pages/rbac.js:49:  document.getElementById('seed-rbac-btn').onclick = async () => {
+public/js/pages/rbac.js:50:    const res = await apiFetch('/api/rbac/seed', { method: 'POST' });
+public/js/pages/rbac.js:62:      apiFetch('/api/rbac/roles'),
+public/js/pages/rbac.js:63:      apiFetch('/api/rbac/permissions'),
+public/js/pages/rbac.js:64:      apiFetch('/api/rbac/my-permissions', {
+public/js/pages/realtime-events.js:107:window.addEventListener('beforeunload', () => {
+public/js/pages/realtime-events.js:1:window.__DISABLE_HEALTH_BANNER__ = true;
+public/js/pages/realtime-events.js:58:      const res = await apiFetch('/api/realtime-core/recent');
+public/js/pages/realtime-events.js:69:  document.getElementById('emit-test-event').onclick = async () => {
+public/js/pages/realtime-events.js:70:    await apiFetch('/api/realtime-core/emit', {
+public/js/pages/realtime-monitor.js:1:window.__DISABLE_HEALTH_BANNER__ = true;
+public/js/pages/realtime.js:1:window.__DISABLE_HEALTH_BANNER__ = true;
+public/js/pages/realtime.js:30:  document.getElementById('refresh-realtime-btn').onclick = () => loadRealtime();
+public/js/pages/realtime.js:33:    const res = await apiFetch('/api/realtime-insights/summary');
+public/js/pages/records.js:119:    const res = await apiFetch('/api/records');
+public/js/pages/records.js:137:        editBtn.onclick = () => USGCrudKit.edit({
+public/js/pages/records.js:157:        delBtn.onclick = () => USGCrudKit.remove({
+public/js/pages/records.js:1:window.__DISABLE_HEALTH_BANNER__ = true;
+public/js/pages/records.js:24:  const res = await apiFetch('/api/collections');
+public/js/pages/records.js:80:    select.onchange = () => {
+public/js/pages/records.js:86:  document.getElementById('refresh-records-btn').onclick = () => loadRecords();
+public/js/pages/records.js:88:  document.getElementById('create-record-btn').onclick = () => {
+public/js/pages/relations.js:1:window.__DISABLE_HEALTH_BANNER__ = true;
+public/js/pages/release-shell.js:23:    const res = await apiFetch('/api/system/release');
+public/js/pages/sdk-shell.js:17:          <pre class="code-block">fetch('/api/auth/login', {
+public/js/pages/sdk-shell.js:30:          <pre class="code-block">fetch('/api/collections', {
+public/js/pages/sdk-shell.js:36:          <pre class="code-block">fetch('/api/collections/products/records?limit=10', {
+public/js/pages/sdk.js:110:  const res = await fetch(\`\${BASE_URL}\${path}\`, {
+public/js/pages/sdk.js:153:const res = await fetch(\`\${BASE_URL}/api/files\`, {
+public/js/pages/sdk.js:1:window.__DISABLE_HEALTH_BANNER__ = true;
+public/js/pages/sdk.js:249:  if (window.USGShell && typeof window.USGShell.setupRawToggles === 'function') {
+public/js/pages/sdk.js:250:    window.USGShell.setupRawToggles(content);
+public/js/pages/sdk.js:42:      window.__sdkCopies = window.__sdkCopies || {};
+public/js/pages/sdk.js:43:      window.__sdkCopies["${id}"] = ${safe};
+public/js/pages/sdk.js:50:    btn.onclick = async () => {
+public/js/pages/sdk.js:52:      const value = window.__sdkCopies?.[id] || '';
+public/js/pages/sdk.js:92:  const baseUrlExample = `const BASE_URL = window.location.origin;`;
+public/js/pages/sdk.js:96:  const res = await fetch(\`\${BASE_URL}\${path}\`, {
+public/js/pages/search.js:5:  const res = await apiFetch('/api/search/global?q=' + encodeURIComponent(q));
+public/js/pages/search.js:65:  input.oninput = async () => {
+public/js/pages/sessions.js:1:window.__DISABLE_HEALTH_BANNER__ = true;
+public/js/pages/sessions.js:31:  document.getElementById('refresh-sessions-btn').onclick = () => loadSessions();
+public/js/pages/sessions.js:33:  document.getElementById('logout-all-btn').onclick = async () => {
+public/js/pages/sessions.js:34:    const res = await apiFetch('/api/sessions/logout-all', { method: 'POST' });
+public/js/pages/sessions.js:45:    const res = await apiFetch('/api/sessions/mine', {
+public/js/pages/settings-shell.js:20:          <button class="primary-btn" type="submit">Save Setting</button>
+public/js/pages/settings-shell.js:41:        apiFetch('/api/settings'),
+public/js/pages/settings-shell.js:42:        fetch('/health/details')
+public/js/pages/settings-shell.js:70:  form.addEventListener('submit', async (e) => {
+public/js/pages/settings-shell.js:81:      await apiFetch('/api/settings', {
+public/js/pages/settings.js:1:window.__DISABLE_HEALTH_BANNER__ = true;
+public/js/pages/settings.js:51:  document.getElementById('refresh-settings-btn').onclick = () => loadSettings();
+public/js/pages/settings.js:7:    const res = await apiFetch(url);
+public/js/pages/ssl-center.js:1:window.__DISABLE_HEALTH_BANNER__ = true;
+public/js/pages/storage-admin.js:30:  const res = await apiFetch('/api/storage-admin/buckets');
+public/js/pages/storage-admin.js:44:      btn.onclick = () => loadFiles(b.id);
+public/js/pages/storage-admin.js:52:  const res = await apiFetch(`/api/storage-admin/buckets/${bucketId}/files`);
+public/js/pages/storage-admin.js:66:      btn.onclick = async () => {
+public/js/pages/storage-admin.js:67:        const r = await apiFetch(`/api/storage-admin/files/${f.id}/sign`, { method: 'POST' });
+public/js/pages/storage-buckets.js:110:          b.onclick = async () => {
+public/js/pages/storage-buckets.js:111:            const res2 = await apiFetch(`/api/storage-buckets/files/${b.dataset.signFile}/sign`, {
+public/js/pages/storage-buckets.js:1:window.__DISABLE_HEALTH_BANNER__ = true;
+public/js/pages/storage-buckets.js:46:  document.getElementById('create-bucket-btn').onclick = () => USGCrudKit.create({
+public/js/pages/storage-buckets.js:60:    const res = await apiFetch('/api/storage-buckets');
+public/js/pages/storage-buckets.js:81:      btn.onclick = () => copyText(btn.dataset.copyBucket, 'Bucket slug copied');
+public/js/pages/storage-buckets.js:85:      btn.onclick = async () => {
+public/js/pages/storage-buckets.js:86:        const res = await apiFetch(`/api/storage-buckets/${btn.dataset.openBucket}/files`);
+public/js/pages/system-analytics-shell.js:45:      apiFetch('/api/dashboard/stats'),
+public/js/pages/system-analytics-shell.js:46:      fetch('/health/details')
+public/js/pages/system-analytics.js:1:window.__DISABLE_HEALTH_BANNER__ = true;
+public/js/pages/system-analytics.js:49:  document.getElementById('refresh-system-analytics-btn').onclick = () => loadSystemAnalytics();
+public/js/pages/system-analytics.js:65:      ${window.USGRealCharts.chartCard('REQUEST TREND', 'Requests', charts.requests || [12,18,17,26,31,28,36])}
+public/js/pages/system-analytics.js:66:      ${window.USGRealCharts.chartCard('ERROR TREND', 'Errors', charts.errors || [1,0,2,1,1,0,1])}
+public/js/pages/system-analytics.js:67:      ${window.USGRealCharts.chartCard('BACKUP TREND', 'Backups', charts.backups || [0,1,0,1,1,1,0,1])}
+public/js/pages/system-analytics.js:7:    const res = await apiFetch(url);
+public/js/pages/system-audit.js:125:  document.getElementById('refresh-audit').addEventListener('click', refresh);
+public/js/pages/system-audit.js:54:    const res = await apiFetch('/api/system-audit/report');
+public/js/pages/system-health.js:1:window.__DISABLE_HEALTH_BANNER__ = true;
+public/js/pages/system-health.js:7:    const res = await apiFetch(url);
+public/js/pages/system-health.js:90:  document.getElementById('system-health-refresh-btn').onclick = () => loadSystemHealth();
+public/js/pages/tenant-overview.js:15:    const res = await apiFetch('/api/tenant-usage/summary');
+public/js/pages/tenant-quotas.js:1:window.__DISABLE_HEALTH_BANNER__ = true;
+public/js/pages/tenants-shell.js:104:            const res = await apiFetch(`/api/tenant-memberships/${id}`, {
+public/js/pages/tenants-shell.js:119:        btn.addEventListener('click', async () => {
+public/js/pages/tenants-shell.js:124:            const res = await apiFetch(`/api/tenant-memberships/${id}`, {
+public/js/pages/tenants-shell.js:142:      const res = await apiFetch('/api/tenants');
+public/js/pages/tenants-shell.js:163:        btn.addEventListener('click', () => {
+public/js/pages/tenants-shell.js:175:        btn.addEventListener('click', async () => {
+public/js/pages/tenants-shell.js:17:          <button class="primary-btn" type="submit">Create Tenant</button>
+public/js/pages/tenants-shell.js:180:            const res = await apiFetch(`/api/tenants/${id}`, {
+public/js/pages/tenants-shell.js:195:        btn.addEventListener('click', async () => {
+public/js/pages/tenants-shell.js:200:            const res = await apiFetch(`/api/tenants/${id}`, {
+public/js/pages/tenants-shell.js:218:  form.addEventListener('submit', async (e) => {
+public/js/pages/tenants-shell.js:230:      const res = await apiFetch('/api/tenants', {
+public/js/pages/tenants-shell.js:245:  membershipForm.addEventListener('submit', async (e) => {
+public/js/pages/tenants-shell.js:256:      const res = await apiFetch('/api/tenant-memberships', {
+public/js/pages/tenants-shell.js:54:          <button class="primary-btn" type="submit">Add Membership</button>
+public/js/pages/tenants-shell.js:80:      const res = await apiFetch('/api/tenant-memberships');
+public/js/pages/tenants-shell.js:99:        btn.addEventListener('click', async () => {
+public/js/pages/tenants.js:38:  document.getElementById('create-tenant-btn').onclick = () => USGCrudKit.create({
+public/js/pages/tenants.js:55:    const res = await apiFetch('/api/tenants');
+public/js/pages/tenants.js:79:        editBtn.onclick = () => USGCrudKit.edit({
+public/js/pages/tenants.js:99:        delBtn.onclick = () => USGCrudKit.remove({
+public/js/pages/users.js:112:          delBtn.onclick = () => USGCrudKit.remove({
+public/js/pages/users.js:1:window.__DISABLE_HEALTH_BANNER__ = true;
+public/js/pages/users.js:46:    document.getElementById('create-user-btn').onclick = () => USGCrudKit.create({
+public/js/pages/users.js:64:      const res = await apiFetch('/api/users');
+public/js/pages/users.js:88:          editBtn.onclick = () => USGCrudKit.edit({
+public/js/pages/webhooks.js:102:      btn.onclick = async () => {
+public/js/pages/webhooks.js:103:        const res = await apiFetch(`/api/webhook-advanced/${btn.dataset.testHook}/test`, { method: 'POST' });
+public/js/pages/webhooks.js:115:      btn.onclick = async () => {
+public/js/pages/webhooks.js:116:        const res = await apiFetch(`/api/webhook-advanced/deliveries/${btn.dataset.retryDelivery}/retry`, { method: 'POST' });
+public/js/pages/webhooks.js:16:    const res = await apiFetch('/api/webhook-advanced/deliveries');
+public/js/pages/webhooks.js:1:window.__DISABLE_HEALTH_BANNER__ = true;
+public/js/pages/webhooks.js:49:  document.getElementById('refresh-webhooks-btn').onclick = () => loadWebhooks();
+public/js/pages/webhooks.js:53:      apiFetch('/api/webhooks'),
+public/js/pages/webhooks.js:98:      btn.onclick = () => copyText(btn.dataset.copyHook, 'Webhook URL copied');
