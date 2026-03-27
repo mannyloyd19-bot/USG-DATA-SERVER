@@ -251,6 +251,8 @@ try {
 
       <main class="main">
         <div class="topbar">
+      <input id="usg-global-search" placeholder="Search..." style="margin-left:20px;padding:6px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:transparent;color:inherit;">
+    
           <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
             <button class="theme-btn" type="button" data-theme-btn>Dark Mode</button>
             <select id="tenant-switcher" style="min-width:240px;margin:0"></select>
@@ -371,3 +373,12 @@ try {
     }
   };
 } catch {}
+
+document.addEventListener("input", function(e){
+  if(e.target && e.target.id === "usg-global-search"){
+    const q = e.target.value;
+    if(q.length > 2){
+      window.location.href = "/pages/search.html?q=" + encodeURIComponent(q);
+    }
+  }
+});

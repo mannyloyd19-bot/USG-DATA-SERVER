@@ -247,6 +247,7 @@ app.use('/api/auth-security', authSecurityRoutes);
 app.use('/api/storage-admin', storageAdminRoutes);
 app.use('/api/records', recordRoutes);
 app.use('/api/notifications', require('./modules/notifications/routes/notification.routes'));
+app.use("/api/search", require("./modules/search/routes/search.routes"));
 app.use(notFoundHandler);
 app.use(errorHandler);
 
