@@ -4,11 +4,12 @@ function bootUsersPage() {
   requireAuth();
   USGShell.buildShell();
 
-  function validateUser(data) {
+  function validateUser(data, isEdit = false) {
     return USGValidationKit.collect(
       USGValidationKit.required(data.username, 'Username'),
-      USGValidationKit.email(data.email, 'Email'),
-      data.password !== undefined && data.password !== '' ? USGValidationKit.minLength(data.password, 'Password', 6) : null,
+      !isEdit || (data.password !== undefined && data.password !== '')
+        ? USGValidationKit.minLength(data.password, 'Password', 6)
+        : null,
       USGValidationKit.required(data.role, 'Role')
     );
   }
@@ -46,10 +47,9 @@ function bootUsersPage() {
     document.getElementById('create-user-btn').onclick = () => USGCrudKit.create({
       title: 'Create User',
       endpoint: '/api/users',
-      validate: validateUser,
+      validate: (data) => validateUser(data, false),
       fields: [
         { name: 'username', label: 'Username' },
-        { name: 'email', label: 'Email' },
         { name: 'password', label: 'Password' },
         { name: 'role', label: 'Role' }
       ],
@@ -68,11 +68,11 @@ function bootUsersPage() {
       const listWrap = document.createElement('section');
       listWrap.innerHTML = users.length ? users.map(u => `
         <div class="list-card">
-          <strong>${u.username || u.email}</strong><br>
-          <span class="muted">${u.email || ''}</span><br>
-          <span class="muted">Role: ${u.role || '-'}</span>
+          <strong>${u.username || 'User'}</strong><br>
+          <span class="muted">Role: ${u.role || '-'}</span><br>
+          <span class="muted">Created: ${u.createdAt ? new Date(u.createdAt).toLocaleString() : '-'}</span>
           <div class="actions">
-            ${USGPageKit.statusBadge(u.status || 'active')}
+            ${USGPageKit.statusBadge('active')}
             <button class="ghost-btn" data-edit="${u.id}" type="button">Edit</button>
             <button class="danger-btn" data-delete="${u.id}" type="button">Delete</button>
           </div>
@@ -88,19 +88,14 @@ function bootUsersPage() {
           editBtn.onclick = () => USGCrudKit.edit({
             title: 'Edit User',
             endpoint: `/api/users/${u.id}`,
-            validate: (data) => USGValidationKit.collect(
-              USGValidationKit.required(data.username, 'Username'),
-              USGValidationKit.email(data.email, 'Email'),
-              USGValidationKit.required(data.role, 'Role')
-            ),
+            validate: (data) => validateUser(data, true),
             initial: {
               username: u.username || '',
-              email: u.email || '',
               role: u.role || ''
             },
             fields: [
               { name: 'username', label: 'Username' },
-              { name: 'email', label: 'Email' },
+              { name: 'password', label: 'New Password (optional)' },
               { name: 'role', label: 'Role' }
             ],
             onDone: () => loadUsers()

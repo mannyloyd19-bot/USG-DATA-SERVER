@@ -4,6 +4,14 @@ const RolePermission = require('../models/role-permission.model');
 const UserRole = require('../models/user-role.model');
 const User = require('../../users/models/user.model');
 
+function normalizeRoleKey(value) {
+  return String(value || '').trim().toLowerCase();
+}
+
+function isFullAccessRole(roleKey) {
+  return ['admin', 'super_admin', 'superadmin', 'owner'].includes(normalizeRoleKey(roleKey));
+}
+
 async function getUserRoles(userId) {
   const directAssignments = await UserRole.findAll({ where: { userId: String(userId) } });
 
@@ -15,15 +23,30 @@ async function getUserRoles(userId) {
   const user = await User.findByPk(userId);
   if (!user || !user.role) return [];
 
-  const fallbackRole = await Role.findOne({ where: { key: String(user.role).toLowerCase() } });
+  const fallbackKey = normalizeRoleKey(user.role);
+  let fallbackRole = await Role.findOne({ where: { key: fallbackKey } });
+
+  if (!fallbackRole && isFullAccessRole(fallbackKey)) {
+    fallbackRole = await Role.findOne({ where: { key: 'admin' } });
+  }
+
   return fallbackRole ? [fallbackRole] : [];
 }
 
 async function getUserPermissionKeys(userId) {
   const roles = await getUserRoles(userId);
-  if (!roles.length) return [];
+  if (!roles.length) {
+    const user = await User.findByPk(userId);
+    if (user && isFullAccessRole(user.role)) return ['*'];
+    return [];
+  }
 
-  if (roles.some(r => String(r.key).toLowerCase() === 'admin')) {
+  if (roles.some(r => isFullAccessRole(r.key))) {
+    return ['*'];
+  }
+
+  const user = await User.findByPk(userId);
+  if (user && isFullAccessRole(user.role)) {
     return ['*'];
   }
 

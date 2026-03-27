@@ -6,6 +6,12 @@ function normalize(value = '') {
   return String(value || '').trim();
 }
 
+function toBool(value, fallback = true) {
+  if (value === undefined || value === null || value === '') return fallback;
+  if (typeof value === 'boolean') return value;
+  return String(value).toLowerCase() === 'true';
+}
+
 exports.list = async (req, res) => {
   try {
     const rows = await Collection.findAll({ order: [['createdAt', 'DESC']] });
@@ -20,15 +26,15 @@ exports.create = async (req, res) => {
     const payload = req.body || {};
     const finalName = normalize(payload.name);
     const finalKey = normalize(payload.key);
-    const finalTableName = normalize(payload.tableName);
+    const finalDescription = normalize(payload.description);
+    const finalSchemaMode = normalize(payload.schemaMode || 'strict') || 'strict';
+    const finalIsActive = toBool(payload.isActive, true);
 
     const errors = validation.collect(
       validation.required(finalName, 'Collection Name'),
       validation.minLength(finalName, 'Collection Name', 2),
       validation.required(finalKey, 'Collection Key'),
-      validation.minLength(finalKey, 'Collection Key', 2),
-      validation.required(finalTableName, 'Table Name'),
-      validation.minLength(finalTableName, 'Table Name', 2)
+      validation.minLength(finalKey, 'Collection Key', 2)
     );
 
     if (errors.length) {
@@ -43,7 +49,9 @@ exports.create = async (req, res) => {
     const item = await Collection.create({
       name: finalName,
       key: finalKey,
-      tableName: finalTableName
+      description: finalDescription || null,
+      schemaMode: finalSchemaMode,
+      isActive: finalIsActive
     });
 
     emitCrudEvent({
@@ -69,15 +77,15 @@ exports.update = async (req, res) => {
     const payload = req.body || {};
     const finalName = normalize(payload.name ?? item.name);
     const finalKey = normalize(payload.key ?? item.key);
-    const finalTableName = normalize(payload.tableName ?? item.tableName);
+    const finalDescription = normalize(payload.description ?? item.description);
+    const finalSchemaMode = normalize(payload.schemaMode ?? item.schemaMode || 'strict') || 'strict';
+    const finalIsActive = payload.isActive === undefined ? item.isActive : toBool(payload.isActive, true);
 
     const errors = validation.collect(
       validation.required(finalName, 'Collection Name'),
       validation.minLength(finalName, 'Collection Name', 2),
       validation.required(finalKey, 'Collection Key'),
-      validation.minLength(finalKey, 'Collection Key', 2),
-      validation.required(finalTableName, 'Table Name'),
-      validation.minLength(finalTableName, 'Table Name', 2)
+      validation.minLength(finalKey, 'Collection Key', 2)
     );
 
     if (errors.length) {
@@ -91,7 +99,9 @@ exports.update = async (req, res) => {
 
     item.name = finalName;
     item.key = finalKey;
-    item.tableName = finalTableName;
+    item.description = finalDescription || null;
+    item.schemaMode = finalSchemaMode;
+    item.isActive = finalIsActive;
     await item.save();
 
     emitCrudEvent({
@@ -109,7 +119,12 @@ exports.update = async (req, res) => {
 
 exports.remove = async (req, res) => {
   try {
-    await Collection.destroy({ where: { id: req.params.id } });
+    const item = await Collection.findByPk(req.params.id);
+    if (!item) {
+      return res.status(404).json({ success: false, message: 'Collection not found' });
+    }
+
+    await item.destroy();
 
     emitCrudEvent({
       module: 'collections',
