@@ -98,6 +98,7 @@ const dbMigrationRoutes = require('./modules/dbMigration/routes/db-migration.rou
 const tenantRoutes = require('./modules/tenants/routes/tenant.routes');
 const tenantMembershipRoutes = require('./modules/tenantMemberships/routes/tenant-membership.routes');
 const tenantContextMiddleware = require('./middleware/tenant-context.middleware');
+const dataTransferRoutes = require('./modules/dataTransfer/routes/data-transfer.routes');
 
 const app = express();
 
@@ -248,6 +249,7 @@ app.use('/api/storage-admin', storageAdminRoutes);
 app.use('/api/records', recordRoutes);
 app.use('/api/notifications', require('./modules/notifications/routes/notification.routes'));
 app.use("/api/search", require("./modules/search/routes/search.routes"));
+app.use('/api/data-transfer', dataTransferRoutes);
 app.use(notFoundHandler);
 app.use(errorHandler);
 
