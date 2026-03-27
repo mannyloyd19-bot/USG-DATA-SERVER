@@ -12,6 +12,17 @@ function isPreviewable(mimeType = '') {
   );
 }
 
+function serializeFile(file) {
+  const row = typeof file.toJSON === 'function' ? file.toJSON() : file;
+  return {
+    ...row,
+    name: row.originalName,
+    filename: row.originalName,
+    url: row.id ? `/api/files/${row.id}/download` : null,
+    previewUrl: row.id ? `/api/files/${row.id}/preview` : null
+  };
+}
+
 exports.uploadSingle = async (req, res) => {
   try {
     if (!req.file) {
@@ -48,7 +59,10 @@ exports.uploadSingle = async (req, res) => {
 
     await fileRealtimeHooks.afterUpload(entry);
 
-    return res.status(201).json(entry);
+    return res.status(201).json({
+      success: true,
+      file: serializeFile(entry)
+    });
   } catch (error) {
     await auditService.writeLog({
       req,
@@ -79,7 +93,10 @@ exports.findAll = async (req, res) => {
       order: [['createdAt', 'DESC']]
     });
 
-    return res.json(files);
+    return res.json({
+      success: true,
+      files: files.map(serializeFile)
+    });
   } catch (error) {
     return res.status(500).json({
       message: 'Failed to fetch files',
@@ -96,7 +113,10 @@ exports.findOne = async (req, res) => {
       return res.status(404).json({ message: 'File not found' });
     }
 
-    return res.json(file);
+    return res.json({
+      success: true,
+      file: serializeFile(file)
+    });
   } catch (error) {
     return res.status(500).json({
       message: 'Failed to fetch file',
@@ -197,7 +217,7 @@ exports.remove = async (req, res) => {
       beforeData
     });
 
-    return res.json({ message: 'File deleted successfully' });
+    return res.json({ success: true, message: 'File deleted successfully' });
   } catch (error) {
     await auditService.writeLog({
       req,

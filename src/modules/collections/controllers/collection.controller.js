@@ -78,7 +78,7 @@ exports.update = async (req, res) => {
     const finalName = normalize(payload.name ?? item.name);
     const finalKey = normalize(payload.key ?? item.key);
     const finalDescription = normalize(payload.description ?? item.description);
-    const finalSchemaMode = normalize(payload.schemaMode ?? item.schemaMode || 'strict') || 'strict';
+    const finalSchemaMode = normalize((payload.schemaMode ?? item.schemaMode) || 'strict') || 'strict';
     const finalIsActive = payload.isActive === undefined ? item.isActive : toBool(payload.isActive, true);
 
     const errors = validation.collect(
