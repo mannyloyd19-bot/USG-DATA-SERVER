@@ -17,6 +17,7 @@ const User = require('./modules/users/models/user.model');
 const Permission = require('./modules/permissions/models/permission.model');
 const settingController = require('./modules/settings/controllers/setting.controller');
 const { startAutoBackup } = require('./modules/backups/services/auto-backup.service');
+const { repairSchema } = require('./bootstrap/repair-schema');
 const { init: initRealtime } = require('./modules/realtimeCore/services/realtime.service');
 
 require('./modules/collections/models/collection.model');
@@ -132,6 +133,7 @@ async function start() {
 
     await sequelize.authenticate();
     await sequelize.sync();
+    await repairSchema();
     await ensureDefaultAdmin();
     await seedDefaultPermissions();
     await settingController.seedDefaults();
