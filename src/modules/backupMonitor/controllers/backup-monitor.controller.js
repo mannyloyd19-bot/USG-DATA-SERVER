@@ -1,5 +1,6 @@
 const BackupJob = require('../../backupSystem/models/backup-job.model');
 const BackupConfig = require('../../backupSystem/models/backup-config.model');
+const backupService = require('../../backupSystem/services/backup.service');
 
 async function safeCount(where = {}) {
   try {
@@ -11,11 +12,12 @@ async function safeCount(where = {}) {
 
 exports.summary = async (req, res) => {
   try {
-    const [total, success, failed, running] = await Promise.all([
+    const [total, completed, failed, running, pending] = await Promise.all([
       safeCount(),
-      safeCount({ status: 'success' }),
+      safeCount({ status: 'completed' }),
       safeCount({ status: 'failed' }),
-      safeCount({ status: 'running' })
+      safeCount({ status: 'running' }),
+      safeCount({ status: 'pending' })
     ]);
 
     const latest = await BackupJob.findOne({
@@ -28,7 +30,7 @@ exports.summary = async (req, res) => {
 
     return res.json({
       success: true,
-      summary: { total, success, failed, running },
+      summary: { total, completed, failed, running, pending },
       latest,
       config
     });
@@ -51,13 +53,8 @@ exports.list = async (req, res) => {
 
 exports.runNow = async (req, res) => {
   try {
-    const item = await BackupJob.create({
-      status: 'pending',
-      triggerMode: 'manual',
-      notes: 'Manual backup requested from monitor'
-    });
-
-    return res.json({ success: true, backup: item, message: 'Backup job queued' });
+    const item = await backupService.runBackup('manual', 'Manual backup requested from monitor');
+    return res.json({ success: true, backup: item, message: 'Backup completed' });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
   }

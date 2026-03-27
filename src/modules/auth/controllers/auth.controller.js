@@ -1,6 +1,13 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../../users/models/user.model');
+const { createSession } = require('../../sessions/services/session.service');
+
+function getClientIp(req) {
+  const forwarded = req.headers['x-forwarded-for'];
+  if (forwarded) return String(forwarded).split(',')[0].trim();
+  return req.ip || req.connection?.remoteAddress || req.socket?.remoteAddress || null;
+}
 
 exports.login = async (req, res) => {
   try {
@@ -26,6 +33,8 @@ exports.login = async (req, res) => {
       return res.status(500).json({ message: 'JWT configuration is missing.' });
     }
 
+    const expiresIn = '7d';
+
     const token = jwt.sign(
       {
         id: user.id,
@@ -33,8 +42,18 @@ exports.login = async (req, res) => {
         role: user.role
       },
       process.env.JWT_SECRET,
-      { expiresIn: '7d' }
+      { expiresIn }
     );
+
+    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+
+    await createSession({
+      userId: user.id,
+      token,
+      ipAddress: getClientIp(req),
+      userAgent: req.headers['user-agent'] || null,
+      expiresAt
+    });
 
     return res.json({
       message: 'Login successful.',

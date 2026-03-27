@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../modules/users/models/user.model');
 const ApiKey = require('../modules/apiKeys/models/api-key.model');
 const ApiKeyLog = require('../modules/apiKeyLogs/models/api-key-log.model');
+const { touchSession } = require('../modules/sessions/services/session.service');
 
 function parseBearer(headerValue = '') {
   if (!headerValue) return null;
@@ -202,6 +203,8 @@ module.exports = async (req, res, next) => {
         requestId: req.requestId || null
       });
     }
+
+    await touchSession(parsed.token);
 
     req.user = user;
     req.authType = 'jwt';
