@@ -1,5 +1,6 @@
 const sequelize = require('../core/database');
 const Collection = require('../modules/collections/models/collection.model');
+const FileEntry = require('../modules/files/models/file.model');
 
 async function columnExists(tableName, columnName) {
   const queryInterface = sequelize.getQueryInterface();
@@ -33,9 +34,36 @@ async function repairCollectionsTable() {
   });
 }
 
+async function repairFilesTable() {
+  const tableName = FileEntry.getTableName();
+
+  await addColumnIfMissing(tableName, 'isArchived', {
+    type: sequelize.Sequelize.DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false
+  });
+
+  await addColumnIfMissing(tableName, 'metadata', {
+    type: sequelize.Sequelize.DataTypes.JSON,
+    allowNull: true
+  });
+
+  await addColumnIfMissing(tableName, 'bucketId', {
+    type: sequelize.Sequelize.DataTypes.STRING,
+    allowNull: true
+  });
+
+  await addColumnIfMissing(tableName, 'visibility', {
+    type: sequelize.Sequelize.DataTypes.STRING,
+    allowNull: false,
+    defaultValue: 'private'
+  });
+}
+
 async function repairSchema() {
   try {
     await repairCollectionsTable();
+    await repairFilesTable();
     console.log('[Schema Repair] Completed');
   } catch (error) {
     console.error('[Schema Repair] Failed:', error.message);
