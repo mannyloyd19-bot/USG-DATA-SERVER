@@ -16,6 +16,25 @@ exports.create = async (req, res) => {
 };
 
 exports.findAll = async (req, res) => {
-  const items = await Webhook.findAll();
-  res.json(items);
+  try {
+    const items = await Webhook.findAll({ order: [['createdAt', 'DESC']] });
+    return res.json(items);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+exports.remove = async (req, res) => {
+  try {
+    const item = await Webhook.findByPk(req.params.id);
+
+    if (!item) {
+      return res.status(404).json({ message: 'Webhook not found' });
+    }
+
+    await item.destroy();
+    return res.json({ message: 'Webhook deleted successfully' });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
 };
