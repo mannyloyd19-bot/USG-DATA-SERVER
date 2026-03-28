@@ -1,40 +1,57 @@
 requireAuth();
 USGShell.buildShell();
 
+function getInitialQuery() {
+  try {
+    const url = new URL(window.location.href);
+    return url.searchParams.get('q') || '';
+  } catch {
+    return '';
+  }
+}
+
 async function search(q) {
   const res = await apiFetch('/api/search/global?q=' + encodeURIComponent(q));
   return await res.json();
 }
 
-function escapeHtml(value) {
-  return String(value || '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}
-
-function resolveLink(item) {
-  if (item.link) return item.link;
-  if (item.type === 'user') return '/pages/users.html';
-  if (item.type === 'collection') return '/pages/collections.html';
-  if (item.type === 'record') return '/pages/records.html';
-  if (item.type === 'file') return '/pages/files.html';
-  if (item.type === 'tenant') return '/pages/tenants.html';
-  if (item.type === 'notification') return '/pages/notifications.html';
-  return '#';
-}
-
 function resultCard(item) {
-  const link = resolveLink(item);
+  let link = '#';
+
+  if (item.type === 'user') link = '/pages/users.html';
+  if (item.type === 'collection') link = '/pages/collections.html';
+  if (item.type === 'record') link = '/pages/records.html';
+  if (item.type === 'file') link = '/pages/files.html';
+  if (item.type === 'notification') link = '/pages/notifications.html';
+  if (item.type === 'tenant') link = '/pages/tenants.html';
+
   return `
     <div class="list-card">
-      <strong>${escapeHtml(item.name)}</strong><br>
-      <span class="muted">${escapeHtml(item.type)}</span><br>
-      ${item.subtitle ? `<div class="muted" style="margin:6px 0 10px 0">${escapeHtml(item.subtitle)}</div>` : ''}
+      <strong>${item.name || item.title || 'Result'}</strong><br>
+      <span class="muted">${item.type || 'unknown'}</span><br>
       <a href="${link}" class="ghost-btn">Open</a>
     </div>
+  `;
+}
+
+async function runSearch(q, resultsDiv) {
+  if (!q) {
+    resultsDiv.innerHTML = `<div class="muted">Start typing to search...</div>`;
+    return;
+  }
+
+  resultsDiv.innerHTML = `<div class="muted">Searching...</div>`;
+
+  const data = await search(q);
+
+  if (!data.results || !data.results.length) {
+    resultsDiv.innerHTML = `<div class="muted">No results</div>`;
+    return;
+  }
+
+  resultsDiv.innerHTML = `
+    <div class="muted" style="margin-bottom:12px">Found ${data.count || data.results.length} result(s)</div>
+    ${data.results.map(resultCard).join('')}
   `;
 }
 
@@ -44,7 +61,7 @@ async function render() {
   USGPageKit.setPageHeader({
     kicker: 'TOOLS',
     title: 'Global Search',
-    subtitle: 'Search across users, collections, records, files, and tenants'
+    subtitle: 'Search across the entire data server'
   });
 
   content.innerHTML = `
@@ -59,39 +76,18 @@ async function render() {
 
   const input = document.getElementById('search-box');
   const resultsDiv = document.getElementById('results');
+  const initialQuery = getInitialQuery();
 
-  let currentToken = 0;
+  input.value = initialQuery;
 
   input.oninput = async () => {
     const q = input.value.trim();
-    const token = ++currentToken;
-
-    if (!q) {
-      resultsDiv.innerHTML = `<div class="muted">Start typing to search...</div>`;
-      return;
-    }
-
-    resultsDiv.innerHTML = `<div class="muted">Searching...</div>`;
-
-    try {
-      const data = await search(q);
-
-      if (token !== currentToken) return;
-
-      if (!data.results || !data.results.length) {
-        resultsDiv.innerHTML = `<div class="muted">No results</div>`;
-        return;
-      }
-
-      resultsDiv.innerHTML = `
-        <div class="muted" style="margin-bottom:12px">Found ${data.count} result(s)</div>
-        ${data.results.map(resultCard).join('')}
-      `;
-    } catch (error) {
-      if (token !== currentToken) return;
-      resultsDiv.innerHTML = `<div class="muted">Search failed</div>`;
-    }
+    await runSearch(q, resultsDiv);
   };
+
+  if (initialQuery) {
+    await runSearch(initialQuery, resultsDiv);
+  }
 }
 
 render();

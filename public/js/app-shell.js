@@ -282,6 +282,19 @@ try {
     const themeBtn = document.querySelector('[data-theme-btn]');
     if (themeBtn) themeBtn.addEventListener('click', toggleTheme);
 
+    const globalSearch = document.getElementById('usg-global-search');
+    if (globalSearch) {
+      globalSearch.addEventListener('keydown', (event) => {
+        if (event.key !== 'Enter') return;
+        const q = String(globalSearch.value || '').trim();
+        if (!q) {
+          location.href = '/pages/search.html';
+          return;
+        }
+        location.href = '/pages/search.html?q=' + encodeURIComponent(q);
+      });
+    }
+
     setTheme(getTheme());
     loadTenantOptions();
     setTimeout(forceContentTop, 0);
