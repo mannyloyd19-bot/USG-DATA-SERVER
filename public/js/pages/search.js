@@ -19,16 +19,17 @@ function resultCard(item) {
   let link = '#';
 
   if (item.type === 'user') link = '/pages/users.html';
+  if (item.type === 'tenant') link = '/pages/tenants.html';
   if (item.type === 'collection') link = '/pages/collections.html';
   if (item.type === 'record') link = '/pages/records.html';
   if (item.type === 'file') link = '/pages/files.html';
-  if (item.type === 'notification') link = '/pages/notifications.html';
-  if (item.type === 'tenant') link = '/pages/tenants.html';
+  if (item.type === 'webhook') link = '/pages/webhooks.html';
 
   return `
     <div class="list-card">
-      <strong>${item.name || item.title || 'Result'}</strong><br>
+      <strong>${item.name || 'Result'}</strong><br>
       <span class="muted">${item.type || 'unknown'}</span><br>
+      <span class="muted">${item.subtitle || ''}</span><br>
       <a href="${link}" class="ghost-btn">Open</a>
     </div>
   `;
