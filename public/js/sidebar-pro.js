@@ -18,6 +18,10 @@
     '/pages/release.html': { icon: '🚀', label: 'Release', title: 'Release' },
     '/pages/query-builder.html': { icon: '📊', label: 'Query', title: 'Query Builder' },
     '/pages/enterprise-db.html': { icon: '🗄', label: 'Enterprise', title: 'Enterprise DB' }
+    '/pages/billing.html': { icon: '💳', label: 'Billing', title: 'Billing' },
+    '/pages/payments.html': { icon: '💰', label: 'Payments', title: 'Payments' },
+    '/pages/invoices.html': { icon: '🧾', label: 'Invoices', title: 'Invoices' },
+    '/pages/payment-gateways.html': { icon: '🏦', label: 'Payment Gateways', title: 'Payment Gateways' },
   };
 
   function decorateNav() {

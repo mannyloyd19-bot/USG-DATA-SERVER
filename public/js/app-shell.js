@@ -82,6 +82,15 @@ try {
       ]
     },
     {
+      title: 'Business',
+      items: [
+        ['/pages/billing.html', 'Billing'],
+        ['/pages/payments.html', 'Payments'],
+        ['/pages/invoices.html', 'Invoices'],
+        ['/pages/payment-gateways.html', 'Payment Gateways']
+      ]
+    },
+    {
       title: 'Operations',
       items: [
         ['/pages/apps.html', 'Apps'],
