@@ -41,19 +41,27 @@ async function runSearch(q, resultsDiv) {
     return;
   }
 
-  resultsDiv.innerHTML = `<div class="muted">Searching...</div>`;
+  resultsDiv.innerHTML = window.USGEnhancedUI
+    ? window.USGEnhancedUI.loadingCard('Searching...')
+    : `<div class="muted">Searching...</div>`;
 
-  const data = await search(q);
+  try {
+    const data = await search(q);
 
-  if (!data.results || !data.results.length) {
-    resultsDiv.innerHTML = `<div class="muted">No results</div>`;
-    return;
+    if (!data.results || !data.results.length) {
+      resultsDiv.innerHTML = window.USGEnhancedUI
+        ? window.USGEnhancedUI.emptyCard('No results found', 'Try another keyword.')
+        : `<div class="muted">No results</div>`;
+      return;
+    }
+
+    resultsDiv.innerHTML = `
+      <div class="muted" style="margin-bottom:12px">Found ${data.count || data.results.length} result(s)</div>
+      ${data.results.map(resultCard).join('')}
+    `;
+  } catch (error) {
+    resultsDiv.innerHTML = `<div class="muted">Search failed: ${error.message}</div>`;
   }
-
-  resultsDiv.innerHTML = `
-    <div class="muted" style="margin-bottom:12px">Found ${data.count || data.results.length} result(s)</div>
-    ${data.results.map(resultCard).join('')}
-  `;
 }
 
 async function render() {
@@ -67,7 +75,10 @@ async function render() {
 
   content.innerHTML = `
     <section class="card">
-      <input id="search-box" placeholder="Search anything..." style="width:100%;padding:12px;font-size:16px">
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <input id="search-box" placeholder="Search anything..." style="flex:1;min-width:260px;padding:12px;font-size:16px">
+        <button id="search-run-btn" class="primary-btn" type="button">Search</button>
+      </div>
     </section>
 
     <section id="results" class="card" style="margin-top:20px">
@@ -77,14 +88,36 @@ async function render() {
 
   const input = document.getElementById('search-box');
   const resultsDiv = document.getElementById('results');
+  const runBtn = document.getElementById('search-run-btn');
   const initialQuery = getInitialQuery();
 
   input.value = initialQuery;
 
+  async function go() {
+    const q = input.value.trim();
+    const url = new URL(window.location.href);
+    if (q) url.searchParams.set('q', q);
+    else url.searchParams.delete('q');
+    window.history.replaceState({}, '', url.toString());
+    await runSearch(q, resultsDiv);
+  }
+
   input.oninput = async () => {
     const q = input.value.trim();
+    if (!q) {
+      resultsDiv.innerHTML = `<div class="muted">Start typing to search...</div>`;
+      return;
+    }
     await runSearch(q, resultsDiv);
   };
+
+  input.addEventListener('keydown', async (event) => {
+    if (event.key === 'Enter') {
+      await go();
+    }
+  });
+
+  runBtn.onclick = go;
 
   if (initialQuery) {
     await runSearch(initialQuery, resultsDiv);

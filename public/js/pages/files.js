@@ -4,26 +4,44 @@ USGShell.buildShell();
 async function copyText(value, title = 'Copied') {
   try {
     await navigator.clipboard.writeText(value || '');
-    USGIOSAlert.show({ title: 'Copied', message: title });
+    USGEnhancedUI?.success('Copied', title) || USGIOSAlert.show({ title: 'Copied', message: title });
   } catch {
-    USGIOSAlert.show({ title: 'Copy Failed', message: title, type: 'error' });
+    USGEnhancedUI?.error('Copy Failed', title) || USGIOSAlert.show({ title: 'Copy Failed', message: title, type: 'error' });
   }
 }
 
-async function uploadFile(formData) {
-  const token = localStorage.getItem('token') || '';
-  const res = await fetch('/api/files', {
-    method: 'POST',
-    headers: token ? { Authorization: `Bearer ${token}` } : {},
-    body: formData
-  });
+async function uploadTempFile() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.onchange = async () => {
+    const file = input.files && input.files[0];
+    if (!file) return;
 
-  if (!res.ok) {
-    const out = await res.json().catch(() => ({}));
-    throw new Error(out.message || 'Upload failed');
-  }
+    const form = new FormData();
+    form.append('file', file);
 
-  return res.json();
+    try {
+      const token = localStorage.getItem('usg_token') || '';
+      const res = await fetch('/api/files', {
+        method: 'POST',
+        headers: {
+          Authorization: token ? `Bearer ${token}` : ''
+        },
+        body: form
+      });
+
+      const out = await res.json();
+      if (!res.ok) {
+        throw new Error(out.message || 'Upload failed');
+      }
+
+      USGEnhancedUI?.success('File Uploaded', out.file?.originalName || 'Upload successful');
+      loadFiles();
+    } catch (err) {
+      USGEnhancedUI?.error('Upload Failed', err.message);
+    }
+  };
+  input.click();
 }
 
 async function loadFiles() {
@@ -46,8 +64,7 @@ async function loadFiles() {
         <h2 style="margin:8px 0 0">File Controls</h2>
       </div>
       <div class="actions">
-        <input id="file-upload-input" type="file" style="display:none">
-        <button id="upload-file-btn" class="primary-btn" type="button">+ Upload File</button>
+        <button id="upload-file-btn" class="primary-btn" type="button">Upload File</button>
         <button id="refresh-files-btn" class="ghost-btn" type="button">Refresh</button>
       </div>
     </div>
@@ -55,53 +72,40 @@ async function loadFiles() {
   content.appendChild(actionsCard);
 
   document.getElementById('refresh-files-btn').onclick = () => loadFiles();
-
-  const fileInput = document.getElementById('file-upload-input');
-  document.getElementById('upload-file-btn').onclick = () => fileInput.click();
-
-  fileInput.onchange = async () => {
-    const file = fileInput.files && fileInput.files[0];
-    if (!file) return;
-
-    try {
-      const formData = new FormData();
-      formData.append('file', file);
-      await uploadFile(formData);
-      USGIOSAlert.show({ title: 'Upload Complete', message: file.name });
-      loadFiles();
-    } catch (err) {
-      USGIOSAlert.show({ title: 'Upload Failed', message: err.message, type: 'error' });
-    } finally {
-      fileInput.value = '';
-    }
-  };
+  document.getElementById('upload-file-btn').onclick = () => uploadTempFile();
 
   const searchWrap = document.createElement('div');
   searchWrap.innerHTML = USGPageKit.searchToolbar({ placeholder: 'Search files...' });
   content.appendChild(searchWrap);
 
+  const listWrap = document.createElement('section');
+  listWrap.style.marginTop = '18px';
+  listWrap.innerHTML = window.USGEnhancedUI
+    ? window.USGEnhancedUI.loadingCard('Loading files...')
+    : '<div class="muted">Loading files...</div>';
+  content.appendChild(listWrap);
+
   try {
     const res = await apiFetch('/api/files');
     const data = await res.json();
-    const rows = Array.isArray(data) ? data : (data.files || data.data || []);
+    const rows = data.files || data.data || [];
 
-    const listWrap = document.createElement('section');
-    listWrap.style.marginTop = '18px';
     listWrap.innerHTML = rows.length ? rows.map(f => `
       <div class="list-card">
         <strong>${f.name || f.filename || 'File'}</strong><br>
         <span class="muted">Type: ${f.mimeType || f.type || '-'}</span><br>
         <span class="muted">Size: ${f.size || 0}</span>
         <div class="actions">
-          ${f.url ? `<button class="ghost-btn" data-copy-file="${f.url}" type="button">Copy Link</button>` : ''}
           ${f.previewUrl ? `<a href="${f.previewUrl}" target="_blank" class="ghost-btn">Preview</a>` : ''}
           ${f.url ? `<a href="${f.url}" target="_blank" class="ghost-btn">Download</a>` : ''}
+          ${f.url ? `<button class="ghost-btn" data-copy-file="${f.url}" type="button">Copy Link</button>` : ''}
           <button class="danger-btn" data-delete-file="${f.id}" type="button">Delete</button>
         </div>
       </div>
-    `).join('') : USGPageKit.emptyState({ title: 'No files found' });
+    `).join('') : (window.USGEnhancedUI
+      ? window.USGEnhancedUI.emptyCard('No files found', 'Upload a file to get started.')
+      : USGPageKit.emptyState({ title: 'No files found' }));
 
-    content.appendChild(listWrap);
     USGPageKit.attachBasicSearch({});
 
     document.querySelectorAll('[data-copy-file]').forEach(btn => {
@@ -109,15 +113,21 @@ async function loadFiles() {
     });
 
     document.querySelectorAll('[data-delete-file]').forEach(btn => {
-      btn.onclick = () => USGCrudKit.remove({
-        title: 'Delete File',
-        message: 'Delete this file?',
-        endpoint: `/api/files/${btn.dataset.deleteFile}`,
-        onDone: () => loadFiles()
-      });
+      btn.onclick = async () => {
+        if (!(window.USGEnhancedUI?.confirmAction('Delete this file?') ?? confirm('Delete this file?'))) return;
+        try {
+          const r = await apiFetch(`/api/files/${btn.dataset.deleteFile}`, { method: 'DELETE' });
+          const out = await r.json();
+          if (!r.ok) throw new Error(out.message || 'Delete failed');
+          USGEnhancedUI?.success('File Deleted', out.message || 'File deleted successfully');
+          loadFiles();
+        } catch (err) {
+          USGEnhancedUI?.error('Delete Failed', err.message);
+        }
+      };
     });
   } catch (err) {
-    USGIOSAlert.show({ title: 'Files Error', message: err.message, type: 'error' });
+    listWrap.innerHTML = `<section class="card"><div class="muted">Files Error: ${err.message}</div></section>`;
   }
 }
 loadFiles();

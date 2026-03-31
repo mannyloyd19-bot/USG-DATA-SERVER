@@ -260,7 +260,7 @@ try {
 
       <main class="main">
         <div class="topbar">
-      <input id="usg-global-search" placeholder="Search..." style="margin-left:20px;padding:6px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:transparent;color:inherit;">
+      <input id="usg-global-search" placeholder="Search users, collections, records, files..." style="margin-left:20px;padding:6px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:transparent;color:inherit;min-width:320px;">
     
           <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
             <button class="theme-btn" type="button" data-theme-btn>Dark Mode</button>

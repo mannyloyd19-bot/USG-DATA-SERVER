@@ -57,6 +57,18 @@ async function renderDashboard() {
     });
 
     content.innerHTML = `
+      <section class="card" style="margin-bottom:16px">
+        <div class="usg-page-head-row">
+          <div>
+            <div class="kicker">ACTIONS</div>
+            <h2>Dashboard Controls</h2>
+          </div>
+          <div class="actions">
+            <button id="manual-refresh-dashboard-btn" class="ghost-btn" type="button">Refresh Dashboard</button>
+          </div>
+        </div>
+      </section>
+
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px">
         ${metricCard('Users', summary.usersTotal || 0, 'Platform accounts')}
         ${metricCard('Tenants', summary.tenantsTotal || 0, 'Workspaces')}
@@ -88,6 +100,9 @@ async function renderDashboard() {
         ${activity.length ? activity.map(activityCard).join('') : '<div class="muted">No recent activity found.</div>'}
       </section>
     `;
+
+    const refreshBtn = document.getElementById('manual-refresh-dashboard-btn');
+    if (refreshBtn) refreshBtn.onclick = () => renderDashboard();
   } catch (error) {
     content.innerHTML = `<section class="card"><div class="muted">Dashboard error: ${error.message}</div></section>`;
   }
