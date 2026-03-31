@@ -60,7 +60,7 @@ exports.pm2Stop = async (req, res) => {
 
 exports.pm2Start = async (req, res) => {
   const script = req.body?.script || 'src/server.js';
-  const name = req.body?.name || 'usg-data-server';
+  const name = req.body?.name || 'nexacore';
   const result = await run(`pm2 start ${script} --name ${name}`);
   return res.json({ success: result.ok, result });
 };

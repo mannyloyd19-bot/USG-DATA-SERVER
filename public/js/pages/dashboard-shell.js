@@ -306,7 +306,7 @@ function buildDashboardUI() {
   content.innerHTML = `
     <section class="hero card">
       <div class="kicker">SYSTEM OVERVIEW</div>
-      <h1 style="margin:6px 0 0;font-size:32px">USG DATA SERVER</h1>
+      <h1 style="margin:6px 0 0;font-size:32px">NexaCore</h1>
       <div class="muted" id="current-user">-</div>
       <div class="actions" style="margin-top:14px">
         <div id="live-state" class="badge warn"><span class="badge-dot"></span>Connecting...</div>

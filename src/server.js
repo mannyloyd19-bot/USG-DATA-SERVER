@@ -139,7 +139,7 @@ async function start() {
     await settingController.seedDefaults();
 
     server = app.listen(env.PORT, () => {
-      console.log(`USG DATA SERVER running on port ${env.PORT}`);
+      console.log(`NexaCore running on port ${env.PORT}`);
       initRealtime(server);
       startAutoBackup();
     });

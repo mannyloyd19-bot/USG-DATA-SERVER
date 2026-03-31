@@ -42,8 +42,8 @@
       const row = document.createElement('div');
       row.className = 'badge-row';
       row.innerHTML = `
-        <div class="status-badge success"><span class="status-dot"></span> System Online</div>
-        <div class="status-badge"><span class="status-dot"></span> Private Platform</div>
+        <div class="status-badge success"><span class="status-dot"></span> Platform Online</div>
+        <div class="status-badge"><span class="status-dot"></span> NexaCore Platform</div>
         <div class="status-badge warn"><span class="status-dot"></span> Admin Mode</div>
       `;
       host.appendChild(row);

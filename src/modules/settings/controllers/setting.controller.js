@@ -133,7 +133,7 @@ exports.seedDefaults = async () => {
       group: 'general',
       label: 'Application Name',
       description: 'Default application name',
-      value: 'USG DATA SERVER'
+      value: 'NexaCore'
     },
     {
       tenantId: null,

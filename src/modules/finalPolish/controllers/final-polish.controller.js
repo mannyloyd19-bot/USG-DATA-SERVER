@@ -13,7 +13,7 @@ exports.summary = async (req, res) => {
   try {
     const packageJsonPath = path.join(process.cwd(), 'package.json');
     let version = '1.0.0';
-    let name = 'usg-data-server';
+    let name = 'nexacore';
 
     if (fs.existsSync(packageJsonPath)) {
       const pkg = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));

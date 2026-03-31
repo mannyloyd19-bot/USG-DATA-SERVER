@@ -4,14 +4,14 @@
       el.innerHTML = `
         <img
           src="/assets/company-logo.png"
-          alt="UNI-SOGOOD"
+          alt="NexaCore"
           onerror="this.style.display='none'; this.parentNode.innerHTML='<span style=&quot;color:#2f6fda;font-size:34px;font-weight:800&quot;>U</span>';"
         >
       `;
     });
 
     document.querySelectorAll('[data-brand-title]').forEach((el) => {
-      el.innerHTML = 'UNI-SOGOOD<br>USG DATA SERVER';
+      el.innerHTML = 'NexaCore';
     });
 
     const path = location.pathname;
@@ -29,12 +29,12 @@
         oldBrand.outerHTML = `
           <div class="login-brand-pro">
             <div class="logo-large-wrap">
-              <img src="/assets/company-logo.png" class="logo-large" alt="UNI-SOGOOD"
+              <img src="/assets/company-logo.png" class="logo-large" alt="NexaCore"
                    onerror="this.style.display='none'; this.parentNode.innerHTML='<div style=&quot;width:120px;height:120px;border-radius:24px;background:linear-gradient(180deg,#3d82ee,#2f6fda);display:grid;place-items:center;color:#fff;font-size:42px;font-weight:800&quot;>U</div>';">
             </div>
-            <div class="small">PRIVATE DATA PLATFORM</div>
-            <div style="font-size:24px;font-weight:800;letter-spacing:-.04em;line-height:1.02;">UNI-SOGOOD</div>
-            <div style="font-size:16px;color:var(--muted);margin-top:4px;">USG DATA SERVER</div>
+            <div class="small">NexaCore Platform Engine</div>
+            <div style="font-size:24px;font-weight:800;letter-spacing:-.04em;line-height:1.02;">NexaCore</div>
+            <div style="font-size:16px;color:var(--muted);margin-top:4px;">NexaCore</div>
           </div>
         `;
       }

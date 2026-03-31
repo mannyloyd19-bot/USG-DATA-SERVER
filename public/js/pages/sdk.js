@@ -69,7 +69,7 @@ function renderSDK() {
   USGPageKit.setPageHeader({
     kicker: 'DEVELOPER TOOLS',
     title: 'SDK',
-    subtitle: 'Developer integration guide, API patterns, and code examples for USG DATA SERVER'
+    subtitle: 'Developer integration guide, API patterns, and code examples for NexaCore'
   });
 
   const top = document.createElement('section');
@@ -171,7 +171,7 @@ source.onmessage = (event) => {
 
   content.innerHTML += section('Quick Start', `
     ${item('Choose Auth Mode', 'Use JWT for operator sessions and API Keys for app/server integrations')}
-    ${item('Base URL', 'Point your client to the running USG DATA SERVER instance')}
+    ${item('Base URL', 'Point your client to the running NexaCore instance')}
     ${codeBlock(baseUrlExample, 'javascript')}
     ${copyBlock('sdk-base-url', baseUrlExample)}
   `);

@@ -5,14 +5,14 @@
       el.innerHTML = `
         <img
           src="${imgSrc}"
-          alt="UNI-SOGOOD"
+          alt="NexaCore"
           onerror="this.style.display='none'; this.parentNode.innerHTML='<span style=&quot;color:#2f6fda;font-size:34px;font-weight:800&quot;>U</span>';"
         >
       `;
     });
 
     document.querySelectorAll('[data-brand-title]').forEach((el) => {
-      el.innerHTML = 'UNI-SOGOOD<br>USG DATA SERVER';
+      el.innerHTML = 'NexaCore';
     });
   }
 
@@ -38,12 +38,12 @@
     oldBrand.outerHTML = `
       <div class="login-brand-pro">
         <div class="logo-large-wrap">
-          <img src="/assets/company-logo.png" class="logo-large" alt="UNI-SOGOOD"
+          <img src="/assets/company-logo.png" class="logo-large" alt="NexaCore"
                onerror="this.style.display='none'; this.parentNode.innerHTML='<div style=&quot;width:120px;height:120px;border-radius:24px;background:linear-gradient(180deg,#3d82ee,#2f6fda);display:grid;place-items:center;color:#fff;font-size:42px;font-weight:800&quot;>U</div>';">
         </div>
-        <div class="brand-kicker">PRIVATE DATA PLATFORM</div>
-        <div class="brand-main">UNI-SOGOOD</div>
-        <div class="brand-sub">USG DATA SERVER</div>
+        <div class="brand-kicker">NexaCore Platform Engine</div>
+        <div class="brand-main">NexaCore</div>
+        <div class="brand-sub">NexaCore</div>
       </div>
     `;
   }

@@ -147,12 +147,12 @@ try {
       <aside class="sidebar">
         <div class="brand">
           <div class="logo">
-            <img src="/assets/company-logo.png" alt="UNI-SOGOOD"
+            <img src="/assets/company-logo.png" alt="NexaCore"
                  onerror="this.style.display='none'; this.parentNode.innerHTML='<span style=&quot;color:#2f6fda;font-size:34px;font-weight:800&quot;>U</span>';">
           </div>
           <div>
-            <div class="kicker">PRIVATE DATA PLATFORM</div>
-            <div class="brand-title">UNI-SOGOOD<br>USG DATA SERVER</div>
+            <div class="kicker">NexaCore Platform Engine</div>
+            <div class="brand-title">NexaCore</div>
           </div>
         </div>
 
@@ -177,8 +177,8 @@ try {
             <select id="tenant-switcher" style="min-width:240px;margin:0"></select>
           </div>
           <div class="badges">
-            <div class="badge ok"><span class="badge-dot"></span> System Online</div>
-            <div class="badge"><span class="badge-dot"></span> Private Platform</div>
+            <div class="badge ok"><span class="badge-dot"></span> Platform Online</div>
+            <div class="badge"><span class="badge-dot"></span> NexaCore Platform</div>
             <div class="badge warn"><span class="badge-dot"></span> ${tenant?.slug ? 'Tenant: ' + tenant.slug : 'No Tenant'}</div>
           </div>
         </div>

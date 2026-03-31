@@ -346,7 +346,7 @@ async function loadInfrastructure() {
     await apiFetch('/api/runtime/pm2/start', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ script: 'src/server.js', name: 'usg-data-server' })
+      body: JSON.stringify({ script: 'src/server.js', name: 'nexacore' })
     });
     await refreshPm2();
   });

@@ -32,12 +32,12 @@ function loadDocs() {
   USGPageKit.setPageHeader({
     kicker: 'REFERENCE',
     title: 'Documentation',
-    subtitle: 'Guides, API usage, and integration for USG DATA SERVER'
+    subtitle: 'Guides, API usage, and integration for NexaCore'
   });
 
   // ===== GET STARTED =====
   content.innerHTML += section('Getting Started', `
-    ${item('What is USG DATA SERVER', 'Private company-owned data server with auth, collections, records, files, and APIs')}
+    ${item('What is NexaCore', 'Private company-owned data server with auth, collections, records, files, and APIs')}
     ${item('Core Modules', 'Auth, Collections, Fields, Records, Files, API, Realtime')}
   `);
 

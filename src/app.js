@@ -134,7 +134,7 @@ app.use(usageTrackerMiddleware);
 app.get('/health', (req, res) => {
   res.json({
     success: true,
-    system: 'USG DATA SERVER',
+    system: 'NexaCore',
     mode: env.DB_DIALECT,
     environment: env.NODE_ENV,
     time: new Date().toISOString(),

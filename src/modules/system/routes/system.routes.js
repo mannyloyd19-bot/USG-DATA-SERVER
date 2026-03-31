@@ -13,7 +13,7 @@ router.get('/release', async (req, res) => {
   return res.json({
     success: true,
     data: {
-      product: 'USG DATA SERVER',
+      product: 'NexaCore',
       version: '1.0.0',
       stage: 'release-lockdown',
       environment: process.env.NODE_ENV || 'development',

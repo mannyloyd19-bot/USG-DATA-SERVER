@@ -8,7 +8,7 @@ async function loadLiveReadiness() {
     <section class="hero card">
       <div class="kicker">LIVE APP READINESS</div>
       <h1 style="margin:6px 0 0;font-size:32px">Install / PC / Tablet Readiness</h1>
-      <div class="muted">Checks if USG DATA SERVER is ready to run as an always-on PC server with browser dashboard access.</div>
+      <div class="muted">Checks if NexaCore is ready to run as an always-on PC server with browser dashboard access.</div>
       <div class="actions" style="margin-top:14px">
         <button class="primary-btn" id="refresh-readiness">Refresh Status</button>
       </div>
