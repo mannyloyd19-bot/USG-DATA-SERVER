@@ -1,6 +1,6 @@
 {
   "name": "usg-data-server",
-  "version": "1.0.0",
+  "version": "1.1.1",
   "description": "FOR PRIVATE ONLY",
   "main": "electron-main.js",
   "scripts": {

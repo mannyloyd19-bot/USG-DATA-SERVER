@@ -44,75 +44,102 @@ try {
     {
       title: 'Overview',
       items: [
-        ['/index.html', 'Dashboard']
+        ['/index.html', 'Dashboard'],
+        ['/pages/search.html', 'Global Search'],
+        ['/pages/docs.html', 'Docs']
       ]
     },
     {
-      title: 'Workspace',
-      items: [
-        ['/pages/tenants.html', 'Tenants'],
-        ['/pages/users.html', 'Users'],
-        ['/pages/auth-security.html', 'Auth Security'],
-        ['/pages/permissions-pro.html', 'Permissions']
-      ]
-    },
-    {
-      title: 'Data',
+      title: 'Core Data',
       items: [
         ['/pages/collections.html', 'Collections'],
         ['/pages/fields.html', 'Fields'],
         ['/pages/records.html', 'Records'],
-        ['/pages/relationships.html', 'Relationships'],
         ['/pages/files.html', 'Files'],
         ['/pages/storage-buckets.html', 'Storage Buckets'],
         ['/pages/storage-admin.html', 'Storage Admin'],
+        ['/pages/index-manager.html', 'Index Manager'],
+        ['/pages/functions.html', 'Functions'],
+        ['/pages/query-builder.html', 'Query Builder'],
+        ['/pages/relationships.html', 'Relationships'],
         ['/pages/relational.html', 'Relational']
       ]
     },
     {
-      title: 'Access',
+      title: 'Identity & Access',
       items: [
+        ['/pages/tenants.html', 'Tenants'],
+        ['/pages/users.html', 'Users'],
+        ['/pages/sessions.html', 'Sessions'],
+        ['/pages/auth-security.html', 'Auth Security'],
+        ['/pages/auth-providers.html', 'Auth Providers'],
+        ['/pages/permissions-pro.html', 'Permissions'],
+        ['/pages/permissions-matrix.html', 'Permissions Matrix'],
+        ['/pages/rbac.html', 'RBAC'],
         ['/pages/api-keys.html', 'API Keys'],
         ['/pages/api-key-logs.html', 'API Key Logs'],
-        ['/pages/api-key-analytics.html', 'API Key Analytics'],
-        ['/pages/domains.html', 'Domains'],
-        ['/pages/domain-diagnostics.html', 'Domain Diagnostics'],
-        ['/pages/webhooks.html', 'Webhooks'],
-        ['/pages/realtime-events.html', 'Realtime Events']
+        ['/pages/api-key-analytics.html', 'API Key Analytics']
       ]
     },
     {
-      title: 'Business',
+      title: 'Billing & Business',
       items: [
         ['/pages/billing.html', 'Billing'],
         ['/pages/payments.html', 'Payments'],
         ['/pages/invoices.html', 'Invoices'],
-        ['/pages/payment-gateways.html', 'Payment Gateways']
+        ['/pages/payment-gateways.html', 'Payment Gateways'],
+        ['/pages/tenant-overview.html', 'Tenant Overview'],
+        ['/pages/tenant-quotas.html', 'Tenant Quotas']
       ]
     },
     {
-      title: 'Operations',
+      title: 'Infra & Ops',
       items: [
         ['/pages/apps.html', 'Apps'],
+        ['/pages/deployments.html', 'Deployments'],
         ['/pages/app-logs.html', 'App Logs'],
-        ['/pages/deployment-diagnostics.html', 'Deployments'],
         ['/pages/backups.html', 'Backups'],
+        ['/pages/backup-system.html', 'Backup System'],
         ['/pages/backup-monitor.html', 'Backup Monitor'],
-        ['/pages/queue-monitor.html', 'Queue Monitor'],
+        ['/pages/backup-restore.html', 'Backup Restore'],
         ['/pages/system-health.html', 'System Health'],
-        ['/pages/log-viewer.html', 'Log Viewer'],
+        ['/pages/system-audit.html', 'System Audit'],
+        ['/pages/live-readiness.html', 'Live Readiness'],
         ['/pages/diagnostics-console.html', 'Diagnostics'],
-        ['/pages/installer.html', 'Installer']
+        ['/pages/log-viewer.html', 'Log Viewer'],
+        ['/pages/network-center.html', 'Network Center'],
+        ['/pages/infrastructure.html', 'Infrastructure'],
+        ['/pages/ssl-center.html', 'SSL Center'],
+        ['/pages/domains.html', 'Domains'],
+        ['/pages/domain-diagnostics.html', 'Domain Diagnostics']
+      ]
+    },
+    {
+      title: 'Realtime & Automation',
+      items: [
+        ['/pages/webhooks.html', 'Webhooks'],
+        ['/pages/realtime.html', 'Realtime'],
+        ['/pages/realtime-events.html', 'Realtime Events'],
+        ['/pages/realtime-monitor.html', 'Realtime Monitor'],
+        ['/pages/notifications.html', 'Notifications'],
+        ['/pages/queue-monitor.html', 'Queue Monitor']
+      ]
+    },
+    {
+      title: 'Future Systems',
+      items: [
+        ['/pages/database-center.html', 'Database Center'],
+        ['/pages/firebase-center.html', 'Firebase Center'],
+        ['/pages/supabase-center.html', 'Supabase Center'],
+        ['/pages/cloud-center.html', 'Cloud Center'],
+        ['/pages/advanced-systems.html', 'Advanced Systems']
       ]
     },
     {
       title: 'Tools',
       items: [
-        ['/pages/query-builder.html', 'Query Builder'],
         ['/pages/sdk.html', 'SDK'],
-        ['/pages/settings.html', 'Settings'],
-        ['/pages/docs.html', 'Docs'],
-        ['/pages/notifications.html', 'Notifications']
+        ['/pages/settings.html', 'Settings']
       ]
     },
     {
@@ -253,8 +280,8 @@ try {
     Show Token
   </button>
   
-          <div>usg-data-server · v1.0.0</div>
-          <div>development · ./database.sqlite</div>
+          <div>usg-data-server · v1.1.1</div>
+          <div>development · system patch 1.1.0</div>
         </div>
       </aside>
 

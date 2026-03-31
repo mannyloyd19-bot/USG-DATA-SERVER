@@ -2,6 +2,7 @@
   const LABELS = {
     '/index.html': { icon: '🏠', label: 'Dashboard', title: 'Dashboard' },
     '/pages/permissions-pro.html': { icon: '🛡', label: 'Permissions', title: 'Permissions Pro' },
+    '/pages/permissions-matrix.html': { icon: '📋', label: 'Perm Matrix', title: 'Permissions Matrix' },
     '/pages/users.html': { icon: '👤', label: 'Users', title: 'Users' },
     '/pages/collections.html': { icon: '📦', label: 'Collections', title: 'Collections' },
     '/pages/fields.html': { icon: '📄', label: 'Fields', title: 'Fields' },
@@ -17,7 +18,12 @@
     '/pages/sdk.html': { icon: '🧩', label: 'SDK', title: 'SDK' },
     '/pages/release.html': { icon: '🚀', label: 'Release', title: 'Release' },
     '/pages/query-builder.html': { icon: '📊', label: 'Query', title: 'Query Builder' },
-    '/pages/enterprise-db.html': { icon: '🗄', label: 'Enterprise', title: 'Enterprise DB' }
+    '/pages/enterprise-db.html': { icon: '🗄', label: 'Enterprise', title: 'Enterprise DB' },
+    '/pages/advanced-systems.html': { icon: '🧠', label: 'Advanced', title: 'Advanced Systems' },
+    '/pages/cloud-center.html': { icon: '☁️', label: 'Cloud', title: 'Cloud Center' },
+    '/pages/supabase-center.html': { icon: '⚡', label: 'Supabase', title: 'Supabase Center' },
+    '/pages/firebase-center.html': { icon: '🔥', label: 'Firebase', title: 'Firebase Center' },
+    '/pages/database-center.html': { icon: '🗄', label: 'Database', title: 'Database Center' }
     '/pages/billing.html': { icon: '💳', label: 'Billing', title: 'Billing' },
     '/pages/payments.html': { icon: '💰', label: 'Payments', title: 'Payments' },
     '/pages/invoices.html': { icon: '🧾', label: 'Invoices', title: 'Invoices' },

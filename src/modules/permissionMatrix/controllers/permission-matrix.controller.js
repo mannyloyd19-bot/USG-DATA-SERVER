@@ -1,93 +1,125 @@
-const Permission = require('../../permissions/models/permission.model');
+const User = require('../../users/models/user.model');
 
-const DEFAULT_MODULES = [
-  'collections',
-  'fields',
-  'records',
-  'files',
-  'api_keys',
-  'settings',
-  'audit_logs',
-  'backups',
-  'relational',
-  'relationships',
-  'webhooks',
-  'functions',
-  'users'
-];
+const ROLE_PERMISSION_MAP = {
+  super_admin: ['*'],
+  admin: [
+    'users.read','users.write',
+    'collections.read','collections.write',
+    'records.read','records.write',
+    'files.read','files.write',
+    'webhooks.read','webhooks.write',
+    'billing.read','billing.write',
+    'settings.read','settings.write'
+  ],
+  viewer: [
+    'users.read',
+    'collections.read',
+    'records.read',
+    'files.read'
+  ]
+};
 
-const DEFAULT_ACTIONS = [
-  'create',
-  'read',
-  'update',
-  'delete',
-  'restore',
-  'hard_delete'
-];
+function normalizeRole(role) {
+  return String(role || '').trim().toLowerCase();
+}
 
-exports.getMatrix = async (req, res) => {
+exports.summary = async (req, res) => {
   try {
-    const role = req.query.role || 'admin';
-    const items = await Permission.findAll({ where: { role } });
+    const users = await User.findAll({
+      attributes: ['id', 'username', 'role', 'createdAt', 'updatedAt'],
+      order: [['createdAt', 'DESC']]
+    });
 
-    const matrix = {};
-    for (const mod of DEFAULT_MODULES) {
-      matrix[mod] = {};
-      for (const action of DEFAULT_ACTIONS) {
-        matrix[mod][action] = false;
-      }
-    }
+    const roles = Object.keys(ROLE_PERMISSION_MAP).map(role => ({
+      role,
+      permissions: ROLE_PERMISSION_MAP[role]
+    }));
 
-    for (const item of items) {
-      if (!matrix[item.module]) matrix[item.module] = {};
-      matrix[item.module][item.action] = Boolean(item.allowed);
-    }
+    const mappedUsers = users.map(user => {
+      const role = normalizeRole(user.role);
+      return {
+        id: user.id,
+        username: user.username,
+        role,
+        permissions: ROLE_PERMISSION_MAP[role] || []
+      };
+    });
 
     return res.json({
-      role,
-      modules: DEFAULT_MODULES,
-      actions: DEFAULT_ACTIONS,
-      matrix
+      success: true,
+      message: 'Permission matrix summary',
+      data: {
+        roles,
+        users: mappedUsers
+      }
     });
   } catch (error) {
     return res.status(500).json({
-      message: 'Failed to load permission matrix',
-      error: error.message
+      success: false,
+      message: error.message
     });
   }
 };
 
-exports.saveMatrix = async (req, res) => {
+exports.roles = async (req, res) => {
   try {
-    const { role, matrix } = req.body || {};
-
-    if (!role || !matrix || typeof matrix !== 'object') {
-      return res.status(400).json({ message: 'role and matrix are required' });
-    }
-
-    for (const [moduleName, actions] of Object.entries(matrix)) {
-      for (const [actionName, allowed] of Object.entries(actions || {})) {
-        const [item] = await Permission.findOrCreate({
-          where: {
-            role,
-            module: moduleName,
-            action: actionName
-          },
-          defaults: {
-            allowed: Boolean(allowed)
-          }
-        });
-
-        item.allowed = Boolean(allowed);
-        await item.save();
-      }
-    }
-
-    return res.json({ message: 'Permission matrix saved successfully' });
+    return res.json({
+      success: true,
+      message: 'Role permission map',
+      data: ROLE_PERMISSION_MAP
+    });
   } catch (error) {
     return res.status(500).json({
-      message: 'Failed to save permission matrix',
-      error: error.message
+      success: false,
+      message: error.message
+    });
+  }
+};
+
+exports.updateUserRole = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const nextRole = normalizeRole(req.body?.role);
+
+    if (!nextRole) {
+      return res.status(400).json({
+        success: false,
+        message: 'role is required'
+      });
+    }
+
+    if (!ROLE_PERMISSION_MAP[nextRole]) {
+      return res.status(400).json({
+        success: false,
+        message: 'invalid role'
+      });
+    }
+
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    user.role = nextRole;
+    await user.save();
+
+    return res.json({
+      success: true,
+      message: 'User role updated',
+      data: {
+        id: user.id,
+        username: user.username,
+        role: user.role,
+        permissions: ROLE_PERMISSION_MAP[nextRole]
+      }
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message
     });
   }
 };

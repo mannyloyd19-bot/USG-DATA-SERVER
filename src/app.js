@@ -61,6 +61,7 @@ const domainRoutes = require('./modules/domains/routes/domain.routes');
 const domainDebug = require('./modules/domains/routes/domain.debug');
 
 const express = require('express');
+const debugPermissionsRoutes = require('./modules/debugPermissions/routes/debug-permissions.routes');
 const requestLogger = require('./core/request-logger');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -252,6 +253,7 @@ app.use('/api/notifications', require('./modules/notifications/routes/notificati
 app.use("/api/search", require("./modules/search/routes/search.routes"));
 app.use('/api/data-transfer', dataTransferRoutes);
 app.use(notFoundHandler);
+app.use('/api/debug-permissions', debugPermissionsRoutes);
 app.use(errorHandler);
 
 module.exports = app;

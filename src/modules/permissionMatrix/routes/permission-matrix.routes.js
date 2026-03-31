@@ -1,15 +1,13 @@
 const requirePermission = require('../../../middleware/permission.middleware');
 const express = require('express');
-const controller = require('../controllers/permission-matrix.controller');
-const authMiddleware = require('../../../middleware/auth.middleware');
-const adminMiddleware = require('../../../middleware/admin.middleware');
-
 const router = express.Router();
+const authMiddleware = require('../../../middleware/auth.middleware');
+const controller = require('../controllers/permission-matrix.controller');
 
 router.use(authMiddleware);
-router.use(adminMiddleware);
 
-router.get('/', controller.getMatrix);
-router.post('/', controller.saveMatrix);
+router.get('/summary', requirePermission('users.read'), controller.summary);
+router.get('/roles', requirePermission('users.read'), controller.roles);
+router.patch('/users/:userId/role', requirePermission('users.write'), controller.updateUserRole);
 
 module.exports = router;
