@@ -1,8 +1,8 @@
+const requirePermission = require('../../../middleware/permission.middleware');
 const express = require('express');
 const router = express.Router();
 const controller = require('../controllers/collection.controller');
 const authMiddleware = require('../../../middleware/auth.middleware');
-const { requirePermission } = require('../../../middleware/rbac.middleware');
 const fieldRoutes = require('../../fields/routes/field.routes');
 
 router.use(authMiddleware);

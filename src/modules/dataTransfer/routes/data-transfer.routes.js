@@ -1,3 +1,4 @@
+const requirePermission = require('../../../middleware/permission.middleware');
 const express = require('express');
 const authMiddleware = require('../../../middleware/auth.middleware');
 const controller = require('../controllers/data-transfer.controller');

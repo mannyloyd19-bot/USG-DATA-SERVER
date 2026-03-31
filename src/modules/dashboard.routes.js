@@ -1,3 +1,4 @@
+const requirePermission = require('../../../middleware/permission.middleware');
 const express = require('express');
 const { Op } = require('sequelize');
 const authMiddleware = require('../middleware/auth.middleware');

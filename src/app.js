@@ -61,6 +61,7 @@ const domainRoutes = require('./modules/domains/routes/domain.routes');
 const domainDebug = require('./modules/domains/routes/domain.debug');
 
 const express = require('express');
+const requestLogger = require('./core/request-logger');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');

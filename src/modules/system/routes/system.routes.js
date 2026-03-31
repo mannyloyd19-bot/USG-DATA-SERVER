@@ -1,5 +1,8 @@
+const authMiddleware = require('../../../middleware/auth.middleware');
+const requirePermission = require('../../../middleware/permission.middleware');
 const express = require('express');
 const router = express.Router();
+router.use(authMiddleware);
 
 function isTrue(value, fallback = false) {
   if (value === undefined || value === null || value === '') return fallback;

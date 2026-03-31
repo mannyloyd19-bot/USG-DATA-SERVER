@@ -1,7 +1,7 @@
+const requirePermission = require('../../../middleware/permission.middleware');
 const express = require('express');
 const controller = require('../controllers/field.controller');
 const authMiddleware = require('../../../middleware/auth.middleware');
-const { requirePermission } = require('../../../middleware/rbac.middleware');
 
 const router = express.Router({ mergeParams: true });
 

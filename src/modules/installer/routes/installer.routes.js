@@ -1,8 +1,11 @@
+const authMiddleware = require('../../../middleware/auth.middleware');
+const requirePermission = require('../../../middleware/permission.middleware');
 const express = require('express');
 const controller = require('../controllers/installer.controller');
 const { checkInstallerAllowed } = require('../../../middleware/release-lockdown.middleware');
 
 const router = express.Router();
+router.use(authMiddleware);
 
 router.get('/status', controller.status);
 router.get('/check', controller.systemCheck);

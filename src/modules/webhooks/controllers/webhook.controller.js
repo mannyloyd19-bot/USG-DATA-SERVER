@@ -1,26 +1,27 @@
 const Webhook = require('../models/webhook.model');
+const { ok, fail } = require('../../../core/response');
 
 exports.create = async (req, res) => {
   try {
     const { name, url, event } = req.body;
 
     if (!name || !url || !event) {
-      return res.status(400).json({ message: 'name, url, event required' });
+      return fail(res, 'name, url, event required', 400);
     }
 
     const item = await Webhook.create({ name, url, event });
-    return res.status(201).json(item);
+    return ok(res, item, 'Webhook created');
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    return fail(res, error.message, 500);
   }
 };
 
 exports.findAll = async (req, res) => {
   try {
     const items = await Webhook.findAll({ order: [['createdAt', 'DESC']] });
-    return res.json(items);
+    return ok(res, items);
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    return fail(res, error.message, 500);
   }
 };
 
@@ -29,12 +30,12 @@ exports.remove = async (req, res) => {
     const item = await Webhook.findByPk(req.params.id);
 
     if (!item) {
-      return res.status(404).json({ message: 'Webhook not found' });
+      return fail(res, 'Webhook not found', 404);
     }
 
     await item.destroy();
-    return res.json({ message: 'Webhook deleted successfully' });
+    return ok(res, null, 'Webhook deleted successfully');
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    return fail(res, error.message, 500);
   }
 };

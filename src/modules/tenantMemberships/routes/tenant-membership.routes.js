@@ -1,3 +1,4 @@
+const requirePermission = require('../../../middleware/permission.middleware');
 const express = require('express');
 const controller = require('../controllers/tenant-membership.controller');
 const authMiddleware = require('../../../middleware/auth.middleware');

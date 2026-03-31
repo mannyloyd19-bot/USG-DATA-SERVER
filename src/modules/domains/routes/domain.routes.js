@@ -1,8 +1,8 @@
+const requirePermission = require('../../../middleware/permission.middleware');
 const express = require('express');
 const router = express.Router();
 const controller = require('../controllers/domain.controller');
 const authMiddleware = require('../../../middleware/auth.middleware');
-const { requirePermission } = require('../../../middleware/rbac.middleware');
 const { enforceUsage } = require('../../../middleware/usage-quota.middleware');
 
 router.use(authMiddleware);
